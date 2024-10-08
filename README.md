@@ -4,5 +4,5 @@
 ## 팀원
 
 - 김소민 [![GitHub](https://img.shields.io/badge/GitHub-black?style=flat-square&logo=github)](https://github.com/thals304)
-- 김현경
-- 김경진
+- 김현경 [![GitHub](https://img.shields.io/badge/GitHub-black?style=flat-square&logo=github)](https://github.com/hkkim2021)
+- 김경진 [![GitHub](https://img.shields.io/badge/GitHub-black?style=flat-square&logo=github)](https://github.com/orgs/HYU-Project/people/kjkim761)
