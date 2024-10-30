@@ -14,6 +14,8 @@ struct InfoRegistrationView: View {
     @State private var selectedSchool: String = ""
     @State private var searchText: String = ""
     
+    @State private var navigateToHome = false
+    
     let schools = [ // 더 추가
         "한양대학교 서울캠",
         "한양대학교 ERICA",
@@ -217,21 +219,25 @@ struct InfoRegistrationView: View {
             }
             Spacer()
             
-            // 다음 버튼
-            Button(action: {
-                // 필수 입력 정보칸 유효성 검사 (학번 10자리, 이메일 인증 true 등)
-                // 다음 화면으로 이동하는 로직 추가
-            }) {
-                Text("다음")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding()
-                    .frame(width: 350)
-                    .background(Color.black)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-            .padding(.top, 20)
+            NavigationLink(
+                            destination: HomeView(schoolName: selectedSchool), // HomeView에 학교 이름 전달
+                            isActive: $navigateToHome
+                        ) {
+                            Button(action: {
+                                // 필수 입력 정보 유효성 검사 (필요시 추가)
+                                navigateToHome = true // HomeView로 이동 설정
+                            }) {
+                                Text("다음")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                    .padding()
+                                    .frame(width: 350)
+                                    .background(Color.black)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(10)
+                            }
+                        }
+                        .padding(.top, 20)
             
         }
         .padding()
