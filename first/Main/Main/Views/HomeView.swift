@@ -26,7 +26,7 @@ struct HomeView: View {
                 Spacer()
             }
             
-            Button(action: {
+            NavigationLink(destination: {
                 // 공구 버튼 눌렀을 때 이동 로직
             }){
                 Text("공구")
@@ -40,7 +40,7 @@ struct HomeView: View {
             }
             .padding()
             
-            Button(action: {
+            NavigationLink(destination: {
                 // 나눔 버튼 눌렀을 때 이동 로직
             }){
                 Text("나눔")
@@ -54,7 +54,7 @@ struct HomeView: View {
             }
             .padding()
             
-            Button(action: {
+            NavigationLink(destination: {
                 // 채팅 버튼 눌렀을 때 이동 로직
             }){
                 Text("채팅")
@@ -68,7 +68,7 @@ struct HomeView: View {
             }
             .padding()
             
-            Button(action: {
+            NavigationLink(destination: {
                 // 마이홈 버튼 눌렀을 때 이동 로직
             }){
                 Text("마이홈")
