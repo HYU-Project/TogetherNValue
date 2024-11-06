@@ -29,19 +29,43 @@
 		AA59F02A2CBDF98E00DA27A4 /* HomeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HomeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		37EFD6DA2CDB6FC000C97D89 /* Exceptions for "HomeTests" folder in "HomeTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				HomeTests.swift,
+			);
+			target = AA59F01F2CBDF98E00DA27A4 /* HomeTests */;
+		};
+		37EFD6DB2CDB6FC000C97D89 /* Exceptions for "HomeUITests" folder in "HomeUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				HomeUITests.swift,
+				HomeUITestsLaunchTests.swift,
+			);
+			target = AA59F0292CBDF98E00DA27A4 /* HomeUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		AA59F00F2CBDF98D00DA27A4 /* Home */ = {
+		37EFD6BD2CDB6FC000C97D89 /* Home */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Home;
 			sourceTree = "<group>";
 		};
-		AA59F0232CBDF98E00DA27A4 /* HomeTests */ = {
+		37EFD6BF2CDB6FC000C97D89 /* HomeTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				37EFD6DA2CDB6FC000C97D89 /* Exceptions for "HomeTests" folder in "HomeTests" target */,
+			);
 			path = HomeTests;
 			sourceTree = "<group>";
 		};
-		AA59F02D2CBDF98E00DA27A4 /* HomeUITests */ = {
+		37EFD6C22CDB6FC000C97D89 /* HomeUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				37EFD6DB2CDB6FC000C97D89 /* Exceptions for "HomeUITests" folder in "HomeUITests" target */,
+			);
 			path = HomeUITests;
 			sourceTree = "<group>";
 		};
@@ -75,9 +99,9 @@
 		AA59F0042CBDF98D00DA27A4 = {
 			isa = PBXGroup;
 			children = (
-				AA59F00F2CBDF98D00DA27A4 /* Home */,
-				AA59F0232CBDF98E00DA27A4 /* HomeTests */,
-				AA59F02D2CBDF98E00DA27A4 /* HomeUITests */,
+				37EFD6BD2CDB6FC000C97D89 /* Home */,
+				37EFD6BF2CDB6FC000C97D89 /* HomeTests */,
+				37EFD6C22CDB6FC000C97D89 /* HomeUITests */,
 				AA59F00E2CBDF98D00DA27A4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -108,7 +132,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				AA59F00F2CBDF98D00DA27A4 /* Home */,
+				37EFD6BD2CDB6FC000C97D89 /* Home */,
 			);
 			name = Home;
 			packageProductDependencies = (
@@ -130,9 +154,6 @@
 			dependencies = (
 				AA59F0222CBDF98E00DA27A4 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				AA59F0232CBDF98E00DA27A4 /* HomeTests */,
-			);
 			name = HomeTests;
 			packageProductDependencies = (
 			);
@@ -152,9 +173,6 @@
 			);
 			dependencies = (
 				AA59F02C2CBDF98E00DA27A4 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				AA59F02D2CBDF98E00DA27A4 /* HomeUITests */,
 			);
 			name = HomeUITests;
 			packageProductDependencies = (
