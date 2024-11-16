@@ -11,7 +11,7 @@ struct Me{
     var starPost: Set<Int> = [1]
     var participatePost: Set<Int> = [1]
 }
-struct Post{
+struct Post1{
     var id = 1
     var subject = "주제"
     var price = 80050
@@ -20,7 +20,7 @@ struct Post{
     var image = Image("SCPC_2024_Poster")
 }
 var me = Me()
-var post = Post()
+var post = Post1()
 struct ContentView: View {
     @State var selection: Int
     var body: some View {
@@ -49,5 +49,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(selection: 2)
+    ContentView(selection: 0)
 }

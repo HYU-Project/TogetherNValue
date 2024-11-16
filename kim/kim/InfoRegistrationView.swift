@@ -30,6 +30,7 @@ struct InfoRegistrationView: View {
         "전남대학교"
     ]
     
+    
     var sortedSchools: [String] {
             schools.sorted()
         }

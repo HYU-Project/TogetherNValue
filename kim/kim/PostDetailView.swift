@@ -6,13 +6,13 @@ struct PostDetailView: View {
     @State private var isParticipated = false
     @State private var isAuthor = false // 작성자 여부 확인
     @State private var currentImageIndex = 0 // 이미지 슬라이더 인덱스
-    let images = ["1", "s2", "3"] // 이미지 배열
+    let images = ["1", "2", "3"] // 이미지 배열
     @State private var comments = [
         Comment(id: 1, user: "user2", text: "한명이 두개 사도되나요??", replies: []),
         Comment(id: 2, user: "user3", text: "오 너무 이쁘네요!", replies: [])
     ]
     @State private var newComment = ""
-    
+    var post: Post
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
@@ -24,14 +24,14 @@ struct PostDetailView: View {
                             .frame(width: 50, height: 50)
                             .clipShape(Circle())
                         
-                        Text("user1") // 작성자 아이디
+                        Text(post.user_idx) // 작성자 아이디
                             .font(.headline)
                         Spacer()
                     }
                     .padding(.bottom, 8)
                     
                     // 게시글 제목
-                    Text("게시글 제목")
+                    Text(post.title)
                         .bold()
                         .padding()
                         .frame(maxWidth: .infinity)
@@ -43,16 +43,31 @@ struct PostDetailView: View {
                         .padding(.bottom, 5)
                     
                     VStack {
-                        // 이미지 슬라이더
-                        TabView(selection: $currentImageIndex) {
-                            ForEach(images.indices, id: \.self) { index in
-                                Image(images[index])
-                                    .resizable()
-                                    .scaledToFill()
-                                    .tag(index)
-                                    .frame(height: 100)
-                                    .clipped()
-                            }
+////                         이미지 슬라이더
+//                        TabView(selection: $currentImageIndex) {
+//                            ForEach(images.indices, id: \.self) { index in
+//                                Image(images[index])
+//                                    .resizable()
+//                                    .scaledToFill()
+//                                    .tag(index)
+//                                    .frame(height: 100)
+//                                    .clipped()
+//                            }
+//                        }
+//                        .padding()
+//                        .frame(width: 350, height: 100)
+//                        .overlay(
+//                            Rectangle()
+//                                .stroke(Color.black, lineWidth: 2)
+//                        )
+//                        .tabViewStyle(PageTabViewStyle())
+                        
+                        TabView{
+                            Image(post.imageName)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(height: 100)
+                                .clipped()
                         }
                         .padding()
                         .frame(width: 350, height: 100)
@@ -60,20 +75,18 @@ struct PostDetailView: View {
                             Rectangle()
                                 .stroke(Color.black, lineWidth: 2)
                         )
-                        .tabViewStyle(PageTabViewStyle())
-                        
                         // 장소와 인원 정보
                         HStack {
                             VStack(alignment: .leading) {
                                 HStack {
                                     Image(systemName: "mappin.and.ellipse")
-                                    Text(" 장소: itbt관")
+                                    Text(post.location)
                                 }
                                 .padding(.top, 8)
                                 
                                 HStack {
                                     Image(systemName: "person.2.fill")
-                                    Text("인원수: 3명")
+                                    Text("인원수: \(post.want_num)명")
                                 }
                                 .padding(.top, 4)
                             }
@@ -83,7 +96,7 @@ struct PostDetailView: View {
                         .padding(.vertical, 8)
                         
                         // 자세한 글 내용
-                        Text("자세한 글 내용")
+                        Text(post.post_content)
                             .padding()
                             .frame(width: 350, height: 250)
                             .overlay(
@@ -220,6 +233,6 @@ struct Comment: Identifiable {
 // 미리보기
 struct PostDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        PostDetailView()
+        SwiftUIView()
     }
 }
