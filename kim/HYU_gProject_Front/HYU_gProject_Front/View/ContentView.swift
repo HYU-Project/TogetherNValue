@@ -111,7 +111,7 @@ var commentd1 = Commentd(commentID: 1, userID: 1, postID: 1, commentContent: "�
 var commentd2 = Commentd(commentID: 2, userID: 2, postID: 1, commentContent: "안녕하세요.", commentCreatedAt: "2024-11-10 19:00")
 var commentd3 = Commentd(commentID: 3, userID: 2, postID: 1, commentContent: "반갑습니다.", commentCreatedAt: "2024-11-10 20:00")
 var commentd4 = Commentd(commentID: 4, userID: 1, postID: 1, commentContent: "공구하시죠?", commentCreatedAt: "2024-11-10 21:00")
-var commentd5 = Commentd(commentID: 5, userID: 3, postID: 6, commentContent: "안녕하세요?!", commentCreatedAt: "2024-11-10 18:00")
+var commentd5 = Commentd(commentID: 5, userID: 3, postID: 6, commentContent: "안녕하세요~!", commentCreatedAt: "2024-11-10 18:00")
 var commentd6 = Commentd(commentID: 6, userID: 2, postID: 6, commentContent: "참여했습니다.", commentCreatedAt: "2024-11-10 19:00")
 
 struct Replyd{
@@ -145,9 +145,9 @@ struct ChatMessaged{
     var sentAt: String
 }
 var chatMessaged1 = ChatMessaged(messageID: 1, postID: 1, senderID: 1, messageContent: "다들 안녕하세요.", messageImageURL: "없음", sentAt: "2024-11-21 21:00")
-var chatMessaged2 = ChatMessaged(messageID: 1, postID: 1, senderID: 1, messageContent: "공구 계획대로 진행합시다.", messageImageURL: "없음", sentAt: "2024-11-21 22:00")
-var chatMessaged3 = ChatMessaged(messageID: 1, postID: 1, senderID: 2, messageContent: "쿨공구 감사합니다.", messageImageURL: "없음", sentAt: "2024-11-21 23:00")
-var chatMessaged4 = ChatMessaged(messageID: 1, postID: 1, senderID: 3, messageContent: "^^", messageImageURL: "miurl", sentAt: "2024-11-21 23:30")
+var chatMessaged2 = ChatMessaged(messageID: 2, postID: 1, senderID: 1, messageContent: "공구 계획대로 진행합시다.", messageImageURL: "없음", sentAt: "2024-11-21 22:00")
+var chatMessaged3 = ChatMessaged(messageID: 3, postID: 1, senderID: 2, messageContent: "쿨공구 감사합니다.", messageImageURL: "없음", sentAt: "2024-11-21 23:00")
+var chatMessaged4 = ChatMessaged(messageID: 4, postID: 1, senderID: 3, messageContent: "^^", messageImageURL: "miurl", sentAt: "2024-11-21 23:30")
 
 #Preview {
     ContentView()
