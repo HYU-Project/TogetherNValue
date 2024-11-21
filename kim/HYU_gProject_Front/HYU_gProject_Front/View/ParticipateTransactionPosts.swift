@@ -10,10 +10,7 @@ struct ParticipateTransactionPosts: View {
     @State private var selectedPost: Post? = nil // 선택된 게시글을 저장할 변수
     
     @State private var posts: [Post] = [
-        Post(post_idx: 1, user_idx: 1, post_category: "공구", post_categoryType: "배달", title: "Title 1", post_content: "내용 1", location: "ITBT관", want_num: 5, post_status: "거래완료", created_at: "", postImages: [], post_likeCnt: 10, post_commentCnt: 2),
-        Post(post_idx: 3, user_idx: 1, post_category: "공구", post_categoryType: "물품", title: "Title 3", post_content: "내용 3", location: "기숙사", want_num: 2, post_status: "거래완료", created_at: "", postImages: [], post_likeCnt: 3, post_commentCnt: 0),
-        Post(post_idx: 5, user_idx: 1, post_category: "나눔", post_categoryType: "식재료", title: "Title 2", post_content: "내용 2", location: "학생회관", want_num: 3, post_status: "거래완료", created_at: "", postImages: [], post_likeCnt: 5, post_commentCnt: 1),
-        Post(post_idx: 6, user_idx: 1, post_category: "나눔", post_categoryType: "물품", title: "Title 3", post_content: "내용 3", location: "기숙사", want_num: 2, post_status: "거래완료", created_at: "", postImages: [], post_likeCnt: 3, post_commentCnt: 0)
+        Post(post_idx: 4, user_idx: 4, post_category: "나눔", post_categoryType: "식재료", title: "감자 나눔합니다.", post_content: "저희집에 강원도에서 감자 농사 짓는데, 이번에 수확이 잘되서 학우분들 중 필요하신 분 나눠드리려고 합니다. ", location: "한플 앞", want_num: 2, post_status: "거래완료", created_at: "2023-12-13 12:30", postImages: [], post_likeCnt: 5, post_commentCnt: 1)
     ]
     
     var body: some View {

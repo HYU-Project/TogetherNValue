@@ -13,7 +13,10 @@ struct GroupPurchaseMain: View {
     @State private var posts: [Post] = [
         Post(post_idx: 1, user_idx: 1, post_category: "공구", post_categoryType: "배달", title: "Title 1", post_content: "내용 1", location: "ITBT관", want_num: 5, post_status: "거래중", created_at: "", postImages: [], post_likeCnt: 10, post_commentCnt: 2),
         Post(post_idx: 2, user_idx: 2, post_category: "공구", post_categoryType: "식재료", title: "Title 2", post_content: "내용 2", location: "학생회관", want_num: 3, post_status: "거래중", created_at: "", postImages: [], post_likeCnt: 5, post_commentCnt: 1),
-        Post(post_idx: 3, user_idx: 3, post_category: "공구", post_categoryType: "물품", title: "Title 3", post_content: "내용 3", location: "기숙사", want_num: 2, post_status: "거래완료", created_at: "", postImages: [], post_likeCnt: 3, post_commentCnt: 0)
+        Post(post_idx: 3, user_idx: 3, post_category: "공구", post_categoryType: "물품", title: "Title 3", post_content: "내용 3", location: "기숙사", want_num: 2, post_status: "거래완료", created_at: "", postImages: [], post_likeCnt: 3, post_commentCnt: 0),
+        Post(post_idx: postd1.postID, user_idx: postd1.userID, post_category: postd1.postCategory, post_categoryType: postd1.postCategoryType, title: postd1.title, post_content: postd1.postContent, location: postd1.location, want_num: postd1.wantNum, post_status: postd1.postStatus, created_at: postd1.created_at, postImages: [], post_likeCnt: 7, post_commentCnt: 7),
+        Post(post_idx: postd2.postID, user_idx: postd2.userID, post_category: postd2.postCategory, post_categoryType: postd2.postCategoryType, title: postd2.title, post_content: postd2.postContent, location: postd2.location, want_num: postd2.wantNum, post_status: postd2.postStatus, created_at: postd2.created_at, postImages: [], post_likeCnt: 7, post_commentCnt: 7),
+        Post(post_idx: postd3.postID, user_idx: postd3.userID, post_category: postd3.postCategory, post_categoryType: postd3.postCategoryType, title: postd3.title, post_content: postd3.postContent, location: postd3.location, want_num: postd3.wantNum, post_status: postd3.postStatus, created_at: postd3.created_at, postImages: [], post_likeCnt: 7, post_commentCnt: 7)
     ]
     
     var filteredPosts: [Post] {

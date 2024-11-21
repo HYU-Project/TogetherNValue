@@ -5,13 +5,13 @@ import SwiftUI
 
 struct UserProfileUpdate: View {
     @State private var user = Users(
-        user_idx: 1,
-        userName: "Alice",
-        user_phoneNum: "010-1234-5678",
-        school_idx: 1,
-        user_schoolEmail: "alice@school.com",
-        profile_image_url: "https://example.com/alice.jpg",
-        created_at: "2024-01-01"
+        user_idx: 4,
+        userName: "김무명",
+        user_phoneNum: "010-3456-8901",
+        school_idx: 2,
+        user_schoolEmail: "dsdaasdfs1004@hanyang.ac.kr",
+        profile_image_url: "u.r.l.to.pro/file/image3",
+        created_at: "2024-09-15 13:01"
     )
     
     @State private var showImagePicker = false

@@ -4,12 +4,11 @@
 import SwiftUI
 
 struct InterestedPosts: View {
-    @State private var likedPosts: Set<Int> = [1,2,3]  // 좋아요 상태를 추적
+    @State private var likedPosts: Set<Int> = [1,4]  // 좋아요 상태를 추적
     
     @State private var posts: [Post] = [
         Post(post_idx: 1, user_idx: 2, post_category: "공구", post_categoryType: "배달", title: "Title 1", post_content: "내용 1", location: "ITBT관", want_num: 5, post_status: "거래중", created_at: "", postImages: [], post_likeCnt: 10, post_commentCnt: 2),
-        Post(post_idx: 2, user_idx: 3, post_category: "나눔", post_categoryType: "식재료", title: "Title 2", post_content: "내용 2", location: "학생회관", want_num: 3, post_status: "거래중", created_at: "", postImages: [], post_likeCnt: 5, post_commentCnt: 1),
-        Post(post_idx: 3, user_idx: 4, post_category: "공구", post_categoryType: "물품", title: "Title 3", post_content: "내용 3", location: "기숙사", want_num: 2, post_status: "거래완료", created_at: "", postImages: [], post_likeCnt: 3, post_commentCnt: 0)
+        Post(post_idx: postd4.postID, user_idx: postd4.userID, post_category: postd4.postCategory, post_categoryType: postd4.postCategoryType, title: postd4.title, post_content: postd4.postContent, location: postd4.location, want_num: postd4.wantNum, post_status: postd4.postStatus, created_at: postd4.created_at, postImages: [], post_likeCnt: 7, post_commentCnt: 7)
     ]
     
     var body: some View {

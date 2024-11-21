@@ -85,7 +85,7 @@ var postImaged2 = PostImaged(imageURL: "hamburger", postID: 2)
 var postImaged3 = PostImaged(imageURL: "tissue", postID: 3)
 var postImaged4 = PostImaged(imageURL: "potato", postID: 4)
 var postImaged5 = PostImaged(imageURL: "hamburger", postID: 5)
-var postImaged6 = PostImaged(imageURL: "potSet", postID: 6)
+var postImaged6 = PostImaged(imageURL: "mushroom2", postID: 1)
 
 struct PostParticipant{
     var postID: Int
@@ -133,7 +133,7 @@ var postLiked1 = PostLiked(postID: 1, userID: 1)
 var postLiked2 = PostLiked(postID: 1, userID: 3)
 var postLiked3 = PostLiked(postID: 1, userID: 5)
 var postLiked4 = PostLiked(postID: 3, userID: 2)
-var postLiked5 = PostLiked(postID: 4, userID: 2)
+var postLiked5 = PostLiked(postID: 4, userID: 4)
 var postLiked6 = PostLiked(postID: 3, userID: 1)
 
 struct ChatMessaged{
