@@ -1,0 +1,23 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'hyu_gProject' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for hyu_gProject
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Storage'
+
+  target 'hyu_gProjectTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+  target 'hyu_gProjectUITests' do
+    # Pods for testing
+  end
+
+end
