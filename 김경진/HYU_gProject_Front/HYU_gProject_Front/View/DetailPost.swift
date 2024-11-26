@@ -35,7 +35,13 @@ struct DetailPost: View {
     @State var allComments: [Comment] = [
         Comment(comment_idx: 1, user_idx: 1, post_idx: 1, comment_content: "이 거래는 정말 좋은 것 같아요!", comment_created_at: "2024-11-16", replies: []),
         Comment(comment_idx: 2, user_idx: 2, post_idx: 1, comment_content: "저도 참여하고 싶어요!", comment_created_at: "2024-11-16", replies: []),
-        Comment(comment_idx: 3, user_idx: 3, post_idx: 1, comment_content: "어디서 만나나요?", comment_created_at: "2024-11-16", replies: [])
+        Comment(comment_idx: 3, user_idx: 3, post_idx: 1, comment_content: "어디서 만나나요?", comment_created_at: "2024-11-16", replies: []),
+        Comment(comment_idx: 1, user_idx: 1, post_idx: 2, comment_content: "안녕하세요?!", comment_created_at: "2024-11-10 18:00", replies: []),
+        Comment(comment_idx: 2, user_idx: 2, post_idx: 2, comment_content: "안녕하세요.", comment_created_at: "2024-11-10 19:00", replies: []),
+        Comment(comment_idx: 3, user_idx: 2, post_idx: 2, comment_content: "반갑습니다.", comment_created_at: "2024-11-10 20:00", replies: []),
+        Comment(comment_idx: 4, user_idx: 1, post_idx: 2, comment_content: "공구하시죠?", comment_created_at: "2024-11-10 21:00", replies: []),
+        Comment(comment_idx: 5, user_idx: 3, post_idx: 6, comment_content: "안녕하세요~!", comment_created_at: "2024-11-10 18:00", replies: []),
+        Comment(comment_idx: 6, user_idx: 2, post_idx: 6, comment_content: "참여했습니다.", comment_created_at: "2024-11-10 19:00", replies: [])
         ]
     
     // 게시물에 맞는 데이터 찾기
@@ -200,73 +206,75 @@ struct DetailPost: View {
                         .padding(.bottom, 8)
                     
                     ForEach(allComments) { comment in
-                        VStack(alignment: .leading) {
-                            HStack {
-                                Text("작성자: \(comment.user_idx)") // 작성자 ID로 표시 (실제로는 사용자 이름으로 변경 필요)
-                                    .font(.subheadline)
-                                    .bold()
-                                
-                                Spacer()
-                                
-                                if comment.user_idx == user.user_idx {
-                                    Button("수정") {
-                                        // 댓글 수정 로직
-                                    }
-                                    .padding(.trailing, 4)
-                                    .foregroundColor(Color.blue)
+                        if(post_idx==comment.post_idx) {
+                            VStack(alignment: .leading) {
+                                HStack {
+                                    Text("작성자: \(comment.user_idx)") // 작성자 ID로 표시 (실제로는 사용자 이름으로 변경 필요)
+                                        .font(.subheadline)
+                                        .bold()
                                     
-                                    Button("삭제") {
-                                        deleteComment(comment: comment)
+                                    Spacer()
+                                    
+                                    if comment.user_idx == user.user_idx {
+                                        Button("수정") {
+                                            // 댓글 수정 로직
+                                        }
+                                        .padding(.trailing, 4)
+                                        .foregroundColor(Color.blue)
+                                        
+                                        Button("삭제") {
+                                            deleteComment(comment: comment)
+                                        }
+                                        .foregroundColor(Color.red)
                                     }
-                                    .foregroundColor(Color.red)
                                 }
-                            }
-                            
-                            Text(comment.comment_content)
-                                .font(.body)
-                                .padding(.top, 2)
-                            
-                            Text("작성일: \(comment.comment_created_at)")
-                                .font(.footnote)
-                                .foregroundColor(.gray)
-                                .padding(.top, 2)
-                            
-                            // 대댓글 리스트
-                            ForEach(comment.replies) { reply in
-                                VStack(alignment: .leading, spacing: 4) {
-                                    HStack {
-                                        Text("대댓글 작성자: \(reply.user_idx)")
-                                            .font(.subheadline)
-                                        Spacer()
-                                        if reply.user_idx == user.user_idx {
-                                            Button("수정") {
-                                // 대댓글 수정 로직
-                                            }
-                                            .padding(.trailing, 4)
-                                            Button("삭제") {
-                                                deleteReply(reply: reply, in: comment)
+                                
+                                Text(comment.comment_content)
+                                    .font(.body)
+                                    .padding(.top, 2)
+                                
+                                Text("작성일: \(comment.comment_created_at)")
+                                    .font(.footnote)
+                                    .foregroundColor(.gray)
+                                    .padding(.top, 2)
+                                
+                                // 대댓글 리스트
+                                ForEach(comment.replies) { reply in
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        HStack {
+                                            Text("대댓글 작성자: \(reply.user_idx)")
+                                                .font(.subheadline)
+                                            Spacer()
+                                            if reply.user_idx == user.user_idx {
+                                                Button("수정") {
+                                                    // 대댓글 수정 로직
+                                                }
+                                                .padding(.trailing, 4)
+                                                Button("삭제") {
+                                                    deleteReply(reply: reply, in: comment)
+                                                }
                                             }
                                         }
+                                        Text(reply.reply_content)
+                                            .font(.body)
+                                            .padding(.leading, 16)
                                     }
-                                    Text(reply.reply_content)
-                                        .font(.body)
-                                        .padding(.leading, 16)
                                 }
-                            }
-                            
-                            // 대댓글 작성 필드
-                            HStack {
-                                TextField("대댓글을 입력하세요", text: $newReply)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                Button("작성") {
-                                    addReply(to: comment)
+                                
+                                // 대댓글 작성 필드
+                                HStack {
+                                    TextField("대댓글을 입력하세요", text: $newReply)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    Button("작성") {
+                                        addReply(to: comment)
+                                    }
+                                    .padding()
+                                    .foregroundColor(Color.black)
                                 }
-                                .padding()
-                                .foregroundColor(Color.black)
+                                .padding(.leading, 16)
                             }
-                            .padding(.leading, 16)
+                            .padding(.bottom, 8)
                         }
-                        .padding(.bottom, 8)
                         Divider()
                     }
                     

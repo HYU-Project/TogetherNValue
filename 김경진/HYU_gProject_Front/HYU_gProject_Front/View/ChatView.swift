@@ -21,116 +21,168 @@ struct ChatView: View {
     @State private var isShowingActionSheet = false
     @State private var selectedImage: UIImage?
     @Environment(\.presentationMode) var presentationMode  // presentationMode를 통해 뷰를 닫기 위함
-
+    @State private var isSheetPresent = false
+    
     var body: some View {
-        VStack {
-            HStack {
-                Image(systemName: chatRoom.imageName)
-                    .resizable()
-                    .frame(width: 80, height: 80)
-                    .padding(.trailing, 10)
-                VStack(alignment: .leading) {
-                    Text(chatRoom.title)
-                        .font(.headline)
-                    Text(chatRoom.location)
-                    Text(chatRoom.price)
-                }
-                
-                Spacer()
-                
-                Button(action: {
-                    isShowingActionSheet = true
-                }) {
-                    Image(systemName: "ellipsis.circle")
-                        .font(.title)
-                }
-            }
-            .padding()
-            .actionSheet(isPresented: $isShowingActionSheet) {
-                ActionSheet(
-                    title: Text("옵션 선택"),
-                    buttons: [
-                        .default(Text("거래 완료")) {
-                            completeTransaction()
-                        },
-                        .destructive(Text("채팅방 나가기")) {
-                            leaveChatRoom()
-                        },
-                        .cancel()
-                    ]
-                )
-            }
-
-            Divider()
-
-            ScrollView {
-                ForEach(messages) { message in
-                    HStack {
-                        if message.isCurrentUser {
-                            Spacer()
-                            Text(message.text)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(10)
-                                .foregroundColor(.white)
-                        } else {
-                            Text(message.text)
-                                .padding()
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(10)
-                                .foregroundColor(.black)
-                            Spacer()
-                        }
+        ZStack {
+            VStack {
+                HStack {
+                    Image(systemName: chatRoom.imageName)
+                        .resizable()
+                        .frame(width: 80, height: 80)
+                        .padding(.trailing, 10)
+                    VStack(alignment: .leading) {
+                        Text(chatRoom.title)
+                            .font(.headline)
+                        Text(chatRoom.location)
+                        Text(chatRoom.price)
                     }
-                    .padding(.horizontal)
-                    .padding(.vertical, 4)
+                    
+                    Spacer()
+                    Button(action:{
+                        isSheetPresent.toggle()
+                    }){
+                        Image(systemName: "ellipsis.circle")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                    }
+                }
+                .padding()
+                
+                Divider()
+                
+                ScrollView {
+                    ForEach(messages) { message in
+                        HStack {
+                            if message.isCurrentUser {
+                                Spacer()
+                                Text(message.text)
+                                    .padding()
+                                    .background(Color.blue)
+                                    .cornerRadius(10)
+                                    .foregroundColor(.white)
+                            } else {
+                                Text(message.text)
+                                    .padding()
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(10)
+                                    .foregroundColor(.black)
+                                Spacer()
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.vertical, 4)
+                    }
+                }
+                
+                HStack {
+                    Button(action: {
+                        isShowingPhotoOptions = true
+                    }) {
+                        Image(systemName: "plus")
+                            .font(.title)
+                            .padding()
+                            .foregroundColor(.blue)
+                    }
+                    .actionSheet(isPresented: $isShowingPhotoOptions) {
+                        ActionSheet(
+                            title: Text("사진 추가"),
+                            buttons: [
+                                .default(Text("앨범에서 선택")) {
+                                    isShowingPhotoPicker = true
+                                },
+                                .default(Text("카메라 열기")) {
+                                    isShowingCamera = true
+                                },
+                                .cancel()
+                            ]
+                        )
+                    }
+                    
+                    TextField("메시지를 입력하세요", text: $newMessage)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(minHeight: 40)
+                    
+                    Button(action: sendMessage) {
+                        Text("전송")
+                            .font(.headline)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear(perform: loadMessages)
+            .sheet(isPresented: $isShowingPhotoPicker) {
+                ImagePicker(sourceType: isShowingCamera ? .camera : .photoLibrary, selectedImage: $selectedImage)
+            }
+            .onTapGesture {
+                if isSheetPresent{
+                    isSheetPresent = false
                 }
             }
-
-            HStack {
-                Button(action: {
-                    isShowingPhotoOptions = true
-                }) {
-                    Image(systemName: "plus")
+            if isSheetPresent{
+                ZStack{
+                    Color(.white)
+                    Rectangle()
+                        .stroke()
+                    VStack {
+                        ScrollView{
+                            HStack {
+                                Image(user1.profileImageURL)
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                                    .overlay(RoundedRectangle(cornerRadius: 8)
+                                        .stroke())
+                                Text(user1.userName)
+                                Spacer()
+                            }
+                            HStack {
+                                Image(user2.profileImageURL)
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                                    .overlay(RoundedRectangle(cornerRadius: 8)
+                                        .stroke())
+                                Text(user2.userName)
+                                Spacer()
+                            }
+                            HStack {
+                                Image(user3.profileImageURL)
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                                    .overlay(RoundedRectangle(cornerRadius: 8)
+                                        .stroke())
+                                Text(user3.userName)
+                                Spacer()
+                            }
+                        }
                         .font(.title)
-                        .padding()
-                        .foregroundColor(.blue)
+                        Spacer()
+                        HStack {
+                            Button(action:{
+                                completeTransaction()
+                            }){
+                                Text("fin")
+                                    .foregroundStyle(.blue)
+                            }
+                            Spacer()
+                            Button(action:{
+                                leaveChatRoom()
+                            }){
+                                Image(systemName: "rectangle.portrait.and.arrow.right")
+                                    .foregroundStyle(.red)
+                            }
+                        }
+                        .font(.title)
+                    }
                 }
-                .actionSheet(isPresented: $isShowingPhotoOptions) {
-                    ActionSheet(
-                        title: Text("사진 추가"),
-                        buttons: [
-                            .default(Text("앨범에서 선택")) {
-                                isShowingPhotoPicker = true
-                            },
-                            .default(Text("카메라 열기")) {
-                                isShowingCamera = true
-                            },
-                            .cancel()
-                        ]
-                    )
-                }
-
-                TextField("메시지를 입력하세요", text: $newMessage)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(minHeight: 40)
-
-                Button(action: sendMessage) {
-                    Text("전송")
-                        .font(.headline)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                }
+                .frame(width: UIScreen.main.bounds.width*0.7)
+                .frame(maxWidth: .infinity, alignment: .trailing)
             }
-            .padding()
-        }
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
-        .onAppear(perform: loadMessages)
-        .sheet(isPresented: $isShowingPhotoPicker) {
-            ImagePicker(sourceType: isShowingCamera ? .camera : .photoLibrary, selectedImage: $selectedImage)
         }
     }
 
@@ -169,6 +221,11 @@ struct ChatView: View {
     }
 }
 
+struct CustomSheetView: View {
+    var body: some View {
+        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Hello, world!@*/Text("Hello, world!")/*@END_MENU_TOKEN@*/
+    }
+}
 
 #Preview {
     ChatView(chatRoom: ChatRoom(id: 1, imageName: "square", title: "배민 맘스터치", contents: "배달 같이 시켜먹어요", location: "itbit 3층", price: "5,000원", isInProgress: true), viewModel: ChatListViewModel(chatRooms: []))
