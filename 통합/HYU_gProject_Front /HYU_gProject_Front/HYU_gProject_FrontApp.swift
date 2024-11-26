@@ -11,19 +11,12 @@ import SwiftUI
 struct HYU_gProject_FrontApp: App {
     var body: some Scene {
         WindowGroup {
-            // signUp, consent View 완성하고 바꾸기
-            //if hasUserConsented(){
-              //  ConsentView() // 동의 화면을 이미 본 경우
-            //}
-            //else{
-              //  SignupView() // 동의가 필요하면 회원가입 및 동의 화면 표시
-            //}
-            ConsentView()
+            // 고민해야될 부분!
+            // 회원가입 이미 했을 때 > 바로 contentView로 이동
+            // 회원가입 안했을 때(회원 탈퇴했을 때) > 카카오/애플 로그인 화면 -> SignUpView로
+            // 로그아웃, 로그인 토큰 시간 지난 경우 > 카카오/애플 로그인 화면 -> contentView로
+            ContentView()
         }
     }
     
-    // 사용자 동의 여부 확인
-    func hasUserConsented() -> Bool {
-        return UserDefaults.standard.bool(forKey: "hasUserConsented")
-    }
 }

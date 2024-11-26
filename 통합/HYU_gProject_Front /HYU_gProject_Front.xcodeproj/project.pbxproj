@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3791FFC82CF5FF4A006259D0 /* SwiftSMTP in Frameworks */ = {isa = PBXBuildFile; productRef = 3791FFC72CF5FF4A006259D0 /* SwiftSMTP */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		378706172CE82AFB00016369 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3791FFC82CF5FF4A006259D0 /* SwiftSMTP in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = HYU_gProject_Front;
 			packageProductDependencies = (
+				3791FFC72CF5FF4A006259D0 /* SwiftSMTP */,
 			);
 			productName = HYU_gProject_Front;
 			productReference = 378706062CE82AF800016369 /* HYU_gProject_Front.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 378705FD2CE82AF800016369;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3791FFC62CF5FF4A006259D0 /* XCRemoteSwiftPackageReference "Swift-SMTP" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 378706072CE82AF800016369 /* Products */;
 			projectDirPath = "";
@@ -552,6 +561,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3791FFC62CF5FF4A006259D0 /* XCRemoteSwiftPackageReference "Swift-SMTP" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/IBM-Swift/Swift-SMTP";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3791FFC72CF5FF4A006259D0 /* SwiftSMTP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3791FFC62CF5FF4A006259D0 /* XCRemoteSwiftPackageReference "Swift-SMTP" */;
+			productName = SwiftSMTP;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 378705FE2CE82AF800016369 /* Project object */;
 }
