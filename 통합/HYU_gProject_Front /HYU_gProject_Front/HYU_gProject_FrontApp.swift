@@ -6,9 +6,25 @@
 //
 
 import SwiftUI
+import FirebaseCore
+import FirebaseFirestore
+import FirebaseAuth
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool{
+        
+        FirebaseApp.configure()
+        
+        return true
+    }
+}
 
 @main
 struct HYU_gProject_FrontApp: App {
+    
+    // register app delegate for Firebase setup
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
     var body: some Scene {
         WindowGroup {
             // 고민해야될 부분!

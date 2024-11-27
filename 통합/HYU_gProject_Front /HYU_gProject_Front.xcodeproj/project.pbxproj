@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		377F37EE2CF776FC00FDD497 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 377F37ED2CF776FC00FDD497 /* FirebaseAuth */; };
+		377F37F02CF776FC00FDD497 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 377F37EF2CF776FC00FDD497 /* FirebaseCore */; };
+		377F37F22CF776FC00FDD497 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 377F37F12CF776FC00FDD497 /* FirebaseDatabase */; };
+		377F37F42CF776FC00FDD497 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 377F37F32CF776FC00FDD497 /* FirebaseFirestore */; };
+		377F37F62CF776FC00FDD497 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 377F37F52CF776FC00FDD497 /* FirebaseStorage */; };
 		3791FFC82CF5FF4A006259D0 /* SwiftSMTP in Frameworks */ = {isa = PBXBuildFile; productRef = 3791FFC72CF5FF4A006259D0 /* SwiftSMTP */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +62,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				3791FFC82CF5FF4A006259D0 /* SwiftSMTP in Frameworks */,
+				377F37F02CF776FC00FDD497 /* FirebaseCore in Frameworks */,
+				377F37F22CF776FC00FDD497 /* FirebaseDatabase in Frameworks */,
+				377F37F42CF776FC00FDD497 /* FirebaseFirestore in Frameworks */,
+				377F37EE2CF776FC00FDD497 /* FirebaseAuth in Frameworks */,
+				377F37F62CF776FC00FDD497 /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +128,11 @@
 			name = HYU_gProject_Front;
 			packageProductDependencies = (
 				3791FFC72CF5FF4A006259D0 /* SwiftSMTP */,
+				377F37ED2CF776FC00FDD497 /* FirebaseAuth */,
+				377F37EF2CF776FC00FDD497 /* FirebaseCore */,
+				377F37F12CF776FC00FDD497 /* FirebaseDatabase */,
+				377F37F32CF776FC00FDD497 /* FirebaseFirestore */,
+				377F37F52CF776FC00FDD497 /* FirebaseStorage */,
 			);
 			productName = HYU_gProject_Front;
 			productReference = 378706062CE82AF800016369 /* HYU_gProject_Front.app */;
@@ -203,6 +218,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				3791FFC62CF5FF4A006259D0 /* XCRemoteSwiftPackageReference "Swift-SMTP" */,
+				377F37EC2CF776FC00FDD497 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 378706072CE82AF800016369 /* Products */;
@@ -417,7 +433,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.hyu-gproject-front.HYU-gProject-Front";
+				PRODUCT_BUNDLE_IDENTIFIER = "hkkim.hyu-gProject";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -445,7 +461,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.hyu-gproject-front.HYU-gProject-Front";
+				PRODUCT_BUNDLE_IDENTIFIER = "hkkim.hyu-gProject";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -563,6 +579,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		377F37EC2CF776FC00FDD497 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.5.0;
+			};
+		};
 		3791FFC62CF5FF4A006259D0 /* XCRemoteSwiftPackageReference "Swift-SMTP" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/IBM-Swift/Swift-SMTP";
@@ -574,6 +598,31 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		377F37ED2CF776FC00FDD497 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 377F37EC2CF776FC00FDD497 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		377F37EF2CF776FC00FDD497 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 377F37EC2CF776FC00FDD497 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		377F37F12CF776FC00FDD497 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 377F37EC2CF776FC00FDD497 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		377F37F32CF776FC00FDD497 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 377F37EC2CF776FC00FDD497 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		377F37F52CF776FC00FDD497 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 377F37EC2CF776FC00FDD497 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
 		3791FFC72CF5FF4A006259D0 /* SwiftSMTP */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3791FFC62CF5FF4A006259D0 /* XCRemoteSwiftPackageReference "Swift-SMTP" */;
