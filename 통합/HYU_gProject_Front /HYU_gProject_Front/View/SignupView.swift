@@ -2,6 +2,7 @@
 //  SignupView.swift : 회원가입 ui
 
 import SwiftUI
+import FirebaseFirestore
 
 struct SignupView: View {
     @State private var name: String = "홍길동" // 카카오톡 회원가입으로 받아온 이름
@@ -22,16 +23,28 @@ struct SignupView: View {
     @State private var selectedSchool: String = ""
     @State private var searchText: String = ""
     
-    let schools: [Schools] = [
-            Schools(school_idx: 1, schoolName: "한양대학교 서울캠", schoolEmail: "@hanyang.ac.kr"),
-            Schools(school_idx: 2, schoolName: "한양대학교 ERICA", schoolEmail: "@erica.hanyang.ac.kr"),
-            Schools(school_idx: 3, schoolName: "서울대학교", schoolEmail: "@snu.ac.kr"),
-            Schools(school_idx: 4, schoolName: "연세대학교", schoolEmail: "@yonsei.ac.kr"),
-            Schools(school_idx: 5, schoolName: "고려대학교", schoolEmail: "@korea.ac.kr"),
-            Schools(school_idx: 6, schoolName: "경희대학교", schoolEmail: "@khu.ac.kr"),
-            Schools(school_idx: 7, schoolName: "성균관대학교", schoolEmail: "@skku.edu"),
-            Schools(school_idx: 8, schoolName: "이화여자대학교", schoolEmail: "@ewha.ac.kr")
-        ]
+    // Firestore에서 가져올 학교 리스트
+    @State private var schools: [Schools] = []
+    // Firestore 인스턴스 선언
+    private var db = Firestore.firestore()
+    
+    func fetchSchools() {
+        db.collection("Schools").getDocuments { (snapshot, error) in
+            if let error = error {
+                print("Schools data fetch Error: \(error.localizedDescription)")
+            } else if let snapshot = snapshot {
+                DispatchQueue.main.async {
+                    self.schools = snapshot.documents.map { document in
+                        let data = document.data()
+                        let school_idx = document.documentID
+                        let schoolName = data["schoolName"] as? String ?? ""
+                        let schoolEmail = data["schoolEmail"] as? String ?? ""
+                        return Schools(school_idx: school_idx, schoolName: schoolName, schoolEmail: schoolEmail)
+                    }
+                }
+            }
+        }
+    }
     
     var filteredSchools: [Schools] {
         if searchText.isEmpty{
@@ -228,6 +241,9 @@ struct SignupView: View {
             .padding(.top, 20)
             .disabled(!isFormValid)
             
+        }
+        .onAppear {
+            fetchSchools()  // 뷰가 나타날 때 데이터 로드 시작
         }
         .padding()
     }

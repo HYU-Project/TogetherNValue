@@ -102,6 +102,7 @@ struct DetailPost: View {
                     }
                     
                     // 이미지 슬라이더
+                    // (수정 필요)이미지가 없으면 기본 이미지가 아닌 다른 정보만 제공하도록
                     if !postImages.isEmpty {
                         TabView(selection: $currentImageIndex) {
                             ForEach(postImages.indices, id: \.self) { index in
@@ -255,6 +256,7 @@ struct DetailPost: View {
                             }
                             
                             // 대댓글 작성 필드
+                            // (수정 필요!)필드가 각 댓글마다 생겨서 입력했을 때 다른 댓글의 필드에도 값이 입력되는 것처럼 보임
                             HStack {
                                 TextField("대댓글을 입력하세요", text: $newReply)
                                     .textFieldStyle(RoundedBorderTextFieldStyle())

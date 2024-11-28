@@ -7,7 +7,7 @@ import SwiftUI
 struct MyHomeMain: View {
     @State private var userProfile = Users(user_idx: 1, userName: "김무명", user_phoneNum: "010-1234-5678", school_idx: 1, user_schoolEmail: "", profile_image_url: "https://example.com/profile-image.jpg", created_at:"")
     
-    @State private var schoolInfo = Schools(school_idx: 1, schoolName: "한양대학교 서울캠", schoolEmail: "@hanyang.ac.kr")
+    @State private var schoolInfo = Schools(school_idx: "", schoolName: "한양대학교 서울캠", schoolEmail: "@hanyang.ac.kr")
     
     var body: some View {
         NavigationView {

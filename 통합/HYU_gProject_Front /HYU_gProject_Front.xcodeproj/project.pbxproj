@@ -12,6 +12,7 @@
 		377F37F22CF776FC00FDD497 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 377F37F12CF776FC00FDD497 /* FirebaseDatabase */; };
 		377F37F42CF776FC00FDD497 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 377F37F32CF776FC00FDD497 /* FirebaseFirestore */; };
 		377F37F62CF776FC00FDD497 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 377F37F52CF776FC00FDD497 /* FirebaseStorage */; };
+		377F37FA2CF8370600FDD497 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 377F37F92CF8370600FDD497 /* FirebaseCrashlytics */; };
 		3791FFC82CF5FF4A006259D0 /* SwiftSMTP in Frameworks */ = {isa = PBXBuildFile; productRef = 3791FFC72CF5FF4A006259D0 /* SwiftSMTP */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +65,7 @@
 				3791FFC82CF5FF4A006259D0 /* SwiftSMTP in Frameworks */,
 				377F37F02CF776FC00FDD497 /* FirebaseCore in Frameworks */,
 				377F37F22CF776FC00FDD497 /* FirebaseDatabase in Frameworks */,
+				377F37FA2CF8370600FDD497 /* FirebaseCrashlytics in Frameworks */,
 				377F37F42CF776FC00FDD497 /* FirebaseFirestore in Frameworks */,
 				377F37EE2CF776FC00FDD497 /* FirebaseAuth in Frameworks */,
 				377F37F62CF776FC00FDD497 /* FirebaseStorage in Frameworks */,
@@ -133,6 +135,7 @@
 				377F37F12CF776FC00FDD497 /* FirebaseDatabase */,
 				377F37F32CF776FC00FDD497 /* FirebaseFirestore */,
 				377F37F52CF776FC00FDD497 /* FirebaseStorage */,
+				377F37F92CF8370600FDD497 /* FirebaseCrashlytics */,
 			);
 			productName = HYU_gProject_Front;
 			productReference = 378706062CE82AF800016369 /* HYU_gProject_Front.app */;
@@ -622,6 +625,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 377F37EC2CF776FC00FDD497 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		377F37F92CF8370600FDD497 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 377F37EC2CF776FC00FDD497 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
 		};
 		3791FFC72CF5FF4A006259D0 /* SwiftSMTP */ = {
 			isa = XCSwiftPackageProductDependency;
