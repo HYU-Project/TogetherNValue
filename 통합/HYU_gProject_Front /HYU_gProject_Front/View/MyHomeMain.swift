@@ -4,6 +4,11 @@
 
 import SwiftUI
 
+struct UserInfo {
+    // 유저 학교 이름, document id, userProfile, userName 필요 > 학교 이름은 user 테이블에 저장된 schoolIdx를 통해 가져와야함
+    
+}
+
 struct MyHomeMain: View {
     @State private var userProfile = Users(user_idx: 1, userName: "김무명", user_phoneNum: "010-1234-5678", school_idx: 1, user_schoolEmail: "", profile_image_url: "https://example.com/profile-image.jpg", created_at:"")
     

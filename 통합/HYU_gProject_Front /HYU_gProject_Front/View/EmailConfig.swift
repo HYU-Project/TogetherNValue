@@ -11,9 +11,9 @@ struct CConfig {
     var email_title: String
 
     init() {
-        master_email = "your_email@example.com"
-        master_pwd = "your_password"
-        email_title = "[같이의 가치] 학교 이메일 인증"
+        master_email = "thevalueoftogetherness@gmail.com"
+        master_pwd = "together1111"
+        email_title = "[같이의 가치] 본인 학교 이메일 인증"
     }
 }
 
@@ -21,7 +21,7 @@ struct CConfig {
 let email = CConfig().master_email
 let pwd = CConfig().master_pwd
 let title = CConfig().email_title
-let smtp = SMTP(hostname: "smtp.gmail.com", email: email, password: pwd)
+let smtp = SMTP(hostname: "smtp.gmail.com", email: email, password: pwd, port: 587, tlsMode: .requireTLS)
 
 // 이메일 전송 함수
 func sendVerificationEmail(userEmail: String, certiCode: String) {
@@ -64,7 +64,7 @@ func verifyCode(inputCode: String, sentCode: String) -> Bool {
 
 func main(){
     // 사용자 이메일 입력
-    var user_email: String = "user_email@example.com" // 실제 사용자 이메일을 받아올 부분
+    var user_email: String = "testuser@example.com" // 테스트용 이메일
 
     // 인증 코드 생성
     let certiCode = createEmailCode()

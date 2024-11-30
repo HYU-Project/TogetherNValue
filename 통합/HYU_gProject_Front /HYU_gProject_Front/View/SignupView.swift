@@ -22,6 +22,10 @@ struct SignupView: View {
     @State private var showSchoolPicker: Bool = false
     @State private var selectedSchool: String = ""
     @State private var searchText: String = ""
+    // 이메일 도메인 일치를 위함
+    @State private var selectedSchoolEmail: String = ""
+    // 유저 테이블에 저장하기 위함
+    @State private var selectedSchoolIdx: String = ""
     
     // Firestore에서 가져올 학교 리스트
     @State private var schools: [Schools] = []
@@ -47,11 +51,14 @@ struct SignupView: View {
     }
     
     var filteredSchools: [Schools] {
-        if searchText.isEmpty{
-            return schools
+        let sortedSchools = schools.sorted {
+            $0.schoolName < $1.schoolName
+        }
+        if searchText.isEmpty {
+            return sortedSchools
         }
         else {
-            return schools.filter{$0.schoolName.contains(searchText)}
+            return sortedSchools.filter { $0.schoolName.contains(searchText) }
         }
     }
     
@@ -82,6 +89,13 @@ struct SignupView: View {
                             school in
                             Button(action: {
                                 selectedSchool = school.schoolName
+                                selectedSchoolEmail = school.schoolEmail
+                                selectedSchoolIdx = school.school_idx
+                                
+                                print(selectedSchoolIdx)
+                                print(selectedSchool)
+                                print(selectedSchoolEmail)
+                                
                                 showSchoolPicker = false
                             }){
                                 Text(school.schoolName)
@@ -145,12 +159,16 @@ struct SignupView: View {
                 
                 Button(action: {
                     // 이메일 형식 유효성 검사
-                    if isValidEmail(email){
+                    if isValidEmail(email, forSchoolEmail : selectedSchoolEmail){
                         sentCode = createEmailCode() // 인증 코드 생성
-                        sendVerificationEmail(userEmail: email, certiCode: sentCode) // 이메일 전송
+                        
+                        print(sentCode)
+                        
                         showEmailCodeFields = true
-                        isCodeSent = true
-                        print("이메일이 전송되었습니다.")
+                        
+                        //sendVerificationEmail(userEmail: email, certiCode: sentCode) // 이메일 전송
+                        //isCodeSent = true
+                        //print("이메일이 전송되었습니다.")
                     } else {
                         // 유저에게 알림 추가
                         print("유효하지 않은 이메일입니다.")
@@ -162,7 +180,7 @@ struct SignupView: View {
                         .fontWeight(.bold)
                         .padding()
                         .frame(width: 100)
-                        .background(Color.gray)
+                        .background(Color.black)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
@@ -250,10 +268,15 @@ struct SignupView: View {
     
     
     // 이메일 유효성 검사 함수
-    private func isValidEmail(_ email: String) -> Bool {
+    private func isValidEmail(_ email: String, forSchoolEmail schoolEmail: String) -> Bool {
+        
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
         let predicate = NSPredicate(format:"SELF MATCHES %@", emailRegex)
-        return predicate.evaluate(with: email)
+        
+        print(predicate.evaluate(with: email))
+        print(email.hasSuffix(schoolEmail))
+        
+        return predicate.evaluate(with: email) && email.hasSuffix(schoolEmail)
     }
     
     // 폼 인증 검사
