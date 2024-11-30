@@ -3,16 +3,81 @@
 // MyHomeMain : 마이페이지, 마이홈 메인 화면
 
 import SwiftUI
+import FirebaseFirestore
+import FirebaseStorage
+import FirebaseAuth
 
-struct UserInfo {
-    // 유저 학교 이름, document id, userProfile, userName 필요 > 학교 이름은 user 테이블에 저장된 schoolIdx를 통해 가져와야함
+
+// Users에서 school_idx, profile_image_url, userName 가져오기
+// Schools에서 Users 테이블에 저장된 schoolIdx를 통해 가져오기
+// 프로필 이미지 url을 통해 storage에 저장된 실제 이미지 가져오기 (미완료)
     
-}
-
 struct MyHomeMain: View {
+    
+    @State private var userName: String = ""
+    @State private var schoolName: String = ""
+    
     @State private var userProfile = Users(user_idx: 1, userName: "김무명", user_phoneNum: "010-1234-5678", school_idx: 1, user_schoolEmail: "", profile_image_url: "https://example.com/profile-image.jpg", created_at:"")
     
     @State private var schoolInfo = Schools(school_idx: "", schoolName: "한양대학교 서울캠", schoolEmail: "@hanyang.ac.kr")
+    
+    private var db = Firestore.firestore()
+    
+    private var stoarge = Storage.storage()
+    
+    // 로그인한 사용자의 UID 반환
+    func getCurrentUserId() -> String?{
+        if let user = Auth.auth().currentUser{
+            return user.uid
+        }
+        else {
+            print("로그인한 유저 없음")
+            return nil
+        }
+    }
+    
+    func fetchUserData(){
+        guard let userIdx = getCurrentUserId() else {
+                    print("로그인된 사용자가 없습니다.")
+                    return
+                }
+        
+        db.collection("Users").document(userIdx).getDocument{ document, error in
+            if let document = document, document.exists {
+                let data = document.data()
+                if let userName = data?["userName"] as? String,
+                   let profile_image_url = data?["profile_image_url"] as? String,
+                   let school_idx = data?["school_idx"] as? String {
+                    
+                    self.userName = userName
+                    // storage에서 user의 프로필 이미지 PNG, JPG 가져오기
+                    
+                    
+                    fetchSchoolName(schoolIdx: school_idx)
+                }
+                else {
+                    print("사용자 데이터를 찾을 수 없습니다.")
+                }
+                    
+            }
+            
+        }
+    }
+    
+    func fetchSchoolName(schoolIdx: String){
+        db.collection("Schools").document(schoolIdx).getDocument{
+            document, error in
+            if let document = document, document.exists{
+                let data = document.data()
+                if let schoolName = data?["schoolName"] as? String{
+                    self.schoolName = schoolName
+                }
+                else {
+                    print("학교 데이터를 찾을 수 없습니다.")
+                }
+            }
+        }
+    }
     
     var body: some View {
         NavigationView {
