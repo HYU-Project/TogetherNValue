@@ -7,7 +7,8 @@ import FirebaseAuth
 import FirebaseStorage
 
 // Users에서 유저 이름, 프로필 이미지, 이메일을 가져와야함
-// 프로필 이미지 url을 통해 storage에 저장된 실제 이미지 가져오기 (미완효)
+// 프로필 이미지 url을 통해 storage에 저장된 실제 이미지 가져오기 (미완료)
+// db update에서 프로필 이미지 (url & storage) (미완료)
 
 struct UserProfileUpdate: View {
     @State private var userName: String = ""

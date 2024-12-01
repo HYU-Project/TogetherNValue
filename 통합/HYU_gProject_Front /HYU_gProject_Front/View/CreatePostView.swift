@@ -2,18 +2,51 @@
 //  CreatePostView : 게시글 작성 폼
 
 import SwiftUI
+import FirebaseAuth
+import FirebaseFirestore
+import FirebaseStorage
+
+// Posts에 Document Id,user_idx, post_category, post_categoryType, title, post_content,location, want_num, created_at 삽입
+// PostImage에 Document Id, post의 document id, postImageURL 삽입
+// postImageURL에는 URL만 저장, 실제 이미지는 storage에 저장
+
+struct CreatePost: Codable{
+    var user_idx: String
+    var post_category: String
+    var post_categoryType: String
+    var title: String
+    var post_content: String
+    var location: String
+    var want_num: Int
+    var created_at: Timestamp
+}
 
 struct CreatePostView: View {
     @State private var selectedImages: [UIImage] = []
     @State private var showImagePicker = false
     @Environment(\.dismiss) var dismiss // 창 닫기
-    @State private var createPost = Post(post_idx: 0, user_idx: 0, post_category: "", post_categoryType: "", title: "", post_content: "", location: "", want_num: 2, post_status: "active", created_at: "", postImages: [], post_likeCnt: 0, post_commentCnt: 0)
     @State private var isValidPost = false // 게시물 폼 유효성
     
+    @State private var createPost = Post(post_idx: 0, user_idx: 0, post_category: "", post_categoryType: "", title: "", post_content: "", location: "", want_num: 2, post_status: "active", created_at: "", postImages: [], post_likeCnt: 0, post_commentCnt: 0)
     
     let categories = ["공구", "나눔"]
     let categoryTypes = ["물품", "식재료", "배달"]
     let peopleOptions = Array(2...5)
+    
+    private var db = Firestore.firestore()
+    
+    private var storage = Storage.storage()
+    
+    func getCurrentUserId() -> String?{
+        if let user = Auth.auth().currentUser{
+            return user.uid
+        }
+        else {
+            print("로그인한 유저 없음")
+            return nil
+        }
+    }
+   
     
     var body: some View {
         NavigationView{
@@ -170,8 +203,7 @@ struct CreatePostView: View {
                     .padding()
                     
                     Button(action: {
-                        saveImages()// 이미지 저장 함수
-                        savePostToDatabase()// createPost를 db에 저장하는 함수
+                        
                         dismiss()
                     }){
                         Text("작성 완료")
