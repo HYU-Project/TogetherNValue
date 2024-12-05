@@ -7,8 +7,8 @@ import FirebaseFirestore
 import FirebaseStorage
 
 // Posts에 Document Id,user_idx, post_category, post_categoryType, title, post_content,location, want_num, created_at 삽입
-// PostImage에 Document Id, post의 document id, postImageURL 삽입
-// postImageURL에는 URL만 저장, 실제 이미지는 storage에 저장
+// TODO: PostImage에 Document Id, post의 document id, postImageURL 삽입
+// TODO: postImageURL에는 URL만 저장, 실제 이미지는 storage에 저장
 
 struct CreatePost: Codable{
     var user_idx: String

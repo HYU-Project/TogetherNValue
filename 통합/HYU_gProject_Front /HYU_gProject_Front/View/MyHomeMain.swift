@@ -179,6 +179,7 @@ struct MyHomeMain: View {
                                 Text("이용약관 (개인 정보 처리 방침)")
                                     .font(.title3)
                                     .bold()
+                                    .foregroundColor(Color.black)
                                 
                                 Spacer()
                             }
@@ -190,6 +191,7 @@ struct MyHomeMain: View {
                                 Text("자주하는 질문 FAQ")
                                     .font(.title3)
                                     .bold()
+                                    .foregroundColor(Color.black)
                                 
                                 Spacer()
                             }
@@ -201,6 +203,7 @@ struct MyHomeMain: View {
                                 Text("계정 정보")
                                     .font(.title3)
                                     .bold()
+                                    .foregroundColor(Color.black)
                                 
                                 Spacer()
                                 
