@@ -2,20 +2,44 @@
 //  ChatListMain : 채팅방 메인 화면 (채팅방 리스트)
 
 import SwiftUI
+import FirebaseFirestore
 
+class FireStoreManager: ObservableObject {
+    @Published var title = []
+    @Published var content = []
+    @Published var location = []
+    
+    func initialFetch() async {
+        do{
+            let db = Firestore.firestore()
+            var q1 = try await db.collection("Posts").whereField("userID", isEqualTo: "1TqfbGObHZlH3xEtB2VY").getDocuments()
+            for document in q1.documents{
+                let data = document.data()
+                title.append(data["title"] as? String ?? "")
+                content.append(data["postContent"] as? String ?? "")
+                location .append(data["location"] as? String ?? "")
+                viewModel = ChatListViewModel(chatRooms: [
+                    ChatRoom(id: 1, imageName: data["chatRoomImageURL"] as! String, title: data["title"] as! String, contents: data["postContent"] as! String, location: data["location"] as! String, price: "", isInProgress: true)
+                ])
+            }
+        }
+        catch{
+            print("Error q1")
+        }
+    }
 
+    init() async {
+        await initialFetch()
+    }
+}
+
+var viewModel = ChatListViewModel(chatRooms: [])
 
 struct ChatListMain: View {
     @StateObject var viewModel = ChatListViewModel(chatRooms: [
-        ChatRoom(id: 1, imageName: "square", title: "배민 맘스터치", contents: "배달 같이 시켜먹어요", location: "itbit 3층", price: "5,000원", isInProgress: true),
-        ChatRoom(id: 2, imageName: "square", title: "슬리퍼 나눔", contents: "한번도 안신은 슬리퍼 나눔해요!", location: "생과대", price: "무료", isInProgress: false),
-        ChatRoom(id: 3, imageName: postImaged1.imageURL, title: postd1.title, contents: postd1.postContent, location: postd1.location, price: "", isInProgress: true),
-        ChatRoom(id: 4, imageName: postImaged2.imageURL, title: postd2.title, contents: postd2.postContent, location: postd2.location, price: "", isInProgress: true),
-        ChatRoom(id: 5, imageName: postImaged3.imageURL, title: postd3.title, contents: postd3.postContent, location: postd3.location, price: "", isInProgress: true),
-        ChatRoom(id: 6, imageName: postImaged4.imageURL, title: postd4.title, contents: postd4.postContent, location: postd4.location, price: "", isInProgress: true),
-        ChatRoom(id: 7, imageName: postImaged5.imageURL, title: postd5.title, contents: postd5.postContent, location: postd5.location, price: "", isInProgress: true),
-        ChatRoom(id: 8, imageName: postImaged6.imageURL, title: postd6.title, contents: postd6.postContent, location: postd6.location, price: "", isInProgress: true)
+        ChatRoom(id: 1, imageName: "square", title: "배민 맘스터치", contents: "배달 같이 시켜먹어요", location: "itbit 3층", price: "5,000원", isInProgress: true)
     ])
+    @EnvironmentObject var firestoreManager: FireStoreManager
     
     var body: some View {
         NavigationView{
