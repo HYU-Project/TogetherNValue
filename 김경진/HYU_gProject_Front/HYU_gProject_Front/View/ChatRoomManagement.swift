@@ -6,7 +6,7 @@ import Combine
 
 // ChatRoom 모델 정의
 struct ChatRoom: Identifiable, Codable {
-    let id: Int
+    let id: String
     let imageName: String
     let title: String
     let contents: String
@@ -17,7 +17,7 @@ struct ChatRoom: Identifiable, Codable {
 
 // ChatListViewModel 정의
 class ChatListViewModel: ObservableObject {
-    @Published var chatRooms: [ChatRoom]
+    @Published var chatRooms: [ChatRoom] = []
     
     init(chatRooms: [ChatRoom]) {
         self.chatRooms = chatRooms
@@ -30,7 +30,10 @@ class ChatListViewModel: ObservableObject {
     }
     
     func leaveChatRoom(_ chatRoom: ChatRoom) {
-        chatRooms.removeAll { $0.id == chatRoom.id }
+        DispatchQueue.main.async {
+            self.chatRooms.removeAll { $0.id == chatRoom.id }
+            self.objectWillChange.send()
+        }
     }
 }
 

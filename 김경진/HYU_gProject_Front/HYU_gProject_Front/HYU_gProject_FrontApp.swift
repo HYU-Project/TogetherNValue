@@ -37,8 +37,8 @@ struct HYU_gProject_FrontApp: App {
             // 회원가입 안했을 때(회원 탈퇴했을 때) > 카카오/애플 로그인 화면 -> SignUpView로
             // 로그아웃, 로그인 토큰 시간 지난 경우 > 카카오/애플 로그인 화면 -> contentView로
             if isFirebaseConfigured {
-                SignupView()
-                //ContentView() // Firebase 초기화 후 ContentView 표시
+//                SignupView()
+                ContentView() // Firebase 초기화 후 ContentView 표시
             } else {
                 ProgressView() // Firebase 초기화 중에는 로딩 화면을 표시
                     .onAppear {

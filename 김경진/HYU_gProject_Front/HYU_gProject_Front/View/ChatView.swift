@@ -1,11 +1,11 @@
-
 //  ChatView : 채팅방 화면
 
 import SwiftUI
+import FirebaseFirestore
 
 // Message 구조체 정의
 struct Message: Identifiable, Codable {
-    let id: Int
+    let id: String
     let text: String
     let isCurrentUser: Bool
 }
@@ -22,7 +22,8 @@ struct ChatView: View {
     @State private var selectedImage: UIImage?
     @Environment(\.presentationMode) var presentationMode  // presentationMode를 통해 뷰를 닫기 위함
     @State private var isSheetPresent = false
-    
+    @State private var usersInChatRoom: [QueryDocumentSnapshot] = []
+
     var body: some View {
         ZStack {
             VStack {
@@ -41,6 +42,18 @@ struct ChatView: View {
                     Spacer()
                     Button(action:{
                         isSheetPresent.toggle()
+                        let db = Firestore.firestore()
+                        db.collection("Posts").document(chatRoom.id).collection("Participations").getDocuments { snapshot, error in
+                            if let error = error {
+                                print("Error fetching participations: \(error)")
+                                return
+                            }
+
+                            if let documents = snapshot?.documents {
+                                self.usersInChatRoom = documents
+                            }
+                        }
+
                     }){
                         Image(systemName: "ellipsis.circle")
                             .resizable()
@@ -116,7 +129,6 @@ struct ChatView: View {
             }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .onAppear(perform: loadMessages)
             .sheet(isPresented: $isShowingPhotoPicker) {
                 ImagePicker(sourceType: isShowingCamera ? .camera : .photoLibrary, selectedImage: $selectedImage)
             }
@@ -125,39 +137,29 @@ struct ChatView: View {
                     isSheetPresent = false
                 }
             }
+            .onAppear{
+                Task {
+                    await loadMessages()
+                }
+            }
             if isSheetPresent{
                 ZStack{
                     Color(.white)
                     Rectangle()
                         .stroke()
                     VStack {
-                        ScrollView{
-                            HStack {
-                                Image(user1.profileImageURL)
-                                    .resizable()
+                        ScrollView {
+                            HStack{
+                                Image(systemName: "person.circle")
                                     .frame(width: 30, height: 30)
-                                    .overlay(RoundedRectangle(cornerRadius: 8)
-                                        .stroke())
-                                Text(user1.userName)
+                                    .overlay(RoundedRectangle(cornerRadius: 8).stroke())
+                                Text("김소민")
                                 Spacer()
                             }
-                            HStack {
-                                Image(user2.profileImageURL)
-                                    .resizable()
-                                    .frame(width: 30, height: 30)
-                                    .overlay(RoundedRectangle(cornerRadius: 8)
-                                        .stroke())
-                                Text(user2.userName)
-                                Spacer()
-                            }
-                            HStack {
-                                Image(user3.profileImageURL)
-                                    .resizable()
-                                    .frame(width: 30, height: 30)
-                                    .overlay(RoundedRectangle(cornerRadius: 8)
-                                        .stroke())
-                                Text(user3.userName)
-                                Spacer()
+                            ForEach(usersInChatRoom, id: \.documentID) { userDocument in
+                                if userDocument.documentID.count <= 20 {
+                                    UserRowView(userDocument: userDocument)
+                                }
                             }
                         }
                         .font(.title)
@@ -186,30 +188,60 @@ struct ChatView: View {
         }
     }
 
-    func loadMessages() {
-        if let savedData = UserDefaults.standard.data(forKey: "messages_\(chatRoom.id)"),
-           let savedMessages = try? JSONDecoder().decode([Message].self, from: savedData) {
-            messages = savedMessages
-        } else {
-            messages = [
-                Message(id: 1, text: "안녕하세요", isCurrentUser: false),
-                Message(id: 2, text: "안녕하세요!", isCurrentUser: true)
-            ]
+    func loadMessages() async {
+        do {
+            let documents = try await db.collection("ChatMessages")
+                .whereField("postID", isEqualTo: chatRoom.id)
+                .order(by: "sendAt")
+                .getDocuments()
+            
+            messages = []
+            
+            // Loop through the documents array
+            for document in documents.documents {
+                messages.append(
+                    Message(
+                        id: document.documentID,
+                        text: document.data()["messageContent"] as? String ?? "",
+                        isCurrentUser: document.data()["senderID"] as? String == "1TqfbGObHZlH3xEtB2VY"
+                    )
+                )
+            }
+        } catch {
+            print("Error loading messages: \(error)")
         }
     }
+
 
     func sendMessage() {
-        let newMessageObj = Message(id: messages.count + 1, text: newMessage, isCurrentUser: true)
-        messages.append(newMessageObj)
-        newMessage = ""
-        saveMessages()
-    }
+            let newMessageObj = Message(id: UUID().uuidString, text: newMessage, isCurrentUser: true)
+            messages.append(newMessageObj)
+            newMessage = ""
+            saveMessageToFirestore(message: newMessageObj)
+        }
 
-    func saveMessages() {
-        if let encodedData = try? JSONEncoder().encode(messages) {
-            UserDefaults.standard.set(encodedData, forKey: "messages_\(chatRoom.id)")
+    func saveMessageToFirestore(message: Message) {
+        let db = Firestore.firestore()
+        
+        // Format the current timestamp
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        let formattedTimestamp = formatter.string(from: Date())
+        
+        db.collection("ChatMessages").addDocument(data: [
+            "messageContent": message.text,
+            "senderID": "1TqfbGObHZlH3xEtB2VY",
+            "sendAt": formattedTimestamp ,// Save the formatted timestamp as a string,
+            "postID": chatRoom.id
+        ]) { error in
+            if let error = error {
+                print("Error saving message to Firestore: \(error)")
+            } else {
+                print("Message saved successfully!")
+            }
         }
     }
+
     
     func completeTransaction() {
         viewModel.completeTransaction(for: chatRoom)
@@ -217,6 +249,7 @@ struct ChatView: View {
     
     func leaveChatRoom() {
         viewModel.leaveChatRoom(chatRoom)
+        db.collection("Posts").document(chatRoom.id).updateData(["userID": "1TqfbGObHZlH3xEtB2VY*"])
         presentationMode.wrappedValue.dismiss()  // 뷰를 닫고 ChatListView로 돌아감
     }
 }
@@ -227,7 +260,40 @@ struct CustomSheetView: View {
     }
 }
 
-#Preview {
-    ChatView(chatRoom: ChatRoom(id: 1, imageName: "square", title: "배민 맘스터치", contents: "배달 같이 시켜먹어요", location: "itbit 3층", price: "5,000원", isInProgress: true), viewModel: ChatListViewModel(chatRooms: []))
+struct UserRowView: View {
+    let userDocument: QueryDocumentSnapshot
+    @State private var userData: [String: Any]?
+    @State private var isLoading = true
+    
+    var body: some View {
+        HStack {
+            if let userData = userData {
+                Image(systemName: userData["profileImageURL"] as? String ?? "person.circle")
+                    .frame(width: 30, height: 30)
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke())
+                
+                Text(userData["userName"] as? String ?? "Unknown User")
+                Spacer()
+            } else {
+                ProgressView()
+            }
+        }
+        .onAppear {
+            loadUserData()
+        }
+    }
+    
+    private func loadUserData() {
+        let db = Firestore.firestore()
+        db.collection("Users").document(userDocument.documentID).getDocument { snapshot, error in
+            if let error = error {
+                print("Error fetching user data: \(error.localizedDescription)")
+                return
+            }
+            
+            if let snapshot = snapshot, let data = snapshot.data() {
+                self.userData = data
+            }
+        }
+    }
 }
-

@@ -16,6 +16,7 @@ struct ContentView: View {
                         Label("나눔", systemImage: "heart.text.clipboard")
                     }
                 ChatListMain()
+                    .environmentObject(FireStoreManager())
                     .tabItem {
                         Label("채팅", systemImage: "ellipsis.message.fill")
                     }

@@ -1,50 +1,64 @@
-
-//  ChatListMain : 채팅방 메인 화면 (채팅방 리스트)
-
 import SwiftUI
 import FirebaseFirestore
 
 class FireStoreManager: ObservableObject {
-    @Published var title = []
-    @Published var content = []
-    @Published var location = []
+    @Published var title: [String] = []
+    @Published var content: [String] = []
+    @Published var location: [String] = []
     
     func initialFetch() async {
-        do{
-            let db = Firestore.firestore()
-            var q1 = try await db.collection("Posts").whereField("userID", isEqualTo: "1TqfbGObHZlH3xEtB2VY").getDocuments()
-            for document in q1.documents{
+        print("Starting Firestore query...")
+        do {
+            let q1 = try await db.collection("Posts").whereField("userID", isEqualTo: "1TqfbGObHZlH3xEtB2VY").getDocuments()
+            print("Firestore query completed. Documents fetched: \(q1.documents.count)")
+            
+            for document in q1.documents {
                 let data = document.data()
-                title.append(data["title"] as? String ?? "")
-                content.append(data["postContent"] as? String ?? "")
-                location .append(data["location"] as? String ?? "")
-                viewModel = ChatListViewModel(chatRooms: [
-                    ChatRoom(id: 1, imageName: data["chatRoomImageURL"] as! String, title: data["title"] as! String, contents: data["postContent"] as! String, location: data["location"] as! String, price: "", isInProgress: true)
-                ])
+                print("Fetched document data: \(data)")
+                
+                // Ensuring UI updates happen on the main thread
+                DispatchQueue.main.async {
+                    self.title.append(data["title"] as? String ?? "")
+                    self.content.append(data["postContent"] as? String ?? "")
+                    self.location.append(data["location"] as? String ?? "")
+                    
+                    // Create the chat room model object and update the view model
+                    let newChatRoom = ChatRoom(
+                        id: document.documentID, // Adjust this if you want to use unique ID
+                        imageName: data["chatRoomImageURL"] as! String,
+                        title: data["title"] as! String,
+                        contents: data["postContent"] as! String,
+                        location: data["location"] as! String,
+                        price: "",
+                        isInProgress: true
+                    )
+                    
+                    viewModel.chatRooms.append(newChatRoom)
+                    print("Added chat room: \(newChatRoom)")
+                }
             }
-        }
-        catch{
-            print("Error q1")
+        } catch {
+            print("Error fetching Firestore documents: \(error.localizedDescription)")
         }
     }
 
-    init() async {
-        await initialFetch()
+    init() {
+        Task {
+            await initialFetch()
+        }
     }
 }
-
+let db = Firestore.firestore()
 var viewModel = ChatListViewModel(chatRooms: [])
 
 struct ChatListMain: View {
-    @StateObject var viewModel = ChatListViewModel(chatRooms: [
-        ChatRoom(id: 1, imageName: "square", title: "배민 맘스터치", contents: "배달 같이 시켜먹어요", location: "itbit 3층", price: "5,000원", isInProgress: true)
-    ])
+
     @EnvironmentObject var firestoreManager: FireStoreManager
     
     var body: some View {
-        NavigationView{
+        NavigationView {
             VStack {
-                HStack{
+                HStack {
                     Text("채팅")
                         .font(.largeTitle)
                         .bold()
@@ -106,8 +120,4 @@ struct ChatListMain: View {
             .padding()
         }
     }
-}
-
-#Preview {
-    ChatListMain()
 }
