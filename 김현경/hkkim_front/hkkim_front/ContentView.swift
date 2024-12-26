@@ -1,24 +1,38 @@
-//
-//  ContentView.swift
-//  hkkim_front
-//
-//  Created by 김현경 on 12/25/24.
-//
 
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var userManager = UserManager()
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack{
+            TabView {
+                GroupPurchaseMain()
+                    .tabItem {
+                        Label("공구", systemImage: "figure.2")
+                    }
+                    .environmentObject(userManager)
+                GroupSharingMain()
+                    .tabItem {
+                        Label("나눔", systemImage: "heart.text.clipboard")
+                    }
+                    .environmentObject(userManager)
+                ChatListMain()
+                    .tabItem {
+                        Label("채팅", systemImage: "ellipsis.message.fill")
+                    }
+                MyHomeMain()
+                    .tabItem {
+                        Label("마이홈", systemImage: "house")
+                    }
+                    .environmentObject(userManager)
+            }
         }
-        .padding()
+        .tint(.black)
+        .navigationBarBackButtonHidden(true)
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(UserManager())
 }

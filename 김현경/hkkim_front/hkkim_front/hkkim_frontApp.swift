@@ -13,10 +13,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct hkkim_frontApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    
+    @StateObject private var userManager = UserManager()
     var body: some Scene {
         WindowGroup {
             FirstPageView()
+                .environmentObject(UserManager())
         }
     }
 }
