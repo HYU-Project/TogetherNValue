@@ -11,7 +11,7 @@ class PurchaseFirestoreService {
     
     private let db = Firestore.firestore()
     
-    // 포스트 불러오기
+    // post 불러오기
     func loadPosts(school_idx: String, category: String, completion: @escaping ([PurchasePost]) -> Void) {
         db.collection("posts")
             .whereField("school_idx", isEqualTo: school_idx)
@@ -100,7 +100,7 @@ class PurchaseFirestoreService {
         var commentCount = 0
         
         dispatchGroup.enter()
-        db.collection("postLike")
+        db.collection("postLikes")
             .whereField("post_idx", isEqualTo: postIdx)
             .getDocuments { (querySnapshot, error) in
                 likeCount = querySnapshot?.documents.count ?? 0

@@ -1,29 +1,27 @@
 //
-//  SharingPostService.swift
-//  HYU_gProject_Front
+//  MyPostService.swift
+//  hkkim_front
 //
-//  Created by 김소민 on 12/25/24.
+//  Created by 김소민 on 12/26/24.
 //
 
 import FirebaseFirestore
 
-class SharingFirestoreService {
-    
+class MyPostFirestoreService {
     private let db = Firestore.firestore()
     
-    // 포스트 불러오기
-    func loadPosts(school_idx: String, category: String, completion: @escaping ([SharingPost]) -> Void) {
+    func loadPosts(user_idx: String, post_status: String, completion: @escaping ([MyPost]) -> Void){
         db.collection("posts")
-            .whereField("school_idx", isEqualTo: school_idx)
-            .whereField("post_category", isEqualTo: category)
+            .whereField("user_idx", isEqualTo: user_idx)
+            .whereField("post_status", isEqualTo: post_status)
             .getDocuments { (querySnapshot, error) in
-                if let error = error {
-                    print("Error getting posts: \(error.localizedDescription)")
+                if let error {
+                    print("Error getting errors: \(error.localizedDescription)")
                     completion([])
                     return
                 }
                 
-                var loadedPosts: [SharingPost] = []
+                var loadedPosts: [MyPost] = []
                 let dispatchGroup = DispatchGroup()
                 
                 for document in querySnapshot!.documents {
@@ -42,10 +40,11 @@ class SharingFirestoreService {
                     
                     dispatchGroup.enter()
                     
-                    // 이미지와 메트릭을 동시에 불러오기
-                    self.loadPostImages(postIdx: postIdx) { postImage in
-                        self.loadPostMetrics(postIdx: postIdx) { postLikeCnt, postCommentCnt in
-                            let post = SharingPost(
+                    self.loadMyPostImages(postIdx: postIdx){
+                        postImage in
+                        self.loadMyPostMetrics(postIdx: postIdx){
+                            postLikeCnt, postCommentCnt in
+                            let post = MyPost(
                                 post_idx: postIdx,
                                 user_idx: userIdx,
                                 post_category: postCategory,
@@ -56,7 +55,7 @@ class SharingFirestoreService {
                                 want_num: wantNum,
                                 post_status: postStatus,
                                 created_at: createdAt,
-                                school_idx: school_idx,
+                                school_idx: schoolIdx,
                                 postImage_url: postImage ?? "",
                                 post_likeCnt: postLikeCnt,
                                 post_commentCnt: postCommentCnt
@@ -66,35 +65,35 @@ class SharingFirestoreService {
                         }
                     }
                 }
-                
-                dispatchGroup.notify(queue: .main) {
+                dispatchGroup.notify(queue: .main){
                     completion(loadedPosts)
                 }
+                
             }
     }
     
-    // 포스트 이미지 가져오기
-    func loadPostImages(postIdx: String, completion: @escaping (String?) -> Void) {
+    func loadMyPostImages(postIdx: String, completion: @escaping (String?) -> Void) {
         db.collection("postImages")
             .whereField("post_idx", isEqualTo: postIdx)
-            .getDocuments { (querySnapshot, error) in
-                if let error = error {
+            .getDocuments{(querySnapShot, error) in
+                if let error {
                     print("Error getting post images: \(error.localizedDescription)")
                     completion(nil)
-                } else {
-                    if let document = querySnapshot?.documents.first {
+                }
+                else {
+                    if let document = querySnapShot?.documents.first {
                         let data = document.data()
                         let imageUrl = data["image_url"] as? String
-                        completion(imageUrl)
-                    } else {
+                        completion(nil)
+                    }
+                    else {
                         completion(nil)
                     }
                 }
             }
     }
     
-    // 포스트 메트릭스 (좋아요, 댓글 수) 가져오기
-    func loadPostMetrics(postIdx: String, completion: @escaping (Int, Int) -> Void) {
+    func loadMyPostMetrics(postIdx: String, completion: @escaping (Int, Int) -> Void){
         let dispatchGroup = DispatchGroup()
         var likeCount = 0
         var commentCount = 0
@@ -102,20 +101,20 @@ class SharingFirestoreService {
         dispatchGroup.enter()
         db.collection("postLikes")
             .whereField("post_idx", isEqualTo: postIdx)
-            .getDocuments { (querySnapshot, error) in
-                likeCount = querySnapshot?.documents.count ?? 0
+            .getDocuments{ (querySnapShot, error) in
+                likeCount = querySnapShot?.documents.count ?? 0
                 dispatchGroup.leave()
             }
         
         dispatchGroup.enter()
         db.collection("comments")
             .whereField("post_idx", isEqualTo: postIdx)
-            .getDocuments { (querySnapshot, error) in
-                commentCount = querySnapshot?.documents.count ?? 0
+            .getDocuments{ (querySnapShot, error) in
+                commentCount = querySnapShot?.documents.count ?? 0
                 dispatchGroup.leave()
             }
         
-        dispatchGroup.notify(queue: .main) {
+        dispatchGroup.notify(queue: .main){
             completion(likeCount, commentCount)
         }
     }
