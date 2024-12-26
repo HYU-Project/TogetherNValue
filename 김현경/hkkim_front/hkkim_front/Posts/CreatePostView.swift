@@ -229,7 +229,7 @@ struct CreatePostView: View {
                             Text("* 사진 첨부")
                                 .font(.title2)
                                 .bold()
-                                .padding(.trailing, 250)
+                                .padding(.trailing, 230)
                         }
 
                         Button(action: {

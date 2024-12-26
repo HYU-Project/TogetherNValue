@@ -45,33 +45,48 @@ struct PurchasePostRow: View {
 
 struct PurchasePostImageView: View {
     var postImageUrl: String?
-    
+
     var body: some View {
-        if let postImageUrl = postImageUrl, let url = URL(string: postImageUrl) {
-            AsyncImage(url: url) { phase in
-                switch phase {
-                case .empty:
-                    ProgressView()
-                        .frame(width: 50, height: 50)
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 50, height: 50)
-                        .cornerRadius(8)
-                case .failure:
-                    Image(systemName: "photo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 50, height: 50)
-                        .foregroundColor(.gray)
-                @unknown default:
-                    EmptyView()
+        if let postImageUrl = postImageUrl {
+            // URL이 "file://"로 시작하는 경우
+            if postImageUrl.starts(with: "file://"), let url = URL(string: postImageUrl) {
+                // 로컬 파일 경로에서 이미지 로드
+                Image(uiImage: UIImage(contentsOfFile: url.path) ?? UIImage(systemName: "photo")!)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 50, height: 50)
+                    .cornerRadius(8)
+            } else if let url = URL(string: postImageUrl) {
+                // 일반 URL에서 이미지 로드
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                            .frame(width: 50, height: 50)
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 50, height: 50)
+                            .cornerRadius(8)
+                    case .failure:
+                        Image(systemName: "photo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 50, height: 50)
+                            .foregroundColor(.gray)
+                    @unknown default:
+                        EmptyView()
+                    }
                 }
             }
+        } else {
+            Text("No image URL") // URL이 없으면 메시지 출력
         }
     }
 }
+
+
 
 struct PurchasePostInfoView: View {
     var post: PurchasePost

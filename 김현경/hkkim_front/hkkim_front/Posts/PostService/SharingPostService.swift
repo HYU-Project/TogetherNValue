@@ -100,7 +100,7 @@ class SharingFirestoreService {
         var commentCount = 0
         
         dispatchGroup.enter()
-        db.collection("PostLike")
+        db.collection("postLike")
             .whereField("post_idx", isEqualTo: postIdx)
             .getDocuments { (querySnapshot, error) in
                 likeCount = querySnapshot?.documents.count ?? 0
