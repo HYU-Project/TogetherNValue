@@ -53,7 +53,6 @@ struct GroupPurchaseMain: View {
         }
     }
     
-
     private let firestoreService = PurchaseFirestoreService() // 객체 선언
 
     // 로그인한 유저의 학교애 관련된 게시글이면서 category = 공구인 게시글 뽑아야함

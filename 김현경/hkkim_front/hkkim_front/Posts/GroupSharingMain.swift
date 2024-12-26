@@ -99,7 +99,6 @@ struct GroupSharingMain: View {
                 SharingPostListView(posts: posts, filteredPosts: filteredPosts)
                 FloatingActionButton(showCreatePostView: $showCreatePostView)
                 }
-           
             .padding()
             .onAppear{
                 fetchSchoolName()

@@ -37,6 +37,7 @@ struct PurchasePostRow: View {
             PurchasePostStatsView(post: post)
         }
         .padding()
+        .frame(width: 330, height: 100)
         .background(Color.white)
         .cornerRadius(12)
         .shadow(radius: 5)
@@ -45,47 +46,67 @@ struct PurchasePostRow: View {
 
 struct PurchasePostImageView: View {
     var postImageUrl: String?
-
+    
     var body: some View {
-        if let postImageUrl = postImageUrl {
-            // URL이 "file://"로 시작하는 경우
-            if postImageUrl.starts(with: "file://"), let url = URL(string: postImageUrl) {
-                // 로컬 파일 경로에서 이미지 로드
-                Image(uiImage: UIImage(contentsOfFile: url.path) ?? UIImage(systemName: "photo")!)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 50, height: 50)
-                    .cornerRadius(8)
-            } else if let url = URL(string: postImageUrl) {
-                // 일반 URL에서 이미지 로드
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .frame(width: 50, height: 50)
-                    case .success(let image):
-                        image
+        ZStack {
+            if let postImageUrl = postImageUrl {
+                if postImageUrl.starts(with: "file://"), let url = URL(string: postImageUrl) {
+                    // 로컬 파일 경로 처리
+                    let localFileURL = URL(fileURLWithPath: url.path)  // file:// 프로토콜을 처리하는 방식
+                    if let uiImage = UIImage(contentsOfFile: localFileURL.path) {
+                        Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
                             .frame(width: 50, height: 50)
                             .cornerRadius(8)
-                    case .failure:
-                        Image(systemName: "photo")
+                    } else {
+                        Image(systemName: "photo.fill")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 50, height: 50)
                             .foregroundColor(.gray)
-                    @unknown default:
-                        EmptyView()
                     }
+                } else if let url = URL(string: postImageUrl) {
+                    // URL로 이미지 로드
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(width: 50, height: 50)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .cornerRadius(8)
+                        case .failure:
+                            Image(systemName: "photo.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 50, height: 50)
+                                .foregroundColor(.gray)
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                } else {
+                    Image(systemName: "photo.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 50, height: 50)
+                        .foregroundColor(.gray)
                 }
+            } else {
+                Text("No image available")
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(.gray)
+                    .background(Color.secondary.opacity(0.2))
+                    .cornerRadius(8)
             }
-        } else {
-            Text("No image URL") // URL이 없으면 메시지 출력
+
         }
     }
 }
-
 
 
 struct PurchasePostInfoView: View {
@@ -93,7 +114,7 @@ struct PurchasePostInfoView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("[\(post.title)]")
+            Text(post.title)
                 .font(.headline)
 
             HStack {
@@ -105,7 +126,7 @@ struct PurchasePostInfoView: View {
 
             HStack {
                 Image(systemName: "person.fill")
-                Text("\(post.want_num) / \(post.want_num)")
+                Text("1 / \(post.want_num)") // 인원 수는 participant를 통해 비동기적으로 추가하기
                     .foregroundColor(.secondary)
             }
         }

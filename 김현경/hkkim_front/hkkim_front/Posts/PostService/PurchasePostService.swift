@@ -85,7 +85,7 @@ class PurchaseFirestoreService {
                     if let document = querySnapshot?.documents.first {
                         let data = document.data()
                         let imageUrl = data["image_url"] as? String
-                        completion(imageUrl)
+                        completion(imageUrl) // Firestore에서 가져온 URL 반환
                     } else {
                         completion(nil)
                     }

@@ -37,6 +37,7 @@ struct SharingPostRow: View {
             SharingPostStatsView(post: post)
         }
         .padding()
+        .frame(width: 330, height: 100)
         .background(Color.white)
         .cornerRadius(12)
         .shadow(radius: 5)
@@ -47,41 +48,70 @@ struct SharingPostImageView: View {
     var postImageUrl: String?
     
     var body: some View {
-        if let postImageUrl = postImageUrl {
-            // URL이 "file://"로 시작하는 경우
-            if postImageUrl.starts(with: "file://"), let url = URL(string: postImageUrl) {
-                // 로컬 파일 경로에서 이미지 로드
-                Image(uiImage: UIImage(contentsOfFile: url.path) ?? UIImage(systemName: "photo")!)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 50, height: 50)
-                    .cornerRadius(8)
-            } else if let url = URL(string: postImageUrl) {
-                // 일반 URL에서 이미지 로드
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .frame(width: 50, height: 50)
-                    case .success(let image):
-                        image
+        ZStack {
+            if let postImageUrl = postImageUrl {
+                if postImageUrl.starts(with: "file://"), let url = URL(string: postImageUrl) {
+                    if let uiImage = UIImage(contentsOfFile: url.path) {
+                        Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 50, height: 50)
+                            .frame(width: 60, height: 60)
                             .cornerRadius(8)
-                    case .failure:
-                        Image(systemName: "photo")
+                    } else {
+                        Image(systemName: "photo.fill")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 50, height: 50)
+                            .frame(width: 60, height: 60)
                             .foregroundColor(.gray)
-                    @unknown default:
-                        EmptyView()
+                            .onAppear {
+                                print("Failed to load local image: \(url.path)")
+                            }
                     }
+                } else if let url = URL(string: postImageUrl) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(width: 60, height: 60)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 60, height: 60)
+                                .cornerRadius(8)
+                        case .failure:
+                            Image(systemName: "photo.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 60, height: 60)
+                                .foregroundColor(.gray)
+                                .onAppear {
+                                    print("Failed to load image from URL: \(url)")
+                                }
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                } else {
+                    Image(systemName: "photo.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 60, height: 60)
+                        .foregroundColor(.gray)
+                        .onAppear {
+                            print("Invalid URL: \(postImageUrl)")
+                        }
                 }
+            } else {
+                Text("No image available")
+                    .frame(width: 60, height: 60)
+                    .foregroundColor(.gray)
+                    .background(Color.secondary.opacity(0.2))
+                    .cornerRadius(8)
+                    .onAppear {
+                        print("No image URL provided")
+                    }
             }
-        } else {
-            Text("No image URL") // URL이 없으면 메시지 출력
         }
     }
 }
@@ -91,7 +121,7 @@ struct SharingPostInfoView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("[\(post.title)]")
+            Text(post.title)
                 .font(.headline)
 
             HStack {
@@ -103,7 +133,7 @@ struct SharingPostInfoView: View {
 
             HStack {
                 Image(systemName: "person.fill")
-                Text("\(post.want_num) / \(post.want_num)")
+                Text("1 / \(post.want_num)") // 인원 수는 participant를 통해 비동기적으로 추가하기
                     .foregroundColor(.secondary)
             }
         }
