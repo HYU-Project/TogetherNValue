@@ -20,9 +20,10 @@ struct SelectSchoolView: View {
     
     // 학교 검색
     @State private var showSchoolPicker: Bool = false
-    @State private var selectedSchool: String = ""
     @State private var searchText: String = ""
-    @State private var selectedSchoolEmail: String = "" // 이메일 도메인
+    @State private var selectedSchool: String = ""
+    @State private var selectedSchoolDomain: String = "" // 이메일 도메인
+    @State private var selectedSchoolID: String = ""
     
     @Environment(\.dismiss) var dismiss
     @State private var isContentViewActive = false // 다음화면으로 이동 여부
@@ -39,14 +40,12 @@ struct SelectSchoolView: View {
             print("사용자 로그인되어 있지 않음")
             return
         }
-        
         let userId = currentUser.uid
         db.collection("users").document(userId).getDocument{ document, error in
             if let error = error {
                 print("Firestore에서 사용자 데이터를 가져오는 중 오류 발생: \(error.localizedDescription)")
                 return
             }
-            
             if let document = document, document.exists{
                 let data=document.data()
                 self.name = data?["name"] as? String ?? "알 수 없음"
@@ -68,9 +67,10 @@ struct SelectSchoolView: View {
             if let snapshot = snapshot {
                 self.schools = snapshot.documents.map { document in
                     let data = document.data()
+                    let schoolID = document.documentID //문서 ID
                     let schoolName = data["schoolName"] as? String ?? ""
-                    let schoolEmail = data["schoolEmail"] as? String ?? ""
-                    return School(schoolName: schoolName, schoolEmail: schoolEmail)
+                    let schoolDomain = data["schoolDomain"] as? String ?? ""
+                    return School(schoolName: schoolName, schoolDomain: schoolDomain, schoolID: schoolID)
                 }
             }
         }
@@ -108,7 +108,8 @@ struct SelectSchoolView: View {
                                 school in
                                 Button(action: {
                                     selectedSchool = school.schoolName
-                                    selectedSchoolEmail = school.schoolEmail
+                                    selectedSchoolDomain = school.schoolDomain
+                                    selectedSchoolID = school.schoolID
                                     showSchoolPicker = false
                                 }){
                                     Text(school.schoolName)
@@ -180,12 +181,12 @@ struct SelectSchoolView: View {
                                 .frame(maxWidth: .infinity)
 
                             // 고정된 이메일 도메인
-                            Text("\(selectedSchoolEmail.isEmpty ? "" : selectedSchoolEmail)")
+                            Text("\(selectedSchoolDomain.isEmpty ? "" : selectedSchoolDomain)")
                                 .foregroundColor(.gray)
                                 .frame(maxWidth: .infinity)
                         }
                         .background(RoundedRectangle(cornerRadius: 5).stroke(Color.blue, lineWidth: 2))
-                        .disabled(selectedSchoolEmail.isEmpty) // 학교를 선택하지 않았다면 입력 불가능
+                        .disabled(selectedSchoolDomain.isEmpty) // 학교를 선택하지 않았다면 입력 불가능
                         .frame(width: 300)
                     
                     Button(action: sendVerificationCode) {
@@ -199,7 +200,7 @@ struct SelectSchoolView: View {
                             .cornerRadius(10)
                     }
                     .padding()
-                    .disabled(email.isEmpty || selectedSchoolEmail.isEmpty)
+                    .disabled(email.isEmpty || selectedSchoolDomain.isEmpty)
                    
                 }
                 .padding(.bottom, 10)
@@ -245,7 +246,7 @@ struct SelectSchoolView: View {
     
     private func sendVerificationCode(){
         //guard !email.isEmpty, !selectedSchoolEmail.isEmpty else { return }
-        fullEmail = "\(email)\(selectedSchoolEmail)"
+        fullEmail = "\(email)\(selectedSchoolDomain)"
         sentCode = String(Int.random(in: 100000...999999)) // 인증 코드 생성
         print("인증 코드 전송: \(sentCode) (이메일: \(fullEmail))")
 
@@ -276,7 +277,8 @@ struct SelectSchoolView: View {
             let userId = currentUser.uid
             
             db.collection("users").document(userId).updateData([
-                "schoolEmail": fullEmail
+                "schoolEmail": fullEmail,
+                "school_idx": selectedSchoolID
             ]) { error in
                 if let error = error {
                     print("사용자 정보 업데이트 실패: \(error.localizedDescription)")
@@ -296,7 +298,8 @@ struct SelectSchoolView: View {
 
 struct School{
     let schoolName: String // 학교 이름
-    let schoolEmail: String // 학교 이메일
+    let schoolDomain: String // 학교 이메일 도메인
+    let schoolID: String //Firestore 문서 ID
 }
 
 #Preview {

@@ -155,10 +155,12 @@ struct RegisterView: View{
     func saveUserToFirestore(user: User){
         let db = Firestore.firestore()
         db.collection("users").document(user.uid).setData([
+            "user_idx": user.uid,
             "email": userEmail,
             "name": userName,
             "phoneNumber": userPhone,
-            "createdAt": Timestamp()
+            "profile_image_url": nil,
+            "createdAt": Timestamp(),
         ]) { error in
             if let error = error {
                 errorMessage = "사용자 데이터 저장 실패: \(error.localizedDescription)"

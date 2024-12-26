@@ -21,10 +21,12 @@ struct LoginView: View {
                        
                 VStack(alignment: .center, spacing: 60) {
                     Spacer()
-                    
                     VStack(spacing: 0) {
-                        Text("같이의 가치")
-                            .font(.system(size: 30, weight: .bold, design:.rounded))
+                        Image("logo")
+                            .resizable()
+                            .frame(width:300,height:120)
+                            .padding()
+                        
                         Text("서비스 이용을 위해 로그인 해주세요")
                             .font(.system(size: 15, weight: .regular, design: .rounded))
                             .padding(.top, 10)
@@ -90,9 +92,11 @@ struct LoginView: View {
                                     .foregroundColor(.white)
                                     .padding()
                                     .frame(maxWidth: .infinity)
-                                    .background(Color.yellow.opacity(0.8))
+                                    .background(Color.blue.opacity(0.8))
                                     .cornerRadius(8)
+                                    .padding(.horizontal)
                             }
+                            
                         }
                         .disabled(isLoading)
                                
