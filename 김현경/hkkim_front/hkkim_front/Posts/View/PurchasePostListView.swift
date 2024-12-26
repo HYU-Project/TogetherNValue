@@ -57,13 +57,13 @@ struct PurchasePostImageView: View {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 50, height: 50)
+                            .frame(width: 60, height: 60)
                             .cornerRadius(8)
                     } else {
                         Image(systemName: "photo.fill")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 50, height: 50)
+                            .frame(width: 60, height: 60)
                             .foregroundColor(.gray)
                     }
                 } else if let url = URL(string: postImageUrl) {
@@ -72,18 +72,18 @@ struct PurchasePostImageView: View {
                         switch phase {
                         case .empty:
                             ProgressView()
-                                .frame(width: 50, height: 50)
+                                .frame(width: 60, height: 60)
                         case .success(let image):
                             image
                                 .resizable()
                                 .scaledToFill()
-                                .frame(width: 50, height: 50)
+                                .frame(width: 60, height: 60)
                                 .cornerRadius(8)
                         case .failure:
                             Image(systemName: "photo.fill")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 50, height: 50)
+                                .frame(width: 60, height: 60)
                                 .foregroundColor(.gray)
                         @unknown default:
                             EmptyView()
@@ -93,12 +93,12 @@ struct PurchasePostImageView: View {
                     Image(systemName: "photo.fill")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 50, height: 50)
+                        .frame(width: 60, height: 60)
                         .foregroundColor(.gray)
                 }
             } else {
                 Text("No image available")
-                    .frame(width: 50, height: 50)
+                    .frame(width: 60, height: 60)
                     .foregroundColor(.gray)
                     .background(Color.secondary.opacity(0.2))
                     .cornerRadius(8)
