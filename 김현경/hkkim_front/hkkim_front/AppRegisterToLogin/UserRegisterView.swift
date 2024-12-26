@@ -19,15 +19,19 @@ struct RegisterView: View{
                 .opacity(0.1)
                 .ignoresSafeArea()
             
-            VStack(alignment: .center, spacing: 60){
+            VStack(alignment: .center, spacing: 20){
                 Spacer()
-                
+                Spacer()
                 VStack(spacing: 0){
-                    Text("같이의 가치")
-                        .font(.system(size: 30, weight: .bold, design:.rounded))
+                    Image("logo")
+                        .resizable()
+                        .frame(width:280,height:100)
+                        .padding()
+                        .padding(.top, 20)
+                    
                     Text("회원가입을 완료해주세요")
                         .font(.system(size: 15, weight: .regular, design: .rounded))
-                        .padding(.top, 10)
+                        .padding(.top, 5)
                 }
                 
                 VStack(spacing: 25){
@@ -35,52 +39,52 @@ struct RegisterView: View{
                     // 이름 입력
                     TextField("이름", text: $userName)
                         .padding()
-                        .frame(height: 50) // 높이 조정
+                        .frame(height: 55) // 높이 조정
                         .background(Color.white)
                         .cornerRadius(8)
-                        .shadow(color: Color.gray.opacity(0.3), radius: 3, x: 0, y: 2)
+                        .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
                         .padding(.horizontal)
                     
                     // 전화번호 입력
                     TextField("전화번호", text: $userPhone)
                         .padding()
-                        .frame(height: 50) // 높이 조정
+                        .frame(height: 55) // 높이 조정
                         .background(Color.white)
                         .cornerRadius(8)
-                        .shadow(color: Color.gray.opacity(0.3), radius: 3, x: 0, y: 2)
+                        .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
                         .padding(.horizontal)
                     
                     // 이메일 입력
                     TextField("이메일", text: $userEmail)
                         .padding()
-                        .frame(height: 50) // 높이 조정
+                        .frame(height: 55) // 높이 조정
                         .background(Color.white)
                         .cornerRadius(8)
-                        .shadow(color: Color.gray.opacity(0.3), radius: 3, x: 0, y: 2)
+                        .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
                         .padding(.horizontal)
                     
                     // 비밀번호 입력
                     SecureField("비밀번호", text: $userPwd)
                         .padding()
-                        .frame(height: 50) // 높이 조정
+                        .frame(height: 55) // 높이 조정
                         .background(Color.white)
                         .cornerRadius(8)
-                        .shadow(color: Color.gray.opacity(0.3), radius: 3, x: 0, y: 2)
+                        .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
                         .padding(.horizontal)
                     
                     // 비밀번호 확인 입력
                     SecureField("비밀번호 확인", text: $confirmPwd)
                         .padding()
-                        .frame(height: 50) // 높이 조정
+                        .frame(height: 55) // 높이 조정
                         .background(Color.white)
                         .cornerRadius(8)
-                        .shadow(color: Color.gray.opacity(0.3), radius: 3, x: 0, y: 2)
+                        .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
                         .padding(.horizontal)
                     
                     //이용약관
                     NavigationLink(destination: ConsentView()) {
                         Text("이용약관동의")
-                            .font(.footnote)
+                            //.font(.footnote)
                             .foregroundColor(.blue)
                     }
                     
@@ -107,7 +111,7 @@ struct RegisterView: View{
                                 .foregroundColor(.white)
                                 .padding()
                                 .frame(maxWidth: .infinity)
-                                .background(Color.yellow.opacity(0.8))
+                                .background(Color.black.opacity(1))
                                 .cornerRadius(8)
                         }
                     }

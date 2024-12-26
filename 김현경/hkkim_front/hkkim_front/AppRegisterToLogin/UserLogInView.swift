@@ -36,28 +36,28 @@ struct LoginView: View {
                         // 이메일과 비밀번호 입력 필드
                         TextField("이메일", text: $email)
                             .padding()
-                            .frame(height: 50)
+                            .frame(height: 60)
                             .background(Color.white)
                             .cornerRadius(8)
-                            .shadow(color: Color.gray.opacity(0.3), radius: 3, x: 0, y: 2)
+                            .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
                             .padding(.horizontal)
                             
                         ZStack {
                             if showPassword {
                                 TextField("비밀번호", text: $password)
                                     .padding()
-                                    .frame(height: 50)
+                                    .frame(height: 60)
                                     .background(Color.white)
                                     .cornerRadius(8)
-                                    .shadow(color: Color.gray.opacity(0.3), radius: 3, x: 0, y: 2)
+                                    .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
                                     .padding(.horizontal)
                             } else {
                                 SecureField("비밀번호", text: $password)
                                     .padding()
-                                    .frame(height: 50)
+                                    .frame(height: 60)
                                     .background(Color.white)
                                     .cornerRadius(8)
-                                    .shadow(color: Color.gray.opacity(0.3), radius: 3, x: 0, y: 2)
+                                    .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
                                     .padding(.horizontal)
                             }
                                    
@@ -92,7 +92,7 @@ struct LoginView: View {
                                     .foregroundColor(.white)
                                     .padding()
                                     .frame(maxWidth: .infinity)
-                                    .background(Color.blue.opacity(0.8))
+                                    .background(Color.blue.opacity(1))
                                     .cornerRadius(8)
                                     .padding(.horizontal)
                             }
