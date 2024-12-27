@@ -76,32 +76,36 @@ struct GroupPurchaseMain: View {
     var body: some View {
         NavigationView {
             
-            VStack {
-                //Text("Hello, \(userManager.userId ?? "Guest")") // 테스트용
-                
-                if let schoolName = schoolName {
-                    HeaderView(category: "공구", schoolName: schoolName)
+            ZStack {
+                VStack {
+                    //Text("Hello, \(userManager.userId ?? "Guest")") // 테스트용
+                    
+                    if let schoolName = schoolName {
+                        HeaderView(category: "공구", schoolName: schoolName)
+                    }
+                    Text("여기에 광고 배너 들어가기")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.gray.opacity(0.3))
+                        .cornerRadius(8)
+                        .padding(.horizontal)
+                    
+                    CategoryButtonsView(selectedCategory: $selectedCategory)
+                    SearchBarView(searchText: $searchText)
+                    PurchasePostListView(posts: posts, filteredPosts: filteredPosts)
+                    
                 }
-                Text("여기에 광고 배너 들어가기")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.gray.opacity(0.3))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
-
-                CategoryButtonsView(selectedCategory: $selectedCategory)
-                SearchBarView(searchText: $searchText)
-                PurchasePostListView(posts: posts, filteredPosts: filteredPosts)
-                FloatingActionButton(showCreatePostView: $showCreatePostView)
-            }
-            .padding()
-            .onAppear {
-                if userManager.userId != nil {
+                .padding()
+                .onAppear {
+                    if userManager.userId != nil {
                         fetchSchoolName() // userId가 유효할 때만 호출
                     } else {
                         print("로그인된 유저가 없습니다.") // 로그인되지 않았을 경우 처리
                     }
+                }
+                
+                FloatingActionButton(showCreatePostView: $showCreatePostView)
             }
         }
     }

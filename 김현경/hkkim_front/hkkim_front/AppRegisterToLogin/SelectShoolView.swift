@@ -5,6 +5,7 @@ import FirebaseAuth
 import FirebaseFunctions
 
 struct SelectSchoolView: View {
+    @EnvironmentObject var userManager: UserManager
     @State private var name: String = "" // 로그인된 user이름
     @State private var phoneNumber: String = "" // 로그인된 user 전화번호
     
@@ -225,7 +226,8 @@ struct SelectSchoolView: View {
                 }
                 Spacer()
                 
-                NavigationLink(destination: ContentView(), isActive: $isContentViewActive){
+                NavigationLink(destination: ContentView().navigationBarBackButtonHidden(true),
+                               isActive: $isContentViewActive){
                     Button(action: saveUserDataAndContinue) {
                         Text("다음")
                             .font(.title2)
@@ -273,7 +275,10 @@ struct SelectSchoolView: View {
         }
     
     private func saveUserDataAndContinue() {
-            guard let currentUser = Auth.auth().currentUser else { return }
+            guard let currentUser = Auth.auth().currentUser else {
+                print("현재 사용자 정보가 없습니다. 로그인 세션이 만료되었을 수 있습니다.")
+                return
+            }
             let userId = currentUser.uid
             
             db.collection("users").document(userId).updateData([
@@ -284,7 +289,10 @@ struct SelectSchoolView: View {
                     print("사용자 정보 업데이트 실패: \(error.localizedDescription)")
                 } else {
                     print("사용자 정보 업데이트 성공")
-                    isContentViewActive = true
+                    userManager.userId = userId // 상태 갱신
+                    DispatchQueue.main.async {
+                        isContentViewActive = true
+                    }
                 }
             }
         }

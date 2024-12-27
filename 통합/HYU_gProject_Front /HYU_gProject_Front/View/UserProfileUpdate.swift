@@ -132,8 +132,8 @@ struct UserProfileUpdate: View {
                 .frame(height: 100)
                 .overlay(
                     VStack {
-                        Text(userName)
-                        Text(user_schoolEmail) // 학교 이메일 표시
+                        Text("김무명")
+                        Text("한양대학교 서울캠")
                     }
                     .foregroundColor(.gray)
                 )
@@ -147,15 +147,12 @@ struct UserProfileUpdate: View {
                 // 변경한 프로필 사진 저장하기 (url은 Users에 실제 이미지는 storage에)
                 updateUserProfile()
             }) {
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(.black, lineWidth: 4)
-                    .frame(width: 350, height: 70)
-                    .overlay(
-                        Text("수정하기")
-                            .foregroundColor(.black)
-                            .font(.title2)
-                            .bold()
-                    )
+                    Text("수정하기")
+                        .foregroundColor(.black)
+                        .background(Color.gray)
+                        .font(.title2)
+                        .bold()
+                    
             }
             
         }

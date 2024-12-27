@@ -247,16 +247,15 @@ struct MyHomeMain: View {
     
     func logOut() {
         do {
-            try Auth.auth().signOut()
-            GIDSignIn.sharedInstance.signOut() // 구글 세션도 로그아웃
+            try userManager.logOut() // Firebase 로그아웃
+            GIDSignIn.sharedInstance.signOut() // Google 로그아웃
             alertTitle = "로그아웃 완료"
             alertMessage = "성공적으로 로그아웃되었습니다."
-            showAlert = true
         } catch let error {
             alertTitle = "로그아웃 실패"
             alertMessage = "오류가 발생했습니다: \(error.localizedDescription)"
-            showAlert = true
         }
+        showAlert = true
     }
     
     func deleteAccountForGoogleUser() {
