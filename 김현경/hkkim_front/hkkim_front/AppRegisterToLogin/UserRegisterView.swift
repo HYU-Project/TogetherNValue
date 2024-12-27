@@ -15,15 +15,15 @@ struct RegisterView: View{
     
     var body: some View{
         ZStack{
-            Color.blue
-                .opacity(0.1)
+            Color.skyblue
+                .opacity(0.8)
                 .ignoresSafeArea()
             
             VStack(alignment: .center, spacing: 20){
                 Spacer()
                 Spacer()
                 VStack(spacing: 0){
-                    Image("logo")
+                    Image("logo_2")
                         .resizable()
                         .frame(width:280,height:100)
                         .padding()
@@ -85,7 +85,7 @@ struct RegisterView: View{
                     NavigationLink(destination: ConsentView()) {
                         Text("이용약관동의")
                             //.font(.footnote)
-                            .foregroundColor(.blue)
+                            .foregroundColor(.red)
                     }
                     
                     // 오류 메시지

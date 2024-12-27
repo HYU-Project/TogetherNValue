@@ -15,14 +15,14 @@ struct LoginView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.blue
-                    .opacity(0.1)
+                Color.skyblue
+                    .opacity(0.8)
                     .ignoresSafeArea()
                        
                 VStack(alignment: .center, spacing: 60) {
                     Spacer()
                     VStack(spacing: 0) {
-                        Image("logo")
+                        Image("logo_2")
                             .resizable()
                             .frame(width:300,height:120)
                             .padding()
@@ -92,7 +92,7 @@ struct LoginView: View {
                                     .foregroundColor(.white)
                                     .padding()
                                     .frame(maxWidth: .infinity)
-                                    .background(Color.blue.opacity(1))
+                                    .background(Color.black.opacity(1))
                                     .cornerRadius(8)
                                     .padding(.horizontal)
                             }
@@ -103,7 +103,7 @@ struct LoginView: View {
                         NavigationLink(destination: RegisterView()) {
                             Text("계정이 없으신가요? 회원가입")
                                 .font(.footnote)
-                                .foregroundColor(.blue)
+                                .foregroundColor(.red)
                         }
                     }
                     Spacer()
