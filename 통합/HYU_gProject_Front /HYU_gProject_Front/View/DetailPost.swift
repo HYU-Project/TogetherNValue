@@ -20,7 +20,7 @@ struct DetailPost: View {
     
     // 더미 데이터 (실제로는 post_idx를 통해 API에서 가져올 수 있음)
     @State var allPosts: [Post] = [
-        Post(post_idx: 1, user_idx: 1, post_category: "공구", post_categoryType: "배달", title: "Title 1", post_content: "내용 1", location: "ITBT관", want_num: 5, post_status: "거래중", created_at: "", postImages: [], post_likeCnt: 10, post_commentCnt: 2)
+        Post(post_idx: 1, user_idx: 1, post_category: "공구", post_categoryType: "배달", title: "Title 1", post_content: "내용입니다 내용입니다 내용입니다", location: "ITBT관", want_num: 5, post_status: "거래중", created_at: "", postImages: [], post_likeCnt: 10, post_commentCnt: 2)
     ]
     
     @State var allPostImages: [PostImage] = [
@@ -241,7 +241,7 @@ struct DetailPost: View {
                                         Spacer()
                                         if reply.user_idx == user.user_idx {
                                             Button("수정") {
-                                // 대댓글 수정 로직
+                                            // 대댓글 수정 로직
                                             }
                                             .padding(.trailing, 4)
                                             Button("삭제") {
@@ -249,24 +249,16 @@ struct DetailPost: View {
                                             }
                                         }
                                     }
+                                    
                                     Text(reply.reply_content)
                                         .font(.body)
                                         .padding(.leading, 16)
                                 }
+                                .padding()
                             }
                             
                             // 대댓글 작성 필드
                             // (수정 필요!)필드가 각 댓글마다 생겨서 입력했을 때 다른 댓글의 필드에도 값이 입력되는 것처럼 보임
-                            HStack {
-                                TextField("대댓글을 입력하세요", text: $newReply)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                Button("작성") {
-                                    addReply(to: comment)
-                                }
-                                .padding()
-                                .foregroundColor(Color.black)
-                            }
-                            .padding(.leading, 16)
                         }
                         .padding(.bottom, 8)
                         Divider()
@@ -276,12 +268,15 @@ struct DetailPost: View {
                     HStack {
                         TextField("댓글을 입력하세요", text: $newComment)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
-                        Button("댓글 작성") {
+                        Button(action: {
                             addComment()
+                        }) {
+                            Image(systemName: "paperplane.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 25, height: 25)
                         }
                         .padding()
-                        .background(Color.black)
-                        .cornerRadius(10)
                     }
                 }
                 .padding()
