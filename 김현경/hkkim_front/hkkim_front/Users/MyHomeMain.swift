@@ -7,57 +7,55 @@ import GoogleSignIn
 
 // Users에서 school_idx, profile_image_url, userName 가져와서 뿌리기
 // Schools에서 Users 테이블에 저장된 schoolIdx를 통해 가져오기
+// 일단 이미지 가져오는 것은 나중에
 // 프로필 이미지 url을 통해 storage에 저장된 실제 이미지 가져오기 (나중으로 미루기)
 
 struct MyHomeMain: View {
     @EnvironmentObject var userManager: UserManager
     @State private var userName: String = ""
     @State private var schoolName: String = ""
-    @State private var alertTitle = "" // 팝업 제목
-    @State private var alertMessage = "" // 팝업 메시지
-    @State private var isLogout = false // 로그인 화면으로 이동 여부
-    @State private var showAlert = false // 팝업 표시 여부
-    @State private var isShowingPasswordSheet = false // 비밀번호 입력 Sheet 표시
-    @State private var passwordInput = "" // 탈퇴 시 비밀번호 입력
+    @State private var profileImageURL: URL? // 프로필 이미지 URL
     
     private var db = Firestore.firestore()
     
-    
-    func fetchUserData(){
+    func fetchUserData() {
         guard let userIdx = userManager.userId else {
-                    print("로그인된 사용자가 없습니다.")
-                    return
-                }
+            print("로그인된 사용자가 없습니다.")
+            return
+        }
         
-        db.collection("Users").document(userIdx).getDocument{ document, error in
-            if let document = document, document.exists {
-                let data = document.data()
-                if let userName = data?["userName"] as? String,
-                   let profile_image_url = data?["profile_image_url"] as? String,
-                   let school_idx = data?["school_idx"] as? String {
-                    
-                    self.userName = userName
-                    
-                    fetchSchoolName(schoolIdx: school_idx)
-                }
-                else {
-                    print("사용자 데이터를 찾을 수 없습니다.")
-                }
-                    
+        print("Fetching data for userId: \(userIdx)")
+        
+        db.collection("users").document(userIdx).getDocument { document, error in
+            if let error = error {
+                print("Firestore에서 사용자 데이터를 가져오는 중 오류 발생: \(error.localizedDescription)")
+                return
             }
             
+            if let document = document, document.exists {
+                let data = document.data()
+                print("문서 데이터: \(data ?? [:])")
+                
+                if let userName = data?["name"] as? String,
+                   let schoolIdx = data?["school_idx"] as? String {
+                    self.userName = userName
+                    fetchSchoolName(schoolIdx: schoolIdx)
+                } else {
+                    print("사용자 데이터를 찾을 수 없습니다. userName 또는 school_idx가 없습니다.")
+                }
+            } else {
+                print("문서가 Firestore에 존재하지 않습니다.")
+            }
         }
     }
-    
-    func fetchSchoolName(schoolIdx: String){
-        db.collection("Schools").document(schoolIdx).getDocument{
-            document, error in
-            if let document = document, document.exists{
+
+    func fetchSchoolName(schoolIdx: String) {
+        db.collection("schools").document(schoolIdx).getDocument { document, error in
+            if let document = document, document.exists {
                 let data = document.data()
-                if let schoolName = data?["schoolName"] as? String{
+                if let schoolName = data?["schoolName"] as? String {
                     self.schoolName = schoolName
-                }
-                else {
+                } else {
                     print("학교 데이터를 찾을 수 없습니다.")
                 }
             }
@@ -83,12 +81,12 @@ struct MyHomeMain: View {
                             .frame(width: 90, height: 90)
                             .clipShape(Circle())
                         
-                        //Text(userProfile.userName)
-                            //.font(.title)
-                            //.bold()
+                        Text(userName)
+                            .font(.title)
+                            .bold()
                         
-                        //Text(schoolInfo.schoolName)
-                          //  .font(.headline)
+                        Text(schoolName)
+                            .font(.headline)
                         
                         NavigationLink{ UserProfileUpdate()}label:{
                             HStack{
@@ -199,137 +197,17 @@ struct MyHomeMain: View {
                             .padding(.trailing, 50)
                         }
                         
-                        Button(action: {
-                            logOut()
-                        }) {
-                            Text("로그아웃")
-                                .font(.title3)
-                                .bold()
-                                .foregroundColor(.red)
-                        }
-                        
-                        Button(action: {
-                            checkUserProviderAndDelete()
-                        }) {
-                            Text("탈퇴하기")
-                                .font(.title3)
-                                .bold()
-                                .foregroundColor(.red)
-                        }
-                        
                     }
                     .padding()
                     
                 }
             }
             .padding()
-            .navigationTitle("환경설정")
             .navigationBarTitleDisplayMode(.inline)
-            .alert(alertTitle, isPresented: $showAlert, actions: {
-                Button("확인") {
-                    if alertTitle == "탈퇴 완료" || alertTitle == "로그아웃 완료" {
-                        closePopupAndNavigate()
-                    }
-                }
-            }, message: {
-                Text(alertMessage)
-            })
-            .fullScreenCover(isPresented: $isLogout) {
-                NavigationView {
-                    LoginView() // 로그인 화면으로 이동
-                }
-            }
         }
         .onAppear {
             fetchUserData()
         }
-    }
-    
-    func logOut() {
-        do {
-            try userManager.logOut() // Firebase 로그아웃
-            GIDSignIn.sharedInstance.signOut() // Google 로그아웃
-            alertTitle = "로그아웃 완료"
-            alertMessage = "성공적으로 로그아웃되었습니다."
-        } catch let error {
-            alertTitle = "로그아웃 실패"
-            alertMessage = "오류가 발생했습니다: \(error.localizedDescription)"
-        }
-        showAlert = true
-    }
-    
-    func deleteAccountForGoogleUser() {
-        guard let user = Auth.auth().currentUser else {
-            alertTitle = "탈퇴 실패"
-            alertMessage = "현재 사용자 정보를 찾을 수 없습니다."
-            showAlert = true
-            return
-        }
-
-        guard let idToken = GIDSignIn.sharedInstance.currentUser?.idToken?.tokenString else {
-            alertTitle = "재인증 실패"
-            alertMessage = "구글 인증 정보를 찾을 수 없습니다."
-            showAlert = true
-            return
-        }
-
-        let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: "")
-
-        user.reauthenticate(with: credential) { _, error in
-            if let error = error {
-                alertTitle = "재인증 실패"
-                alertMessage = "오류가 발생했습니다: \(error.localizedDescription)"
-                showAlert = true
-                return
-            }
-
-            user.delete { error in
-                if let error = error {
-                    alertTitle = "탈퇴 실패"
-                    alertMessage = "오류가 발생했습니다: \(error.localizedDescription)"
-                } else {
-                    alertTitle = "탈퇴 완료"
-                    alertMessage = "성공적으로 계정이 삭제되었습니다."
-                }
-                showAlert = true
-            }
-        }
-    }
-    
-    func checkUserProviderAndDelete() {
-        guard let user = Auth.auth().currentUser else {
-            alertTitle = "탈퇴 실패"
-            alertMessage = "사용자를 찾을 수 없습니다."
-            showAlert = true
-            return
-        }
-
-        if let providerData = user.providerData.first {
-            if providerData.providerID == GoogleAuthProviderID {
-                deleteAccountForGoogleUser()
-            } else if providerData.providerID == EmailAuthProviderID {
-                showPasswordAlert()
-            } else {
-                alertTitle = "탈퇴 실패"
-                alertMessage = "지원되지 않는 인증 방식입니다."
-                showAlert = true
-            }
-        }
-    }
-
-    // 팝업 종료 후 로그인 화면 이동
-    func closePopupAndNavigate() {
-        showAlert = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            isLogout = true // 팝업 종료 후 로그인 화면으로 이동
-        }
-    }
-
-    // 비밀번호 확인 팝업 표시 (이메일 사용자)
-    func showPasswordAlert() {
-        alertTitle = "비밀번호 확인"
-        alertMessage = "계정을 삭제하려면 비밀번호를 입력해주세요."
-        showAlert = true
     }
     
     
