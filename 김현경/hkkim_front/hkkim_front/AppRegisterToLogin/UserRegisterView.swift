@@ -16,8 +16,7 @@ struct RegisterView: View{
     var body: some View{
         ZStack{
             Color.skyblue
-                .opacity(0.8)
-                .ignoresSafeArea()
+                .edgesIgnoringSafeArea(.all)
             
             VStack(alignment: .center, spacing: 20){
                 Spacer()

@@ -16,8 +16,7 @@ struct LoginView: View {
         NavigationView {
             ZStack {
                 Color.skyblue
-                    .opacity(0.8)
-                    .ignoresSafeArea()
+                    .edgesIgnoringSafeArea(.all)
                        
                 VStack(alignment: .center, spacing: 60) {
                     Spacer()
@@ -112,7 +111,7 @@ struct LoginView: View {
                 
                 // Navigation to ContentView or UserRegisterView
                 NavigationLink(
-                    destination: ContentView(),
+                    destination: ContentView().navigationBarHidden(true),
                     isActive: $isNavigatingToContentView,
                     label: { EmptyView() }
                 )

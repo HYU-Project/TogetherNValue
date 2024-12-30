@@ -42,12 +42,11 @@ struct UserProfileUpdate: View {
             
             if let document = document, document.exists {
                 let data = document.data()
-                print("문서 데이터: \(data ?? [:])")
-                
                 if let userName = data?["name"] as? String,
                    let schoolEmail = data?["schoolEmail"] as? String,
                    let schoolIdx = data?["school_idx"] as? String {
                     self.userName = userName
+                    self.schoolEmail = schoolEmail
                     fetchSchoolName(schoolIdx: schoolIdx)
                 } else {
                     print("사용자 데이터를 찾을 수 없습니다. userName 또는 school_idx가 없습니다.")
@@ -83,9 +82,9 @@ struct UserProfileUpdate: View {
             .padding(.bottom)
             
             // 프로필 이미지
-            ZStack {
+            //ZStack {
                 // 프로필 이미지 보여주기(기존 저장된 이미지 있으면 보여주고 null이면 default 이미지 보여주기)
-                
+                Image("")
                 // 프로필 사진 변경 버튼
                 Button(action: {
                     showImagePicker = true // 이미지 선택기 표시
@@ -95,7 +94,7 @@ struct UserProfileUpdate: View {
                         .font(.headline)
                         .bold()
                         .frame(width: 150, height: 40)
-                        .background(Color.gray.opacity(0.1))
+                        .background(Color.gray.opacity(0.5))
                         .cornerRadius(10)
                 }
                 .padding(.bottom)
@@ -104,8 +103,9 @@ struct UserProfileUpdate: View {
                     .frame(height: 100)
                     .overlay(
                         VStack {
-                            Text("김무명")
-                            Text("한양대학교 서울캠")
+                            Text(userName)
+                            Text(schoolName)
+                            Text(schoolEmail)
                         }
                             .foregroundColor(.gray)
                     )
@@ -120,19 +120,24 @@ struct UserProfileUpdate: View {
                 }) {
                     Text("수정하기")
                         .foregroundColor(.black)
-                        .background(Color.gray)
                         .font(.title2)
                         .bold()
-                    
                 }
+                .padding()
+                .background(Color.gray.opacity(0.5))
+                .frame(width: 300, height: 40)
+                .cornerRadius(10)
                 
-            }
-            .padding()
-            .sheet(isPresented: $showImagePicker) {
-                ImagePicker(sourceType: .photoLibrary, selectedImage: $selectedImage)
-            }
+            //}
+            //.padding()
+            //.sheet(isPresented: $showImagePicker) {
+              //  ImagePicker(sourceType: .photoLibrary, //selectedImage: $selectedImage)
+            //}
         }
         .padding()
+        .onAppear {
+            fetchUserData()
+        }
     }
 }
 
