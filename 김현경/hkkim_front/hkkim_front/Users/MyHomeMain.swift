@@ -64,6 +64,7 @@ struct MyHomeMain: View {
     
     var body: some View {
         NavigationView {
+            ScrollView{
             VStack {
                 HStack{
                     Text("마이홈")
@@ -74,7 +75,6 @@ struct MyHomeMain: View {
                 }
                 .padding()
                 
-                ScrollView{
                     VStack(spacing: 16) {
                         Image(systemName: "person.circle.fill")
                             .resizable()
@@ -106,7 +106,7 @@ struct MyHomeMain: View {
                     
                     VStack(alignment: .leading, spacing: 20) {
                         Text("나의 거래")
-                            .font(.title2)
+                            .font(.title)
                             .bold()
                             .padding(.trailing, 200)
                         
@@ -114,7 +114,7 @@ struct MyHomeMain: View {
                             HStack(){
                                 Image(systemName:"heart")
                                 Text("관심 목록")
-                                    .font(.title3)
+                                    .font(.title2)
                                     .bold()
                                 Spacer()
                             }
@@ -126,7 +126,7 @@ struct MyHomeMain: View {
                             HStack(){
                                 Image(systemName:"pencil")
                                 Text("내가 작성한 게시글")
-                                    .font(.title3)
+                                    .font(.title2)
                                     .bold()
                                 Spacer()
                             }
@@ -138,7 +138,7 @@ struct MyHomeMain: View {
                             HStack(){
                                 Image(systemName:"hand.raised")
                                 Text("참여한 거래")
-                                    .font(.title3)
+                                    .font(.title2)
                                     .bold()
                                 Spacer()
                             }
@@ -153,14 +153,14 @@ struct MyHomeMain: View {
                     
                     VStack(alignment: .leading, spacing: 15) {
                         Text("기타")
-                            .font(.title2)
+                            .font(.title)
                             .bold()
                             .padding(.trailing, 200)
                         
                         NavigationLink(destination: PolicyView()) {
                             HStack {
                                 Text("이용약관 (개인 정보 처리 방침)")
-                                    .font(.title3)
+                                    .font(.title2)
                                     .bold()
                                     .foregroundColor(Color.black)
                                 
@@ -172,7 +172,7 @@ struct MyHomeMain: View {
                         NavigationLink(destination: FAQListView()){
                             HStack {
                                 Text("자주하는 질문 FAQ")
-                                    .font(.title3)
+                                    .font(.title2)
                                     .bold()
                                     .foregroundColor(Color.black)
                                 
@@ -184,7 +184,7 @@ struct MyHomeMain: View {
                         NavigationLink(destination: AccountInfoView()) {
                             HStack {
                                 Text("계정 정보")
-                                    .font(.title3)
+                                    .font(.title2)
                                     .bold()
                                     .foregroundColor(Color.black)
                                 
