@@ -1,10 +1,3 @@
-//
-//  AccountInfoView.swift
-//  hkkim_front
-//
-//  Created by 김소민 on 12/26/24.
-//
-
 import SwiftUI
 import GoogleSignIn
 import FirebaseAuth
@@ -48,11 +41,8 @@ struct AccountInfoView: View {
         }, message: {
             Text(alertMessage)
         })
-        .fullScreenCover(isPresented: $isLogout) {
-            NavigationView {
-                LoginView() // 로그인 화면으로 이동
-            }
-        }
+        .background(NavigationLink("", destination: LoginView(), isActive: $isLogout))
+
     }
     
     func logOut() {
@@ -61,6 +51,10 @@ struct AccountInfoView: View {
             GIDSignIn.sharedInstance.signOut() // Google 로그아웃
             alertTitle = "로그아웃 완료"
             alertMessage = "성공적으로 로그아웃되었습니다."
+            // userManager.userId를 nil로 설정
+            DispatchQueue.main.async {
+                userManager.userId = nil
+            }
         } catch let error {
             alertTitle = "로그아웃 실패"
             alertMessage = "오류가 발생했습니다: \(error.localizedDescription)"
@@ -132,6 +126,7 @@ struct AccountInfoView: View {
         showAlert = false
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             isLogout = true // 팝업 종료 후 로그인 화면으로 이동
+            userManager.userId = nil
         }
     }
 

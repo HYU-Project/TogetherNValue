@@ -4,11 +4,13 @@ import FirebaseAuth
 import Firebase
 
 struct LoginView: View {
+    @EnvironmentObject var userManager: UserManager
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var errorMessage: String = ""
     @State private var isLoading = false
     @State private var showPassword = false
+    @State private var isNavigatingToRootView = false
     @State private var isNavigatingToContentView = false
     @State private var isNavigatingToSelectSchoolView = false
     
@@ -16,7 +18,8 @@ struct LoginView: View {
         NavigationView {
             ZStack {
                 Color.skyblue
-                    .edgesIgnoringSafeArea(.all)
+                    .opacity(0.8)
+                    .ignoresSafeArea()
                        
                 VStack(alignment: .center, spacing: 60) {
                     Spacer()
@@ -109,7 +112,11 @@ struct LoginView: View {
                 }
                 .padding(.horizontal, 20)
                 
-                // Navigation to ContentView or UserRegisterView
+                //NavigationLink(
+                  //  destination: RootView(),
+                  //  isActive: $isNavigatingToRootView,
+                  //  label: { EmptyView() }
+                //)
                 NavigationLink(
                     destination: ContentView().navigationBarHidden(true),
                     isActive: $isNavigatingToContentView,
@@ -147,13 +154,14 @@ struct LoginView: View {
                     default:
                         errorMessage = "로그인 실패: \(error.localizedDescription)"
                     }
-                } else if let user = result?.user {
+                } else if let user = result?.user  {
+                    self.userManager.refreshUserId() // 로그인 성공 시 userId 갱신
                     self.checkSchoolEmail(for: user.uid)
+                    self.isNavigatingToRootView = true
                 }
             }
         }
     }
-    
     private func checkSchoolEmail(for userId: String) {
         let db = Firestore.firestore()
         db.collection("users").document(userId).getDocument { document, error in

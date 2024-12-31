@@ -244,7 +244,7 @@ struct SelectSchoolView: View {
             }
             .padding()
         }
-    }        
+    }
     
     private func sendVerificationCode(){
         //guard !email.isEmpty, !selectedSchoolEmail.isEmpty else { return }
@@ -313,3 +313,4 @@ struct School{
 #Preview {
     SelectSchoolView()
 }
+

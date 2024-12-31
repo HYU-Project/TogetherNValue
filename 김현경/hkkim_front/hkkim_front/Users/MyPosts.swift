@@ -22,6 +22,7 @@ struct MyPosts: View {
             return
         }
         
+        print("Loading posts for user: \(userId)")
         firestoreService.loadPosts(user_idx: userId, post_status: selectedPostStatus){
             loadedPosts in
             self.posts = loadedPosts
@@ -71,7 +72,14 @@ struct MyPosts: View {
                 )
             }
             .onAppear {
-                loadPosts()
+                if userManager.userId != nil {
+                    loadPosts()
+                }
+            }
+            .onChange(of: userManager.userId) { newUserId in
+                if newUserId != nil {
+                    loadPosts()  // 로그인된 후 게시글 불러오기
+                }
             }
         }
     }

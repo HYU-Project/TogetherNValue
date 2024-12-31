@@ -4,6 +4,7 @@ import SwiftUI
 struct FirstPageView: View {
     @StateObject private var userManager = UserManager()
     @State private var isActive = false // 다음화면전환여부
+    
     var body: some View{
         ZStack{
             Color.skyblue
