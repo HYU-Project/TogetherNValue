@@ -18,6 +18,9 @@ struct DetailPost: View {
     @State private var currentImageIndex = 0
     @State private var isLoading = true
     
+    @State private var selectedStatus = "거래가능"
+    let statusOptions = ["거래가능", "거래완료"]
+    
     private let firestoreService = DetailPostFirestoreService()
     
     private func fetchData() {
@@ -80,7 +83,7 @@ struct DetailPost: View {
         } else {
             ZStack(alignment: .bottom) {
                 ScrollView {
-                    VStack(spacing: 16) {
+                        VStack(spacing: 16) {
                         // 이미지 슬라이더
                         if !postImages.isEmpty {
                             TabView(selection: $currentImageIndex) {
@@ -96,23 +99,26 @@ struct DetailPost: View {
                                                     .frame(height: 250)
                                                     .clipped()
                                             case .failure:
-                                                Image(systemName: "photo")
+                                                Image("NoImage")
                                                     .resizable()
                                                     .scaledToFit()
-                                                    .frame(height: 250)
+                                                    .frame(maxWidth: .infinity)
+                                                    .frame( height: 250)
                                                     .clipped()
                                             @unknown default:
-                                                Image(systemName: "photo")
+                                                Image("NoImage")
                                                     .resizable()
                                                     .scaledToFit()
+                                                    .frame(maxWidth: .infinity)
                                                     .frame(height: 250)
                                                     .clipped()
                                             }
                                         }
                                     } else {
-                                        Image(systemName: "photo")
+                                        Image("NoImage")
                                             .resizable()
                                             .scaledToFit()
+                                            .frame(maxWidth: .infinity)
                                             .frame(height: 250)
                                             .clipped()
                                     }
@@ -126,7 +132,7 @@ struct DetailPost: View {
                                 .padding()
                         }
                         
-                        // 작성자 정보와 온도 표시
+                        // 작성자 정보 표시
                         HStack(spacing: 16) {
                             if let profileURL = postUser?.profile_image_url,
                                let url = URL(string: profileURL) {
@@ -173,6 +179,32 @@ struct DetailPost: View {
                         
                         Divider()
                             .padding()
+                        
+                        if postDetails?.user_idx == userManager.userId {
+                                Picker("", selection: $selectedStatus) {
+                                    ForEach(statusOptions, id: \.self) { status in
+                                        Text(status)
+                                            .font(.title2)
+                                            .bold()
+                                            .foregroundColor(Color.black)
+                                            .bold()
+                                            .tag(status)
+                                    }
+                                }
+                                .pickerStyle(MenuPickerStyle())
+                                .onChange(of: selectedStatus) { newValue in
+                                    // post_status 상태 변경 로직
+                                }
+                                .padding()
+                                .background(Color.white)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.gray, lineWidth: 3)
+                                }
+                                .cornerRadius(8)
+                                .padding(.trailing, 200)
+                            }
+
                         
                         // 게시물 제목 및 설명
                         VStack(alignment: .leading, spacing: 10) {
@@ -246,7 +278,7 @@ struct DetailPost: View {
                             // 채팅하기 버튼 액션
                         }) {
                             Text("채팅하기")
-                                .font(.headline)
+                                .font(.title3)
                                 .frame(width: 80)
                                 .padding()
                                 .background(Color.black)

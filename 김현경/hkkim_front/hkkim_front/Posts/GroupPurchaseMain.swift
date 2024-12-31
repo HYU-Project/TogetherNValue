@@ -79,9 +79,17 @@ struct GroupPurchaseMain: View {
             ZStack {
                 VStack {
                     //Text("Hello, \(userManager.userId ?? "Guest")") // 테스트용
+                    HStack {
+                        Text("공구")
+                            .font(.largeTitle)
+                            .bold()
+                        
+                        Spacer()
+                    }
+                    .padding()
                     
                     if let schoolName = schoolName {
-                        HeaderView(category: "공구", schoolName: schoolName)
+                        HeaderView(schoolName: schoolName)
                     }
                     Text("여기에 광고 배너 들어가기")
                         .font(.headline)

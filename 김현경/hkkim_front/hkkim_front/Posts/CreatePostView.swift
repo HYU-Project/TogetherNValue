@@ -57,11 +57,11 @@ struct CreatePostView: View {
     @Environment(\.dismiss) var dismiss // 창 닫기
     @State private var isValidPost = false // 게시물 폼 유효성
     
-    @State private var createPost = CreatePost(user_idx: "", post_category: "", post_categoryType: "", title: "", post_content: "", location: "", want_num: 2, post_status: "거래중", created_at: Date(), school_idx: "", postImages: [])
+    @State private var createPost = CreatePost(user_idx: "", post_category: "", post_categoryType: "", title: "", post_content: "", location: "", want_num: 1, post_status: "거래가능", created_at: Date(), school_idx: "", postImages: [])
     
     let categories = ["공구", "나눔"]
     let categoryTypes = ["물품", "식재료", "배달"]
-    let peopleOptions = Array(2...5)
+    let peopleOptions = Array(1...5)
     
     private var db = Firestore.firestore()
     
@@ -188,10 +188,9 @@ struct CreatePostView: View {
                     // 희망 인원수
                     VStack(alignment: .leading) {
                         HStack {
-                            Text("   * 희망 인원수")
+                            Text("   * 거래 희망 인원수")
                                 .font(.title2)
                                 .bold()
-                            Text("(본인 포함해서 선택)")
                         }
 
                         HStack {
@@ -215,7 +214,7 @@ struct CreatePostView: View {
 
                         TextEditor(text: $createPost.post_content)
                             .frame(height: 200)
-                            .border(Color.gray, width: 1)
+                            .border(Color.gray, width: 2)
                             .padding()
                             .onChange(of: createPost.post_content) { _ in
                                 validatePost() // 글 내용 변경 시 유효성 검사
@@ -274,7 +273,7 @@ struct CreatePostView: View {
                     }
                     .padding()
                     .frame(width: 350)
-                    .background(isValidPost ? Color.blue : Color.gray)
+                    .background(isValidPost ? Color.blue : Color.gray.opacity(0.2))
                     .cornerRadius(10)
                     .onAppear {
                         validatePost() // 화면이 나타날 때 유효성 검사

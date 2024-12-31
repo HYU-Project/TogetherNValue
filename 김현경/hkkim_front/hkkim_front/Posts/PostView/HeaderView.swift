@@ -8,18 +8,9 @@
 import SwiftUI
 
 struct HeaderView: View {
-    var category: String
     var schoolName: String
     var body: some View {
         VStack {
-            HStack {
-                Text(category)
-                    .font(.largeTitle)
-                    .bold()
-                Spacer()
-            }
-            .padding()
-
             HStack {
                 Text("   \(schoolName)")
                     .font(.title3)

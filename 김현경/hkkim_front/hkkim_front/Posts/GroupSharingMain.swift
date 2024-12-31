@@ -83,8 +83,16 @@ struct GroupSharingMain: View {
             ZStack {
                 VStack {
                     
+                    HStack {
+                        Text("나눔")
+                            .font(.largeTitle)
+                            .bold()
+                        Spacer()
+                    }
+                    .padding()
+                    
                     if let schoolName = schoolName {
-                        HeaderView(category: "나눔", schoolName: schoolName)
+                        HeaderView(schoolName: schoolName)
                     }
                     
                     Text("여기에 광고 배너 들어가기")
