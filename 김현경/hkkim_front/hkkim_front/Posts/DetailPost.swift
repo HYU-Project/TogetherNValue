@@ -2,6 +2,12 @@
 
 import SwiftUI
 
+func getCurrentTime() -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    return formatter.string(from: Date())
+}
+
 struct DetailPost: View {
     @EnvironmentObject var userManager: UserManager
     var post_idx: String // 전달받은 post_idx
@@ -68,26 +74,68 @@ struct DetailPost: View {
     var body: some View {
         if isLoading {
             ProgressView("Loading....")
-                .onAppear{
+                .onAppear {
                     fetchData()
                 }
-        }
-        else{
-            VStack{
-                ScrollView{
-                    VStack(alignment: .leading) {
-                        // 작성자 정보 (프로필 사진 및 아이디)
-                        HStack {
-                            if let postUser = postUser,
-                               let profileURL = postUser.profile_image_url, // 옵셔널 바인딩
+        } else {
+            ZStack(alignment: .bottom) {
+                ScrollView {
+                    VStack(spacing: 16) {
+                        // 이미지 슬라이더
+                        if !postImages.isEmpty {
+                            TabView(selection: $currentImageIndex) {
+                                ForEach(postImages.indices, id: \.self) { index in
+                                    if let imageURL = URL(string: postImages[index].image_url) {
+                                        AsyncImage(url: imageURL) { phase in
+                                            switch phase {
+                                            case .empty:
+                                                ProgressView()
+                                            case .success(let image):
+                                                image.resizable()
+                                                    .scaledToFill()
+                                                    .frame(height: 250)
+                                                    .clipped()
+                                            case .failure:
+                                                Image(systemName: "photo")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(height: 250)
+                                                    .clipped()
+                                            @unknown default:
+                                                Image(systemName: "photo")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(height: 250)
+                                                    .clipped()
+                                            }
+                                        }
+                                    } else {
+                                        Image(systemName: "photo")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 250)
+                                            .clipped()
+                                    }
+                                }
+                            }
+                            .tabViewStyle(PageTabViewStyle())
+                            .frame(height: 250)
+                        } else {
+                            Text("이미지가 없습니다")
+                                .italic()
+                                .padding()
+                        }
+                        
+                        // 작성자 정보와 온도 표시
+                        HStack(spacing: 16) {
+                            if let profileURL = postUser?.profile_image_url,
                                let url = URL(string: profileURL) {
                                 AsyncImage(url: url) { phase in
                                     switch phase {
                                     case .empty:
                                         ProgressView()
                                     case .success(let image):
-                                        image
-                                            .resizable()
+                                        image.resizable()
                                             .scaledToFill()
                                             .frame(width: 50, height: 50)
                                             .clipShape(Circle())
@@ -107,154 +155,113 @@ struct DetailPost: View {
                                     }
                                 }
                             } else {
-                                // 기본 이미지 처리
                                 Image(systemName: "person.circle")
                                     .resizable()
                                     .frame(width: 50, height: 50)
                                     .clipShape(Circle())
                                     .overlay(Circle().stroke(Color.gray, lineWidth: 1))
                             }
-
                             
-                            Text(postUser?.name ?? "익명") // 작성자 이름
-                                .font(.headline)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(postUser?.name ?? "익명")
+                                    .font(.title3)
+                                    .bold()
+                            }
                             Spacer()
                         }
-                        .padding(.bottom, 8)
+                        .padding(.horizontal)
                         
-                        // 게시글 제목
-                        if let postDetails = postDetails {
-                            Text(postDetails.title)
-                                .font(.title2)
-                                .bold()
-                                .padding()
-                                .frame(width: 200)
-                                .frame(height: 25)
-                                .padding(.trailing, 200)
-                                .padding(.bottom, 5)
-                        }
-                        else {
-                            Text("게시글 정보를 불러오는 중...")
-                                .italic()
-                                .padding(.bottom, 5)
-                        }
-                        
-                        // 이미지 슬라이더
-                        // (수정 필요)이미지가 없으면 기본 이미지가 아닌 다른 정보만 제공하도록
-                        if !postImages.isEmpty {
-                            TabView(selection: $currentImageIndex) {
-                                ForEach(postImages.indices, id: \.self) { index in
-                                    let imageURLString = postImages[index].image_url // `postImages` 모델의 `image_url`
-                                    if let imageURL = URL(string: imageURLString) {
-                                        AsyncImage(url: imageURL) { phase in
-                                            switch phase {
-                                            case .empty:
-                                                ProgressView()
-                                                    .frame(height: 200) // 로딩 중 상태
-                                            case .success(let image):
-                                                image.resizable()
-                                                    .scaledToFill()
-                                                    .frame(height: 200)
-                                                    .clipped()
-                                            case .failure:
-                                                Image(systemName: "photo")
-                                                    .resizable()
-                                                    .scaledToFit()
-                                                    .frame(height: 200)
-                                                    .clipped()
-                                            @unknown default:
-                                                Image(systemName: "photo")
-                                                    .resizable()
-                                                    .scaledToFit()
-                                                    .frame(height: 200)
-                                                    .clipped()
-                                            }
-                                        }
-                                    } else {
-                                        // URL이 잘못된 경우 기본 이미지 표시
-                                        Image(systemName: "photo")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(height: 200)
-                                            .clipped()
-                                    }
-                                }
-                            }
-                            .tabViewStyle(PageTabViewStyle())
-                            .frame(height: 200)
+                        Divider()
                             .padding()
-                        } else {
-                            Text("이미지가 없습니다")
-                                .italic()
-                                .padding()
-                        }
-
-
                         
-                        // 장소와 인원 정보
+                        // 게시물 제목 및 설명
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text(postDetails?.title ?? "제목 없음")
+                                .font(.title)
+                                .bold()
+                                .padding(.trailing, 130)
+                            
+                            HStack {
+                                Text("#\(postDetails?.post_category ?? "카테고리 없음")")
+                                    .font(.title3)
+                                    .foregroundColor(.gray)
+                                
+                                Text("#\(postDetails?.post_categoryType ?? "카테고리 타입 없음")")
+                                    .font(.title3)
+                                    .foregroundColor(.gray)
+                            }
+                            .padding(.trailing, 200)
+                        }
+                        
+                        Text(postDetails?.post_content ?? "내용 없음")
+                            .font(.title3)
+                            .padding(.trailing)
+                            .padding()
+                        
+                        // 거래 정보 (장소 및 인원수)
                         HStack {
-                            VStack(alignment: .leading) {
+                            VStack(spacing: 8) {
                                 HStack {
                                     Image(systemName: "mappin.and.ellipse")
                                     Text("장소: \(postDetails?.location ?? "장소 미정")")
                                 }
-                                .padding(.top, 8)
                                 
                                 HStack {
                                     Image(systemName: "person.2.fill")
                                     Text("인원수: \(postDetails?.want_num ?? 0)명")
                                 }
-                                .padding(.top, 4)
                             }
                             Spacer()
                         }
-                        .padding(.horizontal, 5)
-                        .padding(.vertical, 8)
+                        .padding(.leading, 30)
                         
-                        // 게시글 내용
-                        if let postContent = postDetails?.post_content{
-                            Text(postContent)
-                                .frame(width: 350, height: 200)
-                                .overlay(
-                                    Rectangle()
-                                        .stroke(Color.gray, lineWidth: 1)
-                                )
-                                .padding()
-                        }
+                        Divider()
                         
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                // 채팅하기 버튼 액션
-                            }) {
-                                Text("채팅하기")
-                                    .padding()
-                                    .background(Color.black)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(8)
-                            }
-                        }
-                        .padding(.trailing, 1)
                     }
-                    .padding()
+                    .padding(.vertical)
+                    
+                }
+                
+                VStack(spacing: 0) {
                     
                     Divider()
                     
-                    Text("여기에 광고 배너 들어가기")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
+                    HStack {
+                        // 게시물 찜하기
+                        Button(action:{
+                            
+                        }){
+                            Image(systemName: "heart.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 40, height: 30)
+                                .foregroundColor(.black)
+                        }
                         .padding()
-                        .background(Color.gray.opacity(0.3))
-                        .cornerRadius(8)
-                        .padding(.horizontal)
-                    
-                    // 댓글 영역
-                    
-        }
+                        
+                        Spacer()
+                        
+                        // 채팅하기 버튼
+                        Button(action: {
+                            // 채팅하기 버튼 액션
+                        }) {
+                            Text("채팅하기")
+                                .font(.headline)
+                                .frame(width: 80)
+                                .padding()
+                                .background(Color.black)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                                .padding(.leading)
+                        }
+                        .padding()
+                    }
+                }
+                
             }
         }
     }
-    
+
 }
         
 
