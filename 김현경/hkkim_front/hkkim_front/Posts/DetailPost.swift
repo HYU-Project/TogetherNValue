@@ -18,37 +18,49 @@ struct DetailPost: View {
             firestoreService.fetchPostDetails(postIdx: post_idx) { result in
                 switch result {
                 case .success(let post):
-                    postDetails = post
-                    firestoreService.fetchPostImages(postIdx: post.post_idx) { imageResult in
-                        switch imageResult {
-                        case .success(let images):
-                            DispatchQueue.main.async {
-                                postImages = images
-                            }
-                        case .failure(let error):
-                            print("Error fetching images: \(error)")
-                        }
+                    DispatchQueue.main.async {
+                        self.postDetails = post
+                    }
+                    if let postId = post.id { // post.id 사용
+                        fetchImages(for: postId)
+                    } else {
+                        print("Error: Post ID is nil.")
                     }
                     fetchUserDetails(for: post.user_idx)
                 case .failure(let error):
                     print("Error fetching post details: \(error)")
-                    isLoading = false
+                    DispatchQueue.main.async {
+                        self.isLoading = false
+                    }
                 }
             }
         }
-
+        
+        private func fetchImages(for postIdx: String) {
+            firestoreService.fetchPostImages(postIdx: postIdx) { result in
+                switch result {
+                case .success(let images):
+                    DispatchQueue.main.async {
+                        self.postImages = images
+                    }
+                case .failure(let error):
+                    print("Error fetching images: \(error)")
+                }
+            }
+        }
+        
         private func fetchUserDetails(for userIdx: String) {
             firestoreService.fetchUserDetails(userIdx: userIdx) { result in
                 switch result {
                 case .success(let user):
                     DispatchQueue.main.async {
-                        postUser = user
+                        self.postUser = user
                     }
                 case .failure(let error):
                     print("Error fetching user details: \(error)")
                 }
                 DispatchQueue.main.async {
-                    isLoading = false
+                    self.isLoading = false
                 }
             }
         }
@@ -113,10 +125,12 @@ struct DetailPost: View {
                         // 게시글 제목
                         if let postDetails = postDetails {
                             Text(postDetails.title)
+                                .font(.title2)
                                 .bold()
                                 .padding()
-                                .frame(maxWidth: .infinity)
+                                .frame(width: 200)
                                 .frame(height: 25)
+                                .padding(.trailing, 200)
                                 .padding(.bottom, 5)
                         }
                         else {
@@ -211,9 +225,9 @@ struct DetailPost: View {
                         HStack {
                             Spacer()
                             Button(action: {
-                                // 참여하기 버튼 액션
+                                // 채팅하기 버튼 액션
                             }) {
-                                Text("참여하기")
+                                Text("채팅하기")
                                     .padding()
                                     .background(Color.black)
                                     .foregroundColor(.white)

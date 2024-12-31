@@ -9,20 +9,19 @@ import Foundation
 import FirebaseFirestore
 
 // 게시물
-struct PostInfo : Identifiable, Codable {
-    var id: String { post_idx }
-    let post_idx: String
+struct PostInfo: Identifiable, Codable {
+    @DocumentID var id: String? // post_idx
     let user_idx: String
-    var post_category: String
-    var post_categoryType: String
-    var title: String
-    var post_content: String
-    var location: String
-    var want_num: Int
-    var post_status: String
+    let post_category: String
+    let post_categoryType: String
+    let title: String
+    let post_content: String
+    let location: String
+    let want_num: Int
+    let post_status: String
     @ServerTimestamp var created_at: Date? // Firestore Timestamp 자동 변환
     let school_idx: String
-    var images: [PostImages]?
+    var images: [PostImages]? // 서브컬렉션 postImages
 }
 
 // 게시물 이미지
