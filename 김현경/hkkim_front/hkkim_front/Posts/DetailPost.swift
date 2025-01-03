@@ -39,6 +39,7 @@ struct DetailPost: View {
     @State private var isLoading = true
     @State private var isLiked = false
     @State private var isActionSheetPresented = false
+    @State private var isEditPostPresented = false // 수정 화면 표시 여부
     
     @State private var selectedStatus = "거래가능"
     let statusOptions = ["거래가능", "거래완료"]
@@ -157,21 +158,21 @@ struct DetailPost: View {
                                                 case .success(let image):
                                                     image.resizable()
                                                         .scaledToFill()
-                                                        .frame(height: 250)
+                                                        .frame(height: 200)
                                                         .clipped()
                                                 case .failure:
                                                     Image("NoImage")
                                                         .resizable()
                                                         .scaledToFit()
                                                         .frame(maxWidth: .infinity)
-                                                        .frame( height: 250)
+                                                        .frame( height: 200)
                                                         .clipped()
                                                 @unknown default:
                                                     Image("NoImage")
                                                         .resizable()
                                                         .scaledToFit()
                                                         .frame(maxWidth: .infinity)
-                                                        .frame(height: 250)
+                                                        .frame(height: 200)
                                                         .clipped()
                                                 }
                                             }
@@ -180,7 +181,7 @@ struct DetailPost: View {
                                                 .resizable()
                                                 .scaledToFit()
                                                 .frame(maxWidth: .infinity)
-                                                .frame(height: 250)
+                                                .frame(height: 200)
                                                 .clipped()
                                         }
                                     }
@@ -272,7 +273,6 @@ struct DetailPost: View {
                                 Text(postDetails?.title ?? "제목 없음")
                                     .font(.title)
                                     .bold()
-                                    .padding(.trailing, 130)
                                 
                                 HStack {
                                     Text("#\(postDetails?.post_category ?? "카테고리 없음")")
@@ -293,35 +293,35 @@ struct DetailPost: View {
                                             .foregroundColor(.gray)
                                     }
                                 }
+                                .padding(.bottom, 30)
                                 
-                            }
-                            
-                            Text(postDetails?.post_content ?? "내용 없음")
-                                .font(.title3)
-                                .padding(.trailing)
-                                .padding()
-                            
-                            // 거래 정보 (장소 및 인원수)
-                            HStack {
-                                VStack(spacing: 8) {
-                                    HStack {
-                                        Image(systemName: "mappin.and.ellipse")
+                                Text(postDetails?.post_content ?? "내용 없음")
+                                    .font(.title3)
+                                    .padding(.bottom, 40)
+                                
+                                // 거래 정보 (장소 및 인원수)
+                                HStack {
+                                    VStack(spacing: 8) {
+                                        HStack {
+                                            Image(systemName: "mappin.and.ellipse")
+                                            
+                                            Text("장소: \(postDetails?.location ?? "장소 미정")")
+                                                .bold()
+                                        }
                                         
-                                        Text("장소: \(postDetails?.location ?? "장소 미정")")
-                                            .bold()
+                                        HStack {
+                                            Image(systemName: "person.2.fill")
+                                            Text("거래 희망 인원수: \(postDetails?.want_num ?? 0)명")
+                                                .bold()
+                                        }
+                                        
+                                        Spacer()
                                     }
-                                    .padding(.leading, -20)
-                                    
-                                    HStack {
-                                        Image(systemName: "person.2.fill")
-                                        Text("거래 희망 인원수: \(postDetails?.want_num ?? 0)명")
-                                            .bold()
-                                    }
-                                    .padding(.leading, 40)
                                 }
-                                Spacer()
                             }
-                            
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal)
                             
                             Divider()
                             
@@ -378,7 +378,8 @@ struct DetailPost: View {
                     message: nil,
                     buttons: [
                         .default(Text("게시물 수정"), action: {
-                            // 게시물 수정 동작
+                            // 게시물 수정
+                            isEditPostPresented = true
                         }),
                         .destructive(Text("게시물 삭제"), action: {
                             // 게시물 삭제 동작
@@ -386,6 +387,29 @@ struct DetailPost: View {
                         .cancel(Text("취소"))
                     ]
                 )
+            }
+            .sheet(isPresented: $isEditPostPresented){
+                if let postDetails = postDetails {
+                    CreatePostView(
+                        post: CreatePost(
+                            post_idx: postDetails.id ?? "", // Firestore 문서 ID
+                            user_idx: postDetails.user_idx,
+                            post_category: postDetails.post_category,
+                            post_categoryType: postDetails.post_categoryType,
+                            title: postDetails.title,
+                            post_content: postDetails.post_content,
+                            location: postDetails.location,
+                            want_num: postDetails.want_num,
+                            post_status: postDetails.post_status,
+                            created_at: postDetails.created_at ?? Date(), // 기본값 제공
+                            school_idx: postDetails.school_idx,
+                            postImages: postDetails.images?.map {
+                                CreatePostImage(post_idx: $0.post_idx, image_url: $0.image_url)
+                            } ?? [] // 기본값 빈 배열 제공
+                        ),
+                        isEditMode: true // 수정 모드 활성화
+                    )
+                }
             }
         }
     }

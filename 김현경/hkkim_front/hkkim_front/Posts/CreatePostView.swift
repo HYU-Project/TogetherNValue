@@ -9,6 +9,7 @@ import FirebaseStorage
 // TODO: postImageURL에는 URL만 저장, 실제 이미지는 storage에 저장 (나중에)
 
 struct CreatePost {
+    var post_idx: String? // 게시물 ID (Firestore 문서 ID)
     var user_idx: String
     var post_category: String
     var post_categoryType: String
@@ -57,7 +58,13 @@ struct CreatePostView: View {
     @Environment(\.dismiss) var dismiss // 창 닫기
     @State private var isValidPost = false // 게시물 폼 유효성
     
-    @State private var createPost = CreatePost(user_idx: "", post_category: "", post_categoryType: "", title: "", post_content: "", location: "", want_num: 1, post_status: "거래가능", created_at: Date(), school_idx: "", postImages: [])
+    @State private var createPost: CreatePost
+    let isEditMode: Bool // 수정 모드인지 여부
+    
+    init(post: CreatePost? = nil, isEditMode: Bool = false) {
+        self._createPost = State(initialValue: post ?? CreatePost(user_idx: "", post_category: "", post_categoryType: "", title: "", post_content: "", location: "", want_num: 1, post_status: "거래가능", created_at: Date(), school_idx: "", postImages: []))
+        self.isEditMode = isEditMode
+    }
     
     let categories = ["공구", "나눔"]
     let categoryTypes = ["물품", "식재료", "배달"]
@@ -263,10 +270,15 @@ struct CreatePostView: View {
 
                     // 작성 완료 버튼
                     Button(action: {
-                        savePostToDatabase()
-                        dismiss()
+                        if isEditMode {
+                            updatePostToDatabase()
+                        }
+                        else{
+                            savePostToDatabase()
+                        }
+                        // dismiss()
                     }) {
-                        Text("작성 완료")
+                        Text(isEditMode ? "수정 완료" : "작성 완료")
                             .font(.title2)
                             .foregroundColor(Color.black)
                             .bold()
@@ -414,6 +426,24 @@ struct CreatePostView: View {
                 print("postImages가 Firestore에 성공적으로 저장되었습니다.")
                 completion(true) // 성공 시 true 반환
             }
+        }
+    }
+    
+    private func updatePostToDatabase(){
+        guard let postIdx = createPost.post_idx else {
+            print("게시물 ID가 없습니다.")
+            return
+        }
+        
+        let postData = createPost.toDictionary()
+        
+        db.collection("posts").document(postIdx).updateData(postData) { error in
+            if let error = error {
+                print("게시물 업데이트 중 오류 발생: \(error)")
+                return
+            }
+            print("게시물이 성공적으로 업데이트되었습니다.")
+            dismiss()
         }
     }
 
