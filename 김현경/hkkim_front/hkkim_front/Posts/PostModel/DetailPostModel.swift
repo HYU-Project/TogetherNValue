@@ -41,7 +41,7 @@ struct UserProperty : Identifiable, Codable {
 
 // 댓글
 struct Comments : Identifiable, Codable{
-    var id: String { comment_idx }
+    var id: String { comment_idx } // documentID로
     let comment_idx: String
     let user_idx: String
     let post_idx: String
@@ -52,7 +52,7 @@ struct Comments : Identifiable, Codable{
 
 // 대댓글
 struct Replies : Identifiable, Codable{
-    var id: String { reply_idx }
+    var id: String { reply_idx } // document ID로
     let reply_idx: String
     let user_idx: String
     let reply_content: String

@@ -2,10 +2,30 @@
 
 import SwiftUI
 
-func getCurrentTime() -> String {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-    return formatter.string(from: Date())
+func timeAgo(from date: Date?) -> String{
+    guard let date = date else { return "알 수 없음" }
+    
+    let now = Date()
+    let interval = now.timeIntervalSince(date)
+    
+    if interval < 60 {
+        return "\(Int(interval))초 전"
+    }
+    else if interval < 3600 {
+        return "\(Int(interval / 60))분 전"
+        }
+    else if interval < 86400 {
+            return "\(Int(interval / 3600))시간 전"
+        }
+    else if interval < 2592000 {
+            return "\(Int(interval / 86400))일 전"
+        }
+    else if interval < 31536000 {
+            return "\(Int(interval / 2592000))개월 전"
+        }
+    else {
+            return "\(Int(interval / 31536000))년 전"
+        }
 }
 
 struct DetailPost: View {
@@ -17,6 +37,8 @@ struct DetailPost: View {
     @State private var postUser: UserProperty?
     @State private var currentImageIndex = 0
     @State private var isLoading = true
+    @State private var isLiked = false
+    @State private var isActionSheetPresented = false
     
     @State private var selectedStatus = "거래가능"
     let statusOptions = ["거래가능", "거래완료"]
@@ -74,6 +96,30 @@ struct DetailPost: View {
             }
         }
     
+    private func toggleLike(){
+        guard let userIdx = userManager.userId else { return }
+        firestoreService.togglePostLike(postIdx: post_idx, userIdx: userIdx, isLiked: isLiked){
+            result in
+            switch result {
+            case .success:
+                DispatchQueue.main.async {
+                    isLiked.toggle()
+                }
+            case .failure(let error):
+                print("Error toggling post like: \(error)")
+            }
+        }
+    }
+    
+    private func checkIfLiked(){
+        guard let userIdx = userManager.userId else { return }
+        firestoreService.isPostLiked(postIdx: post_idx, userIdx: userIdx){ liked in
+            DispatchQueue.main.async {
+                self.isLiked = liked
+            }
+        }
+    }
+    
     var body: some View {
         if isLoading {
             ProgressView("Loading....")
@@ -82,105 +128,120 @@ struct DetailPost: View {
                 }
         } else {
             ZStack(alignment: .bottom) {
-                ScrollView {
-                        VStack(spacing: 16) {
-                        // 이미지 슬라이더
-                        if !postImages.isEmpty {
-                            TabView(selection: $currentImageIndex) {
-                                ForEach(postImages.indices, id: \.self) { index in
-                                    if let imageURL = URL(string: postImages[index].image_url) {
-                                        AsyncImage(url: imageURL) { phase in
-                                            switch phase {
-                                            case .empty:
-                                                ProgressView()
-                                            case .success(let image):
-                                                image.resizable()
-                                                    .scaledToFill()
-                                                    .frame(height: 250)
-                                                    .clipped()
-                                            case .failure:
-                                                Image("NoImage")
-                                                    .resizable()
-                                                    .scaledToFit()
-                                                    .frame(maxWidth: .infinity)
-                                                    .frame( height: 250)
-                                                    .clipped()
-                                            @unknown default:
-                                                Image("NoImage")
-                                                    .resizable()
-                                                    .scaledToFit()
-                                                    .frame(maxWidth: .infinity)
-                                                    .frame(height: 250)
-                                                    .clipped()
-                                            }
-                                        }
-                                    } else {
-                                        Image("NoImage")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(maxWidth: .infinity)
-                                            .frame(height: 250)
-                                            .clipped()
-                                    }
-                                }
-                            }
-                            .tabViewStyle(PageTabViewStyle())
-                            .frame(height: 250)
-                        } else {
-                            Text("이미지가 없습니다")
-                                .italic()
-                                .padding()
-                        }
-                        
-                        // 작성자 정보 표시
-                        HStack(spacing: 16) {
-                            if let profileURL = postUser?.profile_image_url,
-                               let url = URL(string: profileURL) {
-                                AsyncImage(url: url) { phase in
-                                    switch phase {
-                                    case .empty:
-                                        ProgressView()
-                                    case .success(let image):
-                                        image.resizable()
-                                            .scaledToFill()
-                                            .frame(width: 50, height: 50)
-                                            .clipShape(Circle())
-                                            .overlay(Circle().stroke(Color.gray, lineWidth: 2))
-                                    case .failure:
-                                        Image(systemName: "person.circle")
-                                            .resizable()
-                                            .frame(width: 50, height: 50)
-                                            .clipShape(Circle())
-                                            .overlay(Circle().stroke(Color.gray, lineWidth: 1))
-                                    @unknown default:
-                                        Image(systemName: "person.circle")
-                                            .resizable()
-                                            .frame(width: 50, height: 50)
-                                            .clipShape(Circle())
-                                            .overlay(Circle().stroke(Color.gray, lineWidth: 2))
-                                    }
-                                }
-                            } else {
-                                Image(systemName: "person.circle")
+                VStack {
+                    if postDetails?.user_idx == userManager.userId {
+                        HStack {
+                            Spacer()
+                            
+                            Button(action: {
+                                isActionSheetPresented = true
+                            }) {
+                                Image("appSetting")
                                     .resizable()
-                                    .frame(width: 50, height: 50)
-                                    .clipShape(Circle())
-                                    .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 50)
+                            }
+                        }
+                    }
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            // 이미지 슬라이더
+                            if !postImages.isEmpty {
+                                TabView(selection: $currentImageIndex) {
+                                    ForEach(postImages.indices, id: \.self) { index in
+                                        if let imageURL = URL(string: postImages[index].image_url) {
+                                            AsyncImage(url: imageURL) { phase in
+                                                switch phase {
+                                                case .empty:
+                                                    ProgressView()
+                                                case .success(let image):
+                                                    image.resizable()
+                                                        .scaledToFill()
+                                                        .frame(height: 250)
+                                                        .clipped()
+                                                case .failure:
+                                                    Image("NoImage")
+                                                        .resizable()
+                                                        .scaledToFit()
+                                                        .frame(maxWidth: .infinity)
+                                                        .frame( height: 250)
+                                                        .clipped()
+                                                @unknown default:
+                                                    Image("NoImage")
+                                                        .resizable()
+                                                        .scaledToFit()
+                                                        .frame(maxWidth: .infinity)
+                                                        .frame(height: 250)
+                                                        .clipped()
+                                                }
+                                            }
+                                        } else {
+                                            Image("NoImage")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(maxWidth: .infinity)
+                                                .frame(height: 250)
+                                                .clipped()
+                                        }
+                                    }
+                                }
+                                .tabViewStyle(PageTabViewStyle())
+                                .frame(height: 250)
+                            } else {
+                                Text("이미지가 없습니다")
+                                    .italic()
+                                    .padding()
                             }
                             
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(postUser?.name ?? "익명")
-                                    .font(.title3)
-                                    .bold()
+                            // 작성자 정보 표시
+                            HStack(spacing: 16) {
+                                if let profileURL = postUser?.profile_image_url,
+                                   let url = URL(string: profileURL) {
+                                    AsyncImage(url: url) { phase in
+                                        switch phase {
+                                        case .empty:
+                                            ProgressView()
+                                        case .success(let image):
+                                            image.resizable()
+                                                .scaledToFill()
+                                                .frame(width: 50, height: 50)
+                                                .clipShape(Circle())
+                                                .overlay(Circle().stroke(Color.gray, lineWidth: 2))
+                                        case .failure:
+                                            Image(systemName: "person.circle")
+                                                .resizable()
+                                                .frame(width: 50, height: 50)
+                                                .clipShape(Circle())
+                                                .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                                        @unknown default:
+                                            Image(systemName: "person.circle")
+                                                .resizable()
+                                                .frame(width: 50, height: 50)
+                                                .clipShape(Circle())
+                                                .overlay(Circle().stroke(Color.gray, lineWidth: 2))
+                                        }
+                                    }
+                                } else {
+                                    Image(systemName: "person.circle")
+                                        .resizable()
+                                        .frame(width: 50, height: 50)
+                                        .clipShape(Circle())
+                                        .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                                }
+                                
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(postUser?.name ?? "익명")
+                                        .font(.title3)
+                                        .bold()
+                                }
+                                Spacer()
                             }
-                            Spacer()
-                        }
-                        .padding(.horizontal)
-                        
-                        Divider()
-                            .padding()
-                        
-                        if postDetails?.user_idx == userManager.userId {
+                            .padding(.horizontal)
+                            
+                            Divider()
+                                .padding()
+                            
+                            if postDetails?.user_idx == userManager.userId {
                                 Picker("", selection: $selectedStatus) {
                                     ForEach(statusOptions, id: \.self) { status in
                                         Text(status)
@@ -204,54 +265,70 @@ struct DetailPost: View {
                                 .cornerRadius(8)
                                 .padding(.trailing, 200)
                             }
-
-                        
-                        // 게시물 제목 및 설명
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text(postDetails?.title ?? "제목 없음")
-                                .font(.title)
-                                .bold()
-                                .padding(.trailing, 130)
                             
+                            
+                            // 게시물 제목 및 설명
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text(postDetails?.title ?? "제목 없음")
+                                    .font(.title)
+                                    .bold()
+                                    .padding(.trailing, 130)
+                                
+                                HStack {
+                                    Text("#\(postDetails?.post_category ?? "카테고리 없음")")
+                                        .font(.title3)
+                                        .foregroundColor(.gray)
+                                    
+                                    Text("#\(postDetails?.post_categoryType ?? "카테고리 타입 없음")")
+                                        .font(.title3)
+                                        .foregroundColor(.gray)
+                                    
+                                    if let createdAt = postDetails?.created_at {
+                                        Text(timeAgo(from: createdAt))
+                                            .font(.title3)
+                                            .foregroundColor(.gray)
+                                    } else {
+                                        Text("")
+                                            .font(.title3)
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                                
+                            }
+                            
+                            Text(postDetails?.post_content ?? "내용 없음")
+                                .font(.title3)
+                                .padding(.trailing)
+                                .padding()
+                            
+                            // 거래 정보 (장소 및 인원수)
                             HStack {
-                                Text("#\(postDetails?.post_category ?? "카테고리 없음")")
-                                    .font(.title3)
-                                    .foregroundColor(.gray)
-                                
-                                Text("#\(postDetails?.post_categoryType ?? "카테고리 타입 없음")")
-                                    .font(.title3)
-                                    .foregroundColor(.gray)
-                            }
-                            .padding(.trailing, 200)
-                        }
-                        
-                        Text(postDetails?.post_content ?? "내용 없음")
-                            .font(.title3)
-                            .padding(.trailing)
-                            .padding()
-                        
-                        // 거래 정보 (장소 및 인원수)
-                        HStack {
-                            VStack(spacing: 8) {
-                                HStack {
-                                    Image(systemName: "mappin.and.ellipse")
-                                    Text("장소: \(postDetails?.location ?? "장소 미정")")
+                                VStack(spacing: 8) {
+                                    HStack {
+                                        Image(systemName: "mappin.and.ellipse")
+                                        
+                                        Text("장소: \(postDetails?.location ?? "장소 미정")")
+                                            .bold()
+                                    }
+                                    .padding(.leading, -20)
+                                    
+                                    HStack {
+                                        Image(systemName: "person.2.fill")
+                                        Text("거래 희망 인원수: \(postDetails?.want_num ?? 0)명")
+                                            .bold()
+                                    }
+                                    .padding(.leading, 40)
                                 }
-                                
-                                HStack {
-                                    Image(systemName: "person.2.fill")
-                                    Text("인원수: \(postDetails?.want_num ?? 0)명")
-                                }
+                                Spacer()
                             }
-                            Spacer()
+                            
+                            
+                            Divider()
+                            
                         }
-                        .padding(.leading, 30)
-                        
-                        Divider()
+                        .padding(.vertical)
                         
                     }
-                    .padding(.vertical)
-                    
                 }
                 
                 VStack(spacing: 0) {
@@ -261,15 +338,18 @@ struct DetailPost: View {
                     HStack {
                         // 게시물 찜하기
                         Button(action:{
-                            
+                            toggleLike()
                         }){
-                            Image(systemName: "heart.fill")
+                            Image(systemName: isLiked ? "heart.fill" : "heart")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 40, height: 30)
                                 .foregroundColor(.black)
                         }
                         .padding()
+                        .onAppear {
+                            checkIfLiked()
+                        }
                         
                         Spacer()
                         
@@ -288,8 +368,24 @@ struct DetailPost: View {
                         }
                         .padding()
                     }
+                    .background(Color.white)
                 }
                 
+            }
+            .actionSheet(isPresented: $isActionSheetPresented){
+                ActionSheet(
+                    title: Text(""),
+                    message: nil,
+                    buttons: [
+                        .default(Text("게시물 수정"), action: {
+                            // 게시물 수정 동작
+                        }),
+                        .destructive(Text("게시물 삭제"), action: {
+                            // 게시물 삭제 동작
+                        }),
+                        .cancel(Text("취소"))
+                    ]
+                )
             }
         }
     }

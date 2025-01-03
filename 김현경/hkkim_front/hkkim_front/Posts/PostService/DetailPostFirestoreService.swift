@@ -79,4 +79,73 @@ class DetailPostFirestoreService {
             }
         }
     }
+    
+    func togglePostLike(postIdx: String, userIdx: String, isLiked: Bool, completion: @escaping (Result<Void, Error>) -> Void){
+        
+        let collection = db.collection("postLikes")
+        
+        if isLiked { // 찜하기 취소
+            collection
+                .whereField("post_idx", isEqualTo: postIdx)
+                .whereField("user_idx", isEqualTo: userIdx)
+                .getDocuments{snapshot, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    
+                    guard let documents = snapshot? .documents else {
+                        completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Document not found"])))
+                        return
+                    }
+                    
+                    for document in documents {
+                        document.reference.delete(){
+                            error in
+                            if let error = error {
+                                completion(.failure(error))
+                            }
+                            else {
+                                completion(.success(()))
+                            }
+                        }
+                    }
+                }
+        }
+        else { // 찜하기
+            let data: [String : Any] = [
+                "post_idx" : postIdx,
+                "user_idx" : userIdx,
+                "created_at": FieldValue.serverTimestamp()
+            ]
+            
+            collection.addDocument(data: data){ error in
+                if let error = error {
+                    completion(.failure(error))
+                }
+                else {
+                    completion(.success(()))
+                }
+                
+            }
+        }
+    }
+    
+    // 현재 로그인 한 유저가 게시물을 찜했는지 확인
+    func isPostLiked(postIdx: String, userIdx: String, completion: @escaping (Bool) -> Void) {
+            let collection = db.collection("postLikes")
+            
+            collection
+                .whereField("post_idx", isEqualTo: postIdx)
+                .whereField("user_idx", isEqualTo: userIdx)
+                .getDocuments { snapshot, error in
+                    if let error = error {
+                        print("Error checking post like status: \(error)")
+                        completion(false)
+                        return
+                    }
+                    
+                    completion(!(snapshot?.documents.isEmpty ?? true))
+                }
+        }
 }
