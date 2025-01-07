@@ -25,11 +25,10 @@ struct PostItemView: View {
                                 .frame(width: 60, height: 60)
                                 .cornerRadius(8)
                         } else {
-                            Image(systemName: "photo.fill")
+                            Image("NoImage")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 60, height: 60)
-                                .foregroundColor(.gray)
                         }
                     } else if let url = URL(string: postImageUrl) {
                         // URL로 이미지 로드
@@ -45,21 +44,19 @@ struct PostItemView: View {
                                     .frame(width: 60, height: 60)
                                     .cornerRadius(8)
                             case .failure:
-                                Image(systemName: "photo.fill")
+                                Image("NoImage")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 60, height: 60)
-                                    .foregroundColor(.gray)
                             @unknown default:
                                 EmptyView()
                             }
                         }
                     } else {
-                        Image(systemName: "photo.fill")
+                        Image("NoImage")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 60, height: 60)
-                            .foregroundColor(.gray)
                     }
                 } else {
                     // 이미지가 없을 경우

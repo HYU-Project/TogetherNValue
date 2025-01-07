@@ -58,11 +58,10 @@ struct SharingPostImageView: View {
                             .frame(width: 60, height: 60)
                             .cornerRadius(8)
                     } else {
-                        Image(systemName: "photo.fill")
+                        Image("NoImage")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 60, height: 60)
-                            .foregroundColor(.gray)
                             .onAppear {
                                 print("Failed to load local image: \(url.path)")
                             }
@@ -80,11 +79,10 @@ struct SharingPostImageView: View {
                                 .frame(width: 60, height: 60)
                                 .cornerRadius(8)
                         case .failure:
-                            Image(systemName: "photo.fill")
+                            Image("NoImage")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 60, height: 60)
-                                .foregroundColor(.gray)
                                 .onAppear {
                                     print("Failed to load image from URL: \(url)")
                                 }
@@ -93,11 +91,10 @@ struct SharingPostImageView: View {
                         }
                     }
                 } else {
-                    Image(systemName: "photo.fill")
+                    Image("NoImage")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 60, height: 60)
-                        .foregroundColor(.gray)
                         .onAppear {
                             print("Invalid URL: \(postImageUrl)")
                         }
@@ -122,7 +119,7 @@ struct SharingPostInfoView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(post.title)
-                .font(.headline)
+                .font(.subheadline)
 
             HStack {
                 Image(systemName: "mappin.and.ellipse")

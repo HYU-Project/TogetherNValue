@@ -110,7 +110,8 @@ struct MyHomeMain: View {
                             .bold()
                             .padding(.trailing, 200)
                         
-                        NavigationLink{InterestedPosts()}label:{
+                        NavigationLink{InterestedPosts().environmentObject(UserManager())
+                        }label:{
                             HStack(){
                                 Image(systemName:"heart")
                                 Text("관심 목록")
@@ -125,7 +126,7 @@ struct MyHomeMain: View {
                         NavigationLink{MyPosts()}label:{
                             HStack(){
                                 Image(systemName:"pencil")
-                                Text("내가 작성한 게시글")
+                                Text("내가 작성한 게시물")
                                     .font(.title2)
                                     .bold()
                                 Spacer()

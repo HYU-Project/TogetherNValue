@@ -60,11 +60,10 @@ struct PurchasePostImageView: View {
                             .frame(width: 60, height: 60)
                             .cornerRadius(8)
                     } else {
-                        Image(systemName: "photo.fill")
+                        Image("NoImage")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 60, height: 60)
-                            .foregroundColor(.gray)
                     }
                 } else if let url = URL(string: postImageUrl) {
                     // URL로 이미지 로드
@@ -80,21 +79,19 @@ struct PurchasePostImageView: View {
                                 .frame(width: 60, height: 60)
                                 .cornerRadius(8)
                         case .failure:
-                            Image(systemName: "photo.fill")
+                            Image("NoImage")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 60, height: 60)
-                                .foregroundColor(.gray)
                         @unknown default:
                             EmptyView()
                         }
                     }
                 } else {
-                    Image(systemName: "photo.fill")
+                    Image("NoImage")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 60, height: 60)
-                        .foregroundColor(.gray)
                 }
             } else {
                 Text("No image available")
@@ -115,7 +112,7 @@ struct PurchasePostInfoView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(post.title)
-                .font(.headline)
+                .font(.subheadline)
 
             HStack {
                 Image(systemName: "mappin.and.ellipse")
