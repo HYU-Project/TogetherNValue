@@ -148,4 +148,18 @@ class DetailPostFirestoreService {
                     completion(!(snapshot?.documents.isEmpty ?? true))
                 }
         }
+    
+    func updatePostStatus (postIdx: String, newStatus: String, completion: @escaping (Result<Void, Error>) -> Void){
+        
+        db.collection("posts").document(postIdx).updateData(["post_status" : newStatus]){ error in
+            if let error = error {
+                print("Error updating post status: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+            else {
+                print("Post status updated to \(newStatus)")
+                completion(.success(()))
+            }
+        }
+    }
 }

@@ -121,6 +121,19 @@ struct DetailPost: View {
         }
     }
     
+    private func updatePostStatus(to status: String) {
+        firestoreService.updatePostStatus(postIdx: post_idx, newStatus: status) { result in
+            switch result {
+            case .success:
+                DispatchQueue.main.async {
+                    self.selectedStatus = status // Firestore 업데이트 후 상태 반영
+                }
+            case .failure(let error):
+                print("Error updating post status: \(error)")
+            }
+        }
+    }
+    
     var body: some View {
         if isLoading {
             ProgressView("Loading....")
@@ -255,7 +268,9 @@ struct DetailPost: View {
                                 }
                                 .pickerStyle(MenuPickerStyle())
                                 .onChange(of: selectedStatus) { newValue in
-                                    // post_status 상태 변경 로직
+                                    print("Selected status changed to: \(newValue)")
+                                    
+                                    updatePostStatus(to: newValue)
                                 }
                                 .padding()
                                 .background(Color.white)
@@ -344,8 +359,9 @@ struct DetailPost: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 40, height: 30)
-                                .foregroundColor(.black)
+                                .foregroundColor(selectedStatus == "거래완료" ? .gray : .black)
                         }
+                        .disabled(selectedStatus == "거래완료")
                         .padding()
                         .onAppear {
                             checkIfLiked()
@@ -361,11 +377,12 @@ struct DetailPost: View {
                                 .font(.title3)
                                 .frame(width: 80)
                                 .padding()
-                                .background(Color.black)
+                                .background(selectedStatus == "거래완료" ? Color.gray : Color.black)
                                 .foregroundColor(.white)
                                 .cornerRadius(8)
                                 .padding(.leading)
                         }
+                        .disabled(selectedStatus == "거래완료")
                         .padding()
                     }
                     .background(Color.white)
