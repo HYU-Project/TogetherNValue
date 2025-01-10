@@ -44,6 +44,12 @@ struct DetailPost: View {
     @State private var selectedStatus = "거래가능"
     let statusOptions = ["거래가능", "거래완료"]
     
+    @State private var comments: [Comments] = [] // 댓글 리스트
+    @State private var commentText: String = "" // 댓글 입력 텍스트
+    @State private var replyText: String = "" // 대댓글 입력 텍스트
+    @State private var replyToCommentIdx: String = "" // 대댓글 대상 댓글 ID
+    @State private var isReplying: Bool = false // 대댓글 작성 상태
+    
     private let firestoreService = DetailPostFirestoreService()
     
     private func fetchData() {
@@ -134,11 +140,62 @@ struct DetailPost: View {
         }
     }
     
+    private func fetchComments(for postIdx: String) {
+        firestoreService.fetchComments(postIdx: postIdx) { result in
+            switch result {
+            case .success(let comments):
+                DispatchQueue.main.async {
+                    self.comments = comments
+                    print("Fetched Comments:")
+                    for comment in comments {
+                        print("Comment: \(comment.comment_content), Replies count: \(comment.replies?.count ?? 0)")
+                        comment.replies?.forEach { reply in
+                            print("   Reply: \(reply.reply_content)")
+                        }
+                    }
+                }
+            case .failure(let error):
+                print("Error fetching comments: \(error)")
+            }
+        }
+    }
+    
+    private func addComment(content: String) {
+        guard let userIdx = userManager.userId else { return }
+        firestoreService.addComment(postIdx: post_idx, userIdx: userIdx, content: content) { result in
+            switch result {
+            case .success:
+                DispatchQueue.main.async {
+                    self.commentText = ""
+                    self.fetchComments(for: post_idx)
+                }
+            case .failure(let error):
+                print("Error adding comment: \(error)")
+            }
+        }
+    }
+
+    private func addReply(to commentIdx: String, content: String) {
+        guard let userIdx = userManager.userId else { return }
+        firestoreService.addReply(commentIdx: commentIdx, postIdx: post_idx, userIdx: userIdx, content: content) { result in
+            switch result {
+            case .success:
+                DispatchQueue.main.async {
+                    self.fetchComments(for: post_idx) // 새로고침
+                }
+            case .failure(let error):
+                print("Error adding reply: \(error)")
+            }
+        }
+    }
+    
+    
     var body: some View {
         if isLoading {
             ProgressView("Loading....")
                 .onAppear {
                     fetchData()
+                    fetchComments(for: post_idx)
                 }
         } else {
             ZStack(alignment: .bottom) {
@@ -340,11 +397,41 @@ struct DetailPost: View {
                             
                             Divider()
                             
-                        }
-                        .padding(.vertical)
-                        
+                            // 댓글 대댓글 리스트
+                            CommentsSection(comments: comments) { commentIdx in
+                                replyToCommentIdx = commentIdx
+                                isReplying = true
+                            }
+                            .environmentObject(UserManager())
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal)
+                                
+                            // 댓글, 대댓글 작성
+                            CommentInput(
+                                isReplying: isReplying,
+                                commentText: $commentText,
+                                replyText: $replyText,
+                                onSubmitComment: {
+                                    addComment(content: commentText)
+                                    commentText = ""
+                                },
+                                onSubmitReply: {
+                                    addReply(to: replyToCommentIdx, content: replyText)
+                                    replyText = ""
+                                    isReplying = false
+                                },
+                                onCancelReply: {
+                                    isReplying = false
+                                    replyText = ""
+                                }
+                            )
+                            
+                            Spacer().frame(height: 60) // 하단 여유 공간 추가
                     }
+                    .padding(.vertical)
+                    
                 }
+            }
                 
                 VStack(spacing: 0) {
                     

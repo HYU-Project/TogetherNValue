@@ -97,7 +97,7 @@ class PurchaseFirestoreService {
     func loadPostMetrics(postIdx: String, completion: @escaping (Int, Int) -> Void) {
         let dispatchGroup = DispatchGroup()
         var likeCount = 0
-        var commentCount = 0
+        var totalCommentCount = 0
         
         dispatchGroup.enter()
         db.collection("postLikes")
@@ -108,15 +108,34 @@ class PurchaseFirestoreService {
             }
         
         dispatchGroup.enter()
-        db.collection("comments")
-            .whereField("post_idx", isEqualTo: postIdx)
+        db.collection("posts").document(postIdx).collection("comments")
             .getDocuments { (querySnapshot, error) in
-                commentCount = querySnapshot?.documents.count ?? 0
-                dispatchGroup.leave()
+                guard let commentDocs = querySnapshot?.documents else {
+                    dispatchGroup.leave()
+                    return
+                }
+                
+                totalCommentCount += commentDocs.count // Add comment count
+                
+                let nestedDispatchGroup = DispatchGroup()
+                
+                for commentDoc in commentDocs {
+                    nestedDispatchGroup.enter()
+                    commentDoc.reference.collection("replies").getDocuments { (replySnapshot, replyError) in
+                        if let replies = replySnapshot?.documents {
+                            totalCommentCount += replies.count // Add replies count
+                        }
+                        nestedDispatchGroup.leave()
+                    }
+                }
+                
+                nestedDispatchGroup.notify(queue: .main) {
+                    dispatchGroup.leave()
+                }
             }
         
         dispatchGroup.notify(queue: .main) {
-            completion(likeCount, commentCount)
+            completion(likeCount, totalCommentCount)
         }
     }
 }

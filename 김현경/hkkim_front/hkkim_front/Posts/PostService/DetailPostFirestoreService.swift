@@ -162,4 +162,125 @@ class DetailPostFirestoreService {
             }
         }
     }
+    
+    // 댓글 리스트 가져오기 (대댓글 포함)
+    func fetchComments(postIdx: String, completion: @escaping (Result<[Comments], Error>) -> Void) {
+        let commentsRef = db.collection("posts").document(postIdx).collection("comments")
+        
+        commentsRef.getDocuments { snapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let documents = snapshot?.documents else {
+                completion(.success([]))
+                return
+            }
+            
+            var comments: [Comments] = []
+            let dispatchGroup = DispatchGroup()
+            
+            for document in documents {
+                let data = document.data()
+                let commentIdx = document.documentID
+                let userIdx = data["user_idx"] as? String ?? ""
+                let content = data["comment_content"] as? String ?? ""
+                let createdAt = (data["comment_created_at"] as? Timestamp)?.dateValue() ?? Date()
+                
+                // Create a placeholder for the comment
+                var comment = Comments(
+                    comment_idx: commentIdx,
+                    user_idx: userIdx,
+                    post_idx: postIdx,
+                    comment_content: content,
+                    comment_created_at: createdAt,
+                    replies: [] // Placeholder for replies
+                )
+                
+                dispatchGroup.enter()
+                
+                // Fetch replies for the current comment
+                self.db.collection("posts")
+                    .document(postIdx)
+                    .collection("comments")
+                    .document(commentIdx)
+                    .collection("replies")
+                    .getDocuments { replySnapshot, replyError in
+                        if let replyDocuments = replySnapshot?.documents {
+                            let fetchedReplies: [Replies] = replyDocuments.compactMap { replyDoc in
+                                let replyData = replyDoc.data()
+                                guard
+                                    let replyUserIdx = replyData["user_idx"] as? String,
+                                    let replyContent = replyData["reply_content"] as? String,
+                                    let replyCreatedAt = (replyData["reply_created_at"] as? Timestamp)?.dateValue()
+                                else {
+                                    return nil
+                                }
+                                return Replies(
+                                    reply_idx: replyDoc.documentID,
+                                    user_idx: replyUserIdx,
+                                    reply_content: replyContent,
+                                    reply_created_at: replyCreatedAt,
+                                    comment_idx: commentIdx
+                                )
+                            }
+                            comment.replies = fetchedReplies // Update the comment with fetched replies
+                        } else {
+                            print("Replies fetch error for \(commentIdx): \(replyError?.localizedDescription ?? "Unknown error")")
+                        }
+                        comments.append(comment) // Append the comment after fetching replies
+                        dispatchGroup.leave()
+                    }
+            }
+            
+            // Notify completion after all replies and comments are fetched
+            dispatchGroup.notify(queue: .main) {
+                print("Fetched comments and replies for post: \(postIdx)")
+                for comment in comments {
+                    print("Comment: \(comment.comment_content), Replies count: \(comment.replies?.count ?? 0)")
+                }
+                completion(.success(comments))
+            }
+        }
+    }
+
+    // 댓글 추가
+    func addComment(postIdx: String, userIdx: String, content: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let commentData: [String: Any] = [
+            "user_idx": userIdx,
+            "comment_content": content,
+            "comment_created_at": FieldValue.serverTimestamp()
+        ]
+        
+        db.collection("posts").document(postIdx).collection("comments").addDocument(data: commentData) { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
+        }
+    }
+    
+    // 대댓글 추가
+    func addReply(commentIdx: String, postIdx: String, userIdx: String, content: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let replyData: [String: Any] = [
+            "user_idx": userIdx,
+            "reply_content": content,
+            "reply_created_at": FieldValue.serverTimestamp()
+        ]
+        
+        db.collection("posts")
+            .document(postIdx)
+            .collection("comments")
+            .document(commentIdx)
+            .collection("replies")
+            .addDocument(data: replyData) { error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+    }
 }
