@@ -132,6 +132,8 @@ struct CommentsSection: View {
                                 Text(comment.comment_content)
                                     .font(.body)
                                 
+                                Spacer()
+                                
                                 if comment.user_idx == userManager.userId {
                                     HStack {
                                         Button(action: {
@@ -180,6 +182,7 @@ struct CommentsSection: View {
                                         }
                                         .font(.caption)
                                         .foregroundColor(.blue)
+                                        
                                         Button("취소") {
                                             editingReplyId = nil // 수정 취소
                                         }
@@ -189,6 +192,8 @@ struct CommentsSection: View {
                                         
                                         Text("ㄴ\(reply.reply_content)")
                                             .font(.body)
+                                        
+                                        Spacer()
                                         
                                         if reply.user_idx == userManager.userId {
                                             HStack{
