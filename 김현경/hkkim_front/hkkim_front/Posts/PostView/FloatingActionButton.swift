@@ -24,7 +24,11 @@ struct FloatingActionButton: View {
                         .padding()
                 }
                 .sheet(isPresented: $showCreatePostView) {
-                    CreatePostView() // 게시물 작성 창
+                    CreatePostView(
+                        post: nil, // 작성 모드에서는 새 게시물 데이터 생성
+                        postDetails: .constant(nil), // 작성 모드에서는 nil
+                        isEditMode: false // 작성 모드로 설정
+                    ) // 게시물 작성 창
                 }
             }
         }

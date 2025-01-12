@@ -220,9 +220,9 @@ class DetailPostFirestoreService {
                                 return Replies(
                                     reply_idx: replyDoc.documentID,
                                     user_idx: replyUserIdx,
+                                    comment_idx: commentIdx,
                                     reply_content: replyContent,
-                                    reply_created_at: replyCreatedAt,
-                                    comment_idx: commentIdx
+                                    reply_created_at: replyCreatedAt
                                 )
                             }
                             comment.replies = fetchedReplies // Update the comment with fetched replies
@@ -282,5 +282,59 @@ class DetailPostFirestoreService {
                     completion(.success(()))
                 }
             }
+    }
+    
+    // 댓글, 대댓글 수정
+    func updateDocument(path: String, data: [String: Any], completion: @escaping (Result<Void, Error>) -> Void){
+        Firestore.firestore().document(path).updateData(data) { error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+    }
+    
+    // 댓글 삭제
+    func deleteCollection(path: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let collectionRef = Firestore.firestore().collection(path)
+        
+        collectionRef.getDocuments { snapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let documents = snapshot?.documents else {
+                completion(.success(()))
+                return
+            }
+            
+            let batch = Firestore.firestore().batch()
+            
+            for document in documents {
+                batch.deleteDocument(document.reference)
+            }
+            
+            batch.commit { batchError in
+                if let batchError = batchError {
+                    completion(.failure(batchError))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        }
+    }
+    
+    
+    // 대댓글 삭제
+    func deleteDocument(path: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        Firestore.firestore().document(path).delete { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
+        }
     }
 }

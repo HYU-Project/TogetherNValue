@@ -59,12 +59,14 @@ struct CreatePostView: View {
     @State private var isValidPost = false // 게시물 폼 유효성
     
     @State private var createPost: CreatePost
+    @Binding var postDetails: PostInfo?
     let isEditMode: Bool // 수정 모드인지 여부
     
-    init(post: CreatePost? = nil, isEditMode: Bool = false) {
-        self._createPost = State(initialValue: post ?? CreatePost(user_idx: "", post_category: "", post_categoryType: "", title: "", post_content: "", location: "", want_num: 1, post_status: "거래가능", created_at: Date(), school_idx: "", postImages: []))
-        self.isEditMode = isEditMode
-    }
+    init(post: CreatePost? = nil, postDetails: Binding<PostInfo?>, isEditMode: Bool = false) {
+            self._createPost = State(initialValue: post ?? CreatePost(user_idx: "", post_category: "", post_categoryType: "", title: "", post_content: "", location: "", want_num: 1, post_status: "거래가능", created_at: Date(), school_idx: "", postImages: []))
+            self._postDetails = postDetails
+            self.isEditMode = isEditMode
+        }
     
     let categories = ["공구", "나눔"]
     let categoryTypes = ["물품", "식재료", "배달"]
@@ -280,7 +282,7 @@ struct CreatePostView: View {
                     }) {
                         Text(isEditMode ? "수정 완료" : "작성 완료")
                             .font(.title2)
-                            .foregroundColor(Color.black)
+                            .foregroundColor(Color.white)
                             .bold()
                     }
                     .padding()
@@ -404,32 +406,28 @@ struct CreatePostView: View {
     private func savePostImagesToFirestore(postDocumentId: String, postImages: [CreatePostImage], completion: @escaping (Bool) -> Void) {
         let postImageRef = db.collection("posts").document(postDocumentId).collection("postImages")
         
-        // Firestore batch 생성
         let batch = db.batch()
 
         for postImage in postImages {
-            let imageDoc = postImageRef.document() // 이미지마다 고유한 document ID 생성
+            let imageDoc = postImageRef.document()
             
-            // CreatePostImage 구조체의 toDictionary 메서드를 호출하여 데이터를 변환
             let postImageData = postImage.toDictionary()
             
-            // 배치 작업에 데이터 추가
             batch.setData(postImageData, forDocument: imageDoc)
         }
 
-        // 배치 커밋
         batch.commit { error in
             if let error = error {
                 print("postImages 저장 중 오류 발생: \(error)")
-                completion(false) // 실패 시 false 반환
+                completion(false)
             } else {
                 print("postImages가 Firestore에 성공적으로 저장되었습니다.")
-                completion(true) // 성공 시 true 반환
+                completion(true)
             }
         }
     }
     
-    private func updatePostToDatabase(){
+    private func updatePostToDatabase() {
         guard let postIdx = createPost.post_idx else {
             print("게시물 ID가 없습니다.")
             return
@@ -442,16 +440,25 @@ struct CreatePostView: View {
                 print("게시물 업데이트 중 오류 발생: \(error)")
                 return
             }
-            print("게시물이 성공적으로 업데이트되었습니다.")
-            dismiss()
+            
+            DispatchQueue.main.async {
+                postDetails = PostInfo(
+                    id: createPost.post_idx,
+                    user_idx: createPost.user_idx,
+                    post_category: createPost.post_category,
+                    post_categoryType: createPost.post_categoryType,
+                    title: createPost.title,
+                    post_content: createPost.post_content,
+                    location: createPost.location,
+                    want_num: createPost.want_num,
+                    post_status: createPost.post_status,
+                    created_at: createPost.created_at,
+                    school_idx: createPost.school_idx,
+                    images: createPost.postImages.map { PostImages(post_idx: $0.post_idx, image_url: $0.image_url) }
+                )
+                dismiss()
+            }
         }
     }
 
 }
-
-
-#Preview {
-    CreatePostView()
-        .environmentObject(UserManager())
-}
-

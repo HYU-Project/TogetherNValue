@@ -398,7 +398,7 @@ struct DetailPost: View {
                             Divider()
                             
                             // 댓글 대댓글 리스트
-                            CommentsSection(comments: comments) { commentIdx in
+                            CommentsSection(comments: $comments, post_idx: post_idx) { commentIdx in
                                 replyToCommentIdx = commentIdx
                                 isReplying = true
                             }
@@ -482,8 +482,7 @@ struct DetailPost: View {
                     message: nil,
                     buttons: [
                         .default(Text("게시물 수정"), action: {
-                            // 게시물 수정
-                            isEditPostPresented = true
+                            isEditPostPresented = true // 게시물 수정
                         }),
                         .destructive(Text("게시물 삭제"), action: {
                             // 게시물 삭제 동작
@@ -494,25 +493,7 @@ struct DetailPost: View {
             }
             .sheet(isPresented: $isEditPostPresented){
                 if let postDetails = postDetails {
-                    CreatePostView(
-                        post: CreatePost(
-                            post_idx: postDetails.id ?? "", // Firestore 문서 ID
-                            user_idx: postDetails.user_idx,
-                            post_category: postDetails.post_category,
-                            post_categoryType: postDetails.post_categoryType,
-                            title: postDetails.title,
-                            post_content: postDetails.post_content,
-                            location: postDetails.location,
-                            want_num: postDetails.want_num,
-                            post_status: postDetails.post_status,
-                            created_at: postDetails.created_at ?? Date(), // 기본값 제공
-                            school_idx: postDetails.school_idx,
-                            postImages: postDetails.images?.map {
-                                CreatePostImage(post_idx: $0.post_idx, image_url: $0.image_url)
-                            } ?? [] // 기본값 빈 배열 제공
-                        ),
-                        isEditMode: true // 수정 모드 활성화
-                    )
+                    CreatePostView(post: postDetails.toCreatePost(), postDetails: $postDetails, isEditMode: true)
                 }
             }
         }
