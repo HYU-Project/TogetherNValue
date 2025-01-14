@@ -84,17 +84,17 @@ struct MyPosts: View {
         }
     }
         
-        // 거래 완료로 상태 변화
-        private func updatePostStatus(post: MyPost) {
-            if let index = posts.firstIndex(where: { $0.post_idx == post.post_idx }) {
-                posts[index].post_status = "거래완료"
-            }
+    // 거래 완료로 상태 변화
+    private func updatePostStatus(post: MyPost) {
+        if let index = posts.firstIndex(where: { $0.post_idx == post.post_idx }) {
+            posts[index].post_status = "거래완료"
         }
-        
-        // 게시글 삭제
-        private func deletePost(post: MyPost) {
-            posts.removeAll { $0.post_idx == post.post_idx }
-        }
+    }
+    
+    // 게시글 삭제
+    private func deletePost(post: MyPost) {
+        posts.removeAll { $0.post_idx == post.post_idx }
+    }
 }
 
 #Preview {

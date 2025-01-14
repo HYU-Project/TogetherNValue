@@ -78,7 +78,6 @@ struct GroupPurchaseMain: View {
             
             ZStack {
                 VStack {
-                    //Text("Hello, \(userManager.userId ?? "Guest")") // 테스트용
                     HStack {
                         Text("공구")
                             .font(.largeTitle)
@@ -108,6 +107,7 @@ struct GroupPurchaseMain: View {
                 .onAppear {
                     if userManager.userId != nil {
                         fetchSchoolName() // userId가 유효할 때만 호출
+                        loadPosts()
                     } else {
                         print("로그인된 유저가 없습니다.") // 로그인되지 않았을 경우 처리
                     }

@@ -26,6 +26,11 @@ struct PostInfo: Identifiable, Codable {
 
 extension PostInfo {
     func toCreatePost() -> CreatePost {
+        let convertedImages = (self.images ?? []).map {
+                    CreatePostImage(post_idx: $0.post_idx, image_url: $0.image_url, order: $0.order)
+                }
+        print("Converted Images: \(convertedImages)")
+        
         return CreatePost(
             post_idx: self.id,
             user_idx: self.user_idx,
@@ -38,7 +43,7 @@ extension PostInfo {
             post_status: self.post_status,
             created_at: self.created_at ?? Date(),
             school_idx: self.school_idx,
-            postImages: (self.images ?? []).map { CreatePostImage(post_idx: $0.post_idx, image_url: $0.image_url) }
+            postImages: convertedImages
         )
     }
 }
@@ -48,6 +53,7 @@ struct PostImages: Identifiable, Codable {
     @DocumentID var id: String? // Firestore의 문서 ID
     let post_idx: String
     let image_url: String
+    let order: Int
 }
 
 // 유저

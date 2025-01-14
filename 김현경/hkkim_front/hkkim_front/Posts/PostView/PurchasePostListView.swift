@@ -49,58 +49,33 @@ struct PurchasePostImageView: View {
     
     var body: some View {
         ZStack {
-            if let postImageUrl = postImageUrl {
-                if postImageUrl.starts(with: "file://"), let url = URL(string: postImageUrl) {
-                    // 로컬 파일 경로 처리
-                    let localFileURL = URL(fileURLWithPath: url.path)  // file:// 프로토콜을 처리하는 방식
-                    if let uiImage = UIImage(contentsOfFile: localFileURL.path) {
-                        Image(uiImage: uiImage)
+            if let postImageUrl = postImageUrl, let url = URL(string: postImageUrl) {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                            .frame(width: 60, height: 60)
+                    case .success(let image):
+                        image
                             .resizable()
                             .scaledToFill()
                             .frame(width: 60, height: 60)
                             .cornerRadius(8)
-                    } else {
+                    case .failure:
                         Image("NoImage")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 60, height: 60)
+                    @unknown default:
+                        EmptyView()
                     }
-                } else if let url = URL(string: postImageUrl) {
-                    // URL로 이미지 로드
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .empty:
-                            ProgressView()
-                                .frame(width: 60, height: 60)
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 60, height: 60)
-                                .cornerRadius(8)
-                        case .failure:
-                            Image("NoImage")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 60, height: 60)
-                        @unknown default:
-                            EmptyView()
-                        }
-                    }
-                } else {
-                    Image("NoImage")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 60, height: 60)
                 }
             } else {
-                Text("No image available")
+                Image("NoImage")
+                    .resizable()
+                    .scaledToFit()
                     .frame(width: 60, height: 60)
-                    .foregroundColor(.gray)
-                    .background(Color.secondary.opacity(0.2))
-                    .cornerRadius(8)
             }
-
         }
     }
 }

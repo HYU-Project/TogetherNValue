@@ -13,14 +13,11 @@ struct InterestedPostRow: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            // 이미지 섹션
-            if let imageUrl = post.postImage_url, !imageUrl.isEmpty {
-                AsyncImage(url: URL(string: imageUrl)) { phase in
+            if let imageUrl = URL(string: post.postImage_url ?? "NoImage") {
+                AsyncImage(url: imageUrl) { phase in
                     switch phase {
                     case .empty:
-                        Image("NoImage")
-                            .resizable()
-                            .scaledToFit()
+                        ProgressView()
                             .frame(width: 60, height: 60)
                     case .success(let image):
                         image
@@ -42,7 +39,6 @@ struct InterestedPostRow: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 60, height: 60)
-                    .foregroundColor(.gray)
             }
 
             // 텍스트와 버튼 섹션

@@ -53,56 +53,59 @@ struct DetailPost: View {
     private let firestoreService = DetailPostFirestoreService()
     
     private func fetchData() {
-            firestoreService.fetchPostDetails(postIdx: post_idx) { result in
-                switch result {
-                case .success(let post):
-                    DispatchQueue.main.async {
-                        self.postDetails = post
-                    }
-                    if let postId = post.id { // post.id 사용
-                        fetchImages(for: postId)
-                    } else {
-                        print("Error: Post ID is nil.")
-                    }
-                    fetchUserDetails(for: post.user_idx)
-                case .failure(let error):
-                    print("Error fetching post details: \(error)")
-                    DispatchQueue.main.async {
-                        self.isLoading = false
-                    }
+        firestoreService.fetchPostDetails(postIdx: post_idx) { result in
+            switch result {
+            case .success(let post):
+                DispatchQueue.main.async {
+                    self.postDetails = post
+                    print("Post Details: \(post)") // 디버깅용
                 }
-            }
-        }
-        
-        private func fetchImages(for postIdx: String) {
-            firestoreService.fetchPostImages(postIdx: postIdx) { result in
-                switch result {
-                case .success(let images):
-                    DispatchQueue.main.async {
-                        self.postImages = images
-                    }
-                case .failure(let error):
-                    print("Error fetching images: \(error)")
+                if let postId = post.id {
+                    fetchImages(for: postId)
+                } else {
+                    print("Error: Post ID is nil.")
                 }
-            }
-        }
-        
-        private func fetchUserDetails(for userIdx: String) {
-            firestoreService.fetchUserDetails(userIdx: userIdx) { result in
-                switch result {
-                case .success(let user):
-                    DispatchQueue.main.async {
-                        self.postUser = user
-                    }
-                case .failure(let error):
-                    print("Error fetching user details: \(error)")
-                }
+                fetchUserDetails(for: post.user_idx)
+            case .failure(let error):
+                print("Error fetching post details: \(error)")
                 DispatchQueue.main.async {
                     self.isLoading = false
                 }
             }
         }
-    
+    }
+
+    private func fetchImages(for postIdx: String) {
+        firestoreService.fetchPostImages(postIdx: postIdx) { result in
+            switch result {
+            case .success(let images):
+                DispatchQueue.main.async {
+                    self.postImages = images
+                    self.postDetails?.images = images // postDetails에 이미지 추가
+                    print("Fetched Images: \(images)") // 디버깅용
+                }
+            case .failure(let error):
+                print("Error fetching images: \(error)")
+            }
+        }
+    }
+
+    private func fetchUserDetails(for userIdx: String) {
+        firestoreService.fetchUserDetails(userIdx: userIdx) { result in
+            switch result {
+            case .success(let user):
+                DispatchQueue.main.async {
+                    self.postUser = user
+                }
+            case .failure(let error):
+                print("Error fetching user details: \(error)")
+            }
+            DispatchQueue.main.async {
+                self.isLoading = false
+            }
+        }
+    }
+
     private func toggleLike(){
         guard let userIdx = userManager.userId else { return }
         firestoreService.togglePostLike(postIdx: post_idx, userIdx: userIdx, isLiked: isLiked){
@@ -195,6 +198,7 @@ struct DetailPost: View {
             ProgressView("Loading....")
                 .onAppear {
                     fetchData()
+                    fetchImages(for: post_idx)
                     fetchComments(for: post_idx)
                 }
         } else {
@@ -228,7 +232,7 @@ struct DetailPost: View {
                                                 case .success(let image):
                                                     image.resizable()
                                                         .scaledToFill()
-                                                        .frame(height: 200)
+                                                        .frame(height: 400)
                                                         .clipped()
                                                 case .failure:
                                                     Image("NoImage")
@@ -474,7 +478,9 @@ struct DetailPost: View {
                     }
                     .background(Color.white)
                 }
-                
+                .onAppear {
+                    fetchData() // 데이터 로드
+                }
             }
             .actionSheet(isPresented: $isActionSheetPresented){
                 ActionSheet(
@@ -491,7 +497,9 @@ struct DetailPost: View {
                     ]
                 )
             }
-            .sheet(isPresented: $isEditPostPresented){
+            .sheet(isPresented: $isEditPostPresented, onDismiss: {
+                        fetchData() // CreatePostView 닫힌 후 데이터 새로고침
+                    }){
                 if let postDetails = postDetails {
                     CreatePostView(post: postDetails.toCreatePost(), postDetails: $postDetails, isEditMode: true)
                 }

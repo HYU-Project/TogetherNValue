@@ -13,38 +13,37 @@ class PurchaseFirestoreService {
     
     // post 불러오기
     func loadPosts(school_idx: String, category: String, completion: @escaping ([PurchasePost]) -> Void) {
-        db.collection("posts")
-            .whereField("school_idx", isEqualTo: school_idx)
-            .whereField("post_category", isEqualTo: category)
-            .getDocuments { (querySnapshot, error) in
-                if let error = error {
-                    print("Error getting posts: \(error.localizedDescription)")
-                    completion([])
-                    return
-                }
-                
-                var loadedPosts: [PurchasePost] = []
-                let dispatchGroup = DispatchGroup()
-                
-                for document in querySnapshot!.documents {
-                    let data = document.data()
-                    let postIdx = document.documentID
-                    let userIdx = data["user_idx"] as? String ?? ""
-                    let postCategory = data["post_category"] as? String ?? ""
-                    let postCategoryType = data["post_categoryType"] as? String ?? ""
-                    let title = data["title"] as? String ?? ""
-                    let postContent = data["post_content"] as? String ?? ""
-                    let location = data["location"] as? String ?? ""
-                    let wantNum = data["want_num"] as? Int ?? 0
-                    let createdAt = (data["created_at"] as? Timestamp)?.dateValue() ?? Date()
-                    let schoolIdx = data["school_idx"] as? String ?? ""
-                    let postStatus = data["post_status"] as? String ?? ""
+            db.collection("posts")
+                .whereField("school_idx", isEqualTo: school_idx)
+                .whereField("post_category", isEqualTo: category)
+                .getDocuments { (querySnapshot, error) in
+                    if let error = error {
+                        print("Error getting posts: \(error.localizedDescription)")
+                        completion([])
+                        return
+                    }
                     
-                    dispatchGroup.enter()
+                    var loadedPosts: [PurchasePost] = []
+                    let dispatchGroup = DispatchGroup()
                     
-                    // 이미지와 메트릭을 동시에 불러오기
-                    self.loadPostImages(postIdx: postIdx) { postImage in
-                        self.loadPostMetrics(postIdx: postIdx) { postLikeCnt, postCommentCnt in
+                    for document in querySnapshot!.documents {
+                        let data = document.data()
+                        let postIdx = document.documentID
+                        let userIdx = data["user_idx"] as? String ?? ""
+                        let postCategory = data["post_category"] as? String ?? ""
+                        let postCategoryType = data["post_categoryType"] as? String ?? ""
+                        let title = data["title"] as? String ?? ""
+                        let postContent = data["post_content"] as? String ?? ""
+                        let location = data["location"] as? String ?? ""
+                        let wantNum = data["want_num"] as? Int ?? 0
+                        let createdAt = (data["created_at"] as? Timestamp)?.dateValue() ?? Date()
+                        let schoolIdx = data["school_idx"] as? String ?? ""
+                        let postStatus = data["post_status"] as? String ?? ""
+                        
+                        dispatchGroup.enter()
+                        
+                        // 첫 번째 이미지 가져오기
+                        self.loadPostImages(postIdx: postIdx) { imageUrl in
                             let post = PurchasePost(
                                 post_idx: postIdx,
                                 user_idx: userIdx,
@@ -56,39 +55,34 @@ class PurchaseFirestoreService {
                                 want_num: wantNum,
                                 post_status: postStatus,
                                 created_at: createdAt,
-                                school_idx: school_idx,
-                                postImage_url: postImage ?? "",
-                                post_likeCnt: postLikeCnt,
-                                post_commentCnt: postCommentCnt
+                                school_idx: schoolIdx,
+                                postImage_url: imageUrl ?? "", // 이미지 URL 추가
+                                post_likeCnt: 0, // 좋아요 및 댓글 수 초기값
+                                post_commentCnt: 0
                             )
                             loadedPosts.append(post)
                             dispatchGroup.leave()
                         }
                     }
+                    
+                    dispatchGroup.notify(queue: .main) {
+                        completion(loadedPosts)
+                    }
                 }
-                
-                dispatchGroup.notify(queue: .main) {
-                    completion(loadedPosts)
-                }
-            }
-    }
+        }
     
-    // 포스트 이미지 가져오기
+    // 이미지 가져오기
     func loadPostImages(postIdx: String, completion: @escaping (String?) -> Void) {
-        db.collection("postImages")
-            .whereField("post_idx", isEqualTo: postIdx)
+        db.collection("posts").document(postIdx).collection("postImages")
+            .order(by: "order") // `order`로 정렬
+            .limit(to: 1) // 첫 번째 이미지만 가져옴
             .getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print("Error getting post images: \(error.localizedDescription)")
                     completion(nil)
                 } else {
-                    if let document = querySnapshot?.documents.first {
-                        let data = document.data()
-                        let imageUrl = data["image_url"] as? String
-                        completion(imageUrl) // Firestore에서 가져온 URL 반환
-                    } else {
-                        completion(nil)
-                    }
+                    let imageUrl = querySnapshot?.documents.first?["image_url"] as? String
+                    completion(imageUrl)
                 }
             }
     }

@@ -61,14 +61,15 @@ class InterestedPostService {
                     return
                 }
 
-                print("Fetched post documents: \(documents.map { $0.data() })")
+                let dispatchGroup = DispatchGroup()
+                var posts: [InterestedPost] = []
 
-                let posts: [InterestedPost] = documents.compactMap { document in
+                for document in documents {
                     let data = document.data()
                     print("Processing post document: \(data)")
-                    
+
                     let postIdx = document.documentID
-                    
+
                     guard
                         let userIdx = data["user_idx"] as? String,
                         let postCategory = data["post_category"] as? String,
@@ -82,47 +83,51 @@ class InterestedPostService {
                         let schoolIdx = data["school_idx"] as? String
                     else {
                         print("Error parsing post document: \(data)")
-                        return nil
+                        continue
                     }
 
-                    // postImages 배열에서 첫 번째 이미지 가져오기
-                    let postImages = data["postImages"] as? [String]
-                    let postImageUrl = postImages?.first ?? "" // 첫 번째 이미지 또는 기본값
-                    
-                    let postLikeCnt = data["post_likeCnt"] as? Int ?? 0
-                    let postCommentCnt = data["post_commentCnt"] as? Int ?? 0
+                    dispatchGroup.enter()
+                    // 첫 번째 이미지 로드
+                    self.loadPostImage(postIdx: postIdx) { imageUrl in
+                        let postLikeCnt = data["post_likeCnt"] as? Int ?? 0
+                        let postCommentCnt = data["post_commentCnt"] as? Int ?? 0
 
-                    return InterestedPost(
-                        post_idx: postIdx,
-                        user_idx: userIdx,
-                        post_category: postCategory,
-                        post_categoryType: postCategoryType,
-                        title: title,
-                        post_content: postContent,
-                        location: location,
-                        want_num: wantNum,
-                        post_status: postStatus,
-                        created_at: createdAt,
-                        school_idx: schoolIdx,
-                        postImage_url: postImageUrl, // 단일 이미지 URL
-                        post_likeCnt: postLikeCnt,
-                        post_commentCnt: postCommentCnt
-                    )
+                        let post = InterestedPost(
+                            post_idx: postIdx,
+                            user_idx: userIdx,
+                            post_category: postCategory,
+                            post_categoryType: postCategoryType,
+                            title: title,
+                            post_content: postContent,
+                            location: location,
+                            want_num: wantNum,
+                            post_status: postStatus,
+                            created_at: createdAt,
+                            school_idx: schoolIdx,
+                            postImage_url: imageUrl ?? "", // 첫 번째 이미지 URL
+                            post_likeCnt: postLikeCnt,
+                            post_commentCnt: postCommentCnt
+                        )
+
+                        posts.append(post)
+                        dispatchGroup.leave()
+                    }
                 }
 
-                print("Parsed posts: \(posts)")
-                completion(.success(posts))
+                dispatchGroup.notify(queue: .main) {
+                    print("Fetched and parsed posts: \(posts)")
+                    completion(.success(posts))
+                }
             }
     }
 
-
-    // 하위 컬렉션에서 첫 번째 이미지 가져오기
     private func loadPostImage(postIdx: String, completion: @escaping (String?) -> Void) {
-        db.collection("postImages")
-            .whereField("post_idx", isEqualTo: postIdx)
+        db.collection("posts").document(postIdx).collection("postImages")
+            .order(by: "order")
+            .limit(to: 1)
             .getDocuments { snapshot, error in
                 if let error = error {
-                    print("Error fetching postImages: \(error.localizedDescription)")
+                    print("Error fetching postImages for postIdx \(postIdx): \(error.localizedDescription)")
                     completion(nil)
                     return
                 }
@@ -134,9 +139,11 @@ class InterestedPostService {
                 }
 
                 let imageUrl = document.data()["image_url"] as? String
+                print("Fetched image URL for postIdx \(postIdx): \(String(describing: imageUrl))")
                 completion(imageUrl)
             }
     }
+
     
     func togglePostLike(postIdx: String, userIdx: String, isLiked: Bool, completion: @escaping (Result<Void, Error>) -> Void){
             

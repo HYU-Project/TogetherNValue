@@ -58,15 +58,15 @@ struct GroupSharingMain: View {
     private let firestoreService = SharingFirestoreService()
     
     // 게시물 로드
-        func loadPosts() {
-            guard let schoolIdx = schoolIdx else {
-                    print("schoolIdx가 없습니다.")
-                    return
-                }
-            firestoreService.loadPosts(school_idx: schoolIdx, category: "나눔") { posts in
-                self.posts = posts
+    func loadPosts() {
+        guard let schoolIdx = schoolIdx else {
+                print("schoolIdx가 없습니다.")
+                return
             }
+        firestoreService.loadPosts(school_idx: schoolIdx, category: "나눔") { posts in
+            self.posts = posts
         }
+    }
     
     
     // 필터링된 게시물 리스트
@@ -111,6 +111,7 @@ struct GroupSharingMain: View {
                 .onAppear {
                     if userManager.userId != nil {
                         fetchSchoolName() // userId가 유효할 때만 호출
+                        loadPosts()
                     } else {
                         print("로그인된 유저가 없습니다.") // 로그인되지 않았을 경우 처리
                     }

@@ -42,11 +42,13 @@ struct CreatePost {
 struct CreatePostImage {
     var post_idx: String
     var image_url: String
+    var order: Int // 업로드 순서를 나타내는 필드
     
     func toDictionary() -> [String: Any] {
         return [
             "post_idx": post_idx,
-            "image_url": image_url
+            "image_url": image_url,
+            "order": order
         ]
     }
 }
@@ -240,26 +242,89 @@ struct CreatePostView: View {
                                 .padding(.trailing, 230)
                         }
 
-                        Button(action: {
-                            showImagePicker = true
-                        }) {
-                            if selectedImages.isEmpty {
-                                Image(systemName: "photo.badge.plus.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 100, height: 70)
-                                    .foregroundColor(.gray)
-                            } else {
-                                // 선택된 이미지들 보여주기
-                                ScrollView(.horizontal) {
-                                    HStack {
-                                        ForEach(selectedImages, id: \.self) { image in
-                                            Image(uiImage: image)
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: 100, height: 70)
-                                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                        ScrollView(.horizontal) {
+                            HStack {
+                                // 기존 이미지 표시 (수정 모드일 때만)
+                                if isEditMode {
+                                    ForEach(createPost.postImages, id: \.order) { image in
+                                        ZStack(alignment: .topTrailing) { // ZStack에 alignment 추가
+                                            AsyncImage(url: URL(string: image.image_url)) { phase in
+                                                switch phase {
+                                                case .empty:
+                                                    ProgressView()
+                                                        .frame(width: 100, height: 70)
+                                                case .success(let image):
+                                                    image
+                                                        .resizable()
+                                                        .scaledToFit()
+                                                        .frame(width: 100, height: 70)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                                                case .failure:
+                                                    Image(systemName: "xmark")
+                                                        .resizable()
+                                                        .scaledToFit()
+                                                        .frame(width: 100, height: 70)
+                                                @unknown default:
+                                                    EmptyView()
+                                                }
+                                            }
+
+                                            // 삭제 버튼
+                                            if isEditMode { // isEditMode가 true일 때만 표시
+                                                Button(action: {
+                                                    withAnimation {
+                                                        // 기존 이미지 배열에서 제거
+                                                        createPost.postImages.removeAll { $0.image_url == image.image_url }
+                                                    }
+                                                }) {
+                                                    Image(systemName: "xmark.circle.fill")
+                                                        .foregroundColor(.red)
+                                                        .background(Color.white)
+                                                        .clipShape(Circle())
+                                                }
+                                                .offset(x: -10, y: 10) // 위치 조정
+                                            }
                                         }
+                                    }
+                                }
+
+                                // 새로 선택한 이미지 표시
+                                ForEach(selectedImages, id: \.self) { image in
+                                    ZStack(alignment: .topTrailing) {
+                                        Image(uiImage: image)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 100, height: 70)
+                                            .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                                        // 삭제 버튼
+                                        Button(action: {
+                                            withAnimation {
+                                                selectedImages.removeAll { $0 == image }
+                                            }
+                                        }) {
+                                            Image(systemName: "xmark.circle.fill")
+                                                .foregroundColor(.red)
+                                                .background(Color.white)
+                                                .clipShape(Circle())
+                                        }
+                                        .offset(x: -10, y: 10)
+                                    }
+                                }
+
+                                // 이미지 추가 버튼
+                                Button(action: {
+                                    showImagePicker = true
+                                }) {
+                                    VStack {
+                                        Image(systemName: "plus.circle")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 50, height: 50)
+                                            .foregroundColor(.gray)
+                                        Text("추가")
+                                            .font(.footnote)
+                                            .foregroundColor(.gray)
                                     }
                                 }
                             }
@@ -273,12 +338,17 @@ struct CreatePostView: View {
                     // 작성 완료 버튼
                     Button(action: {
                         if isEditMode {
-                            updatePostToDatabase()
+                            updatePostToDatabase{
+                                dismiss()
+                                postDetails?.images = createPost.postImages.map {
+                                    PostImages(post_idx: $0.post_idx, image_url: $0.image_url, order: $0.order)
+                                }
+                            }
                         }
                         else{
                             savePostToDatabase()
+                            dismiss()
                         }
-                        // dismiss()
                     }) {
                         Text(isEditMode ? "수정 완료" : "작성 완료")
                             .font(.title2)
@@ -308,85 +378,99 @@ struct CreatePostView: View {
                       createPost.want_num > 0 &&
                       !createPost.post_content.isEmpty
     }
-        
+    
     private func savePostToDatabase() {
         guard let currentUserId = userManager.userId else {
             print("유저가 로그인되지 않았습니다.")
             return
         }
 
-        // fetchSchoolIdx로 school_idx 가져오기
         fetchSchoolIdx { schoolIdx in
             guard let schoolIdx = schoolIdx else {
                 print("school_idx를 가져올 수 없습니다.")
                 return
             }
 
-            // 게시글 생성 데이터 구성
             self.createPost.created_at = Date()
             self.createPost.user_idx = currentUserId
             self.createPost.school_idx = schoolIdx
-            
-            // Firestore에 데이터 저장
+
             var postRef: DocumentReference? = nil
             let postData = self.createPost.toDictionary()
+
+            // Firestore에 게시물 데이터 저장
             postRef = self.db.collection("posts").addDocument(data: postData) { error in
                 if let error = error {
-                    print("Post 데이터를 Firestore에 저장하는 중 오류 발생: \(error)")
+                    print("게시물 저장 중 오류 발생: \(error)")
                     return
                 }
                 
                 guard let documentId = postRef?.documentID else { return }
-                
-                // 이미지 업로드 처리
+
+                // 선택된 이미지가 있으면 업로드
                 if !self.selectedImages.isEmpty {
                     self.saveImages(postDocumentId: documentId) { success in
-                        if success {
-                            print("post와 이미지가 성공적으로 저장되었습니다.")
-                            self.dismiss()
-                        } else {
-                            print("이미지 업로드 중 오류 발생.")
+                        DispatchQueue.main.async {
+                            if success {
+                                print("게시물과 이미지가 성공적으로 저장되었습니다.")
+                                self.dismiss() // 저장 완료 후 닫기
+                            } else {
+                                print("이미지 업로드 중 오류 발생.")
+                            }
                         }
                     }
                 } else {
-                    self.dismiss()
+                    DispatchQueue.main.async {
+                        self.dismiss() // 이미지가 없는 경우 즉시 닫기
+                    }
                 }
             }
         }
     }
     
-    // selectedImages가 UIImage 목록으로, 로컬 파일로 저장한 후 Firestore에 URL을 저장하는 방식
+    // Firebase Storage에 이미지를 업로드하고 다운로드 URL을 Firestore에 저장
     private func saveImages(postDocumentId: String, completion: @escaping (Bool) -> Void) {
         var postImages: [CreatePostImage] = []
+        let storage = Storage.storage()
+        let dispatchGroup = DispatchGroup()
         
-        for selectedImage in selectedImages {
-            let fileName = UUID().uuidString + ".jpg"
+        for (index, selectedImage) in selectedImages.enumerated() { // 이미지 인덱스로 순서 지정
+            dispatchGroup.enter()
+            let fileName = UUID().uuidString + ".png"
+            let storageRef = storage.reference().child("posts/\(postDocumentId)/\(fileName)")
             
-            // 이미지를 로컬에 저장하고 URL을 가져옴
-            if let fileURL = saveImageToDocuments(image: selectedImage, fileName: fileName) {
-                // 로컬 파일 URL을 Firestore에 저장할 데이터로 변환
-                let postImage = CreatePostImage(
-                    post_idx: postDocumentId,
-                    image_url: fileURL.absoluteString // 로컬 파일 URL 문자열을 저장
-                )
-                postImages.append(postImage)
-            } else {
-                print("이미지를 로컬 파일로 저장하는 데 실패했습니다.")
+            guard let imageData = selectedImage.pngData() else {
+                print("이미지를 PNG 데이터로 변환하는 데 실패했습니다.")
+                dispatchGroup.leave()
+                continue
             }
-        }
-
-        // 로컬 URL을 Firestore에 저장
-        if !postImages.isEmpty {
-            savePostImagesToFirestore(postDocumentId: postDocumentId, postImages: postImages) { success in
-                if success {
-                    completion(true) // 이미지 저장 성공
-                } else {
-                    completion(false) // 이미지 저장 실패
+            
+            storageRef.putData(imageData, metadata: nil) { _, error in
+                if let error = error {
+                    print("Firebase Storage에 업로드 중 오류 발생: \(error)")
+                    dispatchGroup.leave()
+                    return
+                }
+                
+                storageRef.downloadURL { url, error in
+                    if let error = error {
+                        print("이미지 다운로드 URL을 가져오는 중 오류 발생: \(error)")
+                    } else if let url = url {
+                        let postImage = CreatePostImage(post_idx: postDocumentId, image_url: url.absoluteString, order: index) // `order` 추가
+                        postImages.append(postImage)
+                    }
+                    dispatchGroup.leave()
                 }
             }
-        } else {
-            print("저장할 이미지가 없습니다.")
-            completion(false) // 저장할 이미지가 없는 경우
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            if !postImages.isEmpty {
+                self.savePostImagesToFirestore(postDocumentId: postDocumentId, postImages: postImages, completion: completion)
+            } else {
+                print("저장할 이미지가 없습니다.")
+                completion(false)
+            }
         }
     }
 
@@ -405,14 +489,11 @@ struct CreatePostView: View {
     
     private func savePostImagesToFirestore(postDocumentId: String, postImages: [CreatePostImage], completion: @escaping (Bool) -> Void) {
         let postImageRef = db.collection("posts").document(postDocumentId).collection("postImages")
-        
         let batch = db.batch()
 
         for postImage in postImages {
             let imageDoc = postImageRef.document()
-            
-            let postImageData = postImage.toDictionary()
-            
+            let postImageData = postImage.toDictionary() // `order` 필드 포함
             batch.setData(postImageData, forDocument: imageDoc)
         }
 
@@ -427,36 +508,89 @@ struct CreatePostView: View {
         }
     }
     
-    private func updatePostToDatabase() {
+    private func updatePostToDatabase(completion: @escaping () -> Void) {
         guard let postIdx = createPost.post_idx else {
             print("게시물 ID가 없습니다.")
             return
         }
-        
-        let postData = createPost.toDictionary()
-        
-        db.collection("posts").document(postIdx).updateData(postData) { error in
-            if let error = error {
-                print("게시물 업데이트 중 오류 발생: \(error)")
-                return
+
+        let storage = Storage.storage()
+        let dispatchGroup = DispatchGroup()
+        let postImagesCollectionRef = db.collection("posts").document(postIdx).collection("postImages")
+
+        // Firebase Storage에서 삭제된 이미지 제거
+        let initialPostImages = postDetails?.images ?? []
+        let deletedImages = initialPostImages.filter { initialImage in
+            !createPost.postImages.contains(where: { $0.image_url == initialImage.image_url })
+        }
+
+        for deletedImage in deletedImages {
+            dispatchGroup.enter()
+            let storageRef = storage.reference(forURL: deletedImage.image_url)
+            storageRef.delete { error in
+                if let error = error {
+                    print("기존 이미지를 삭제하는 중 오류 발생: \(error.localizedDescription)")
+                } else {
+                    print("Firebase Storage에서 삭제 성공: \(deletedImage.image_url)")
+                    postImagesCollectionRef.whereField("image_url", isEqualTo: deletedImage.image_url).getDocuments { snapshot, error in
+                        if let error = error {
+                            print("Firestore에서 삭제 중 오류 발생: \(error.localizedDescription)")
+                        } else {
+                            snapshot?.documents.forEach { $0.reference.delete() }
+                        }
+                        dispatchGroup.leave()
+                    }
+                }
             }
-            
-            DispatchQueue.main.async {
-                postDetails = PostInfo(
-                    id: createPost.post_idx,
-                    user_idx: createPost.user_idx,
-                    post_category: createPost.post_category,
-                    post_categoryType: createPost.post_categoryType,
-                    title: createPost.title,
-                    post_content: createPost.post_content,
-                    location: createPost.location,
-                    want_num: createPost.want_num,
-                    post_status: createPost.post_status,
-                    created_at: createPost.created_at,
-                    school_idx: createPost.school_idx,
-                    images: createPost.postImages.map { PostImages(post_idx: $0.post_idx, image_url: $0.image_url) }
-                )
-                dismiss()
+        }
+
+        // 기존 이미지 `order` 재정렬
+        for (index, postImage) in createPost.postImages.enumerated() {
+            createPost.postImages[index].order = index
+        }
+
+        // 새로 추가된 이미지 업로드 처리
+        for (index, newImage) in selectedImages.enumerated() {
+            dispatchGroup.enter()
+            let fileName = UUID().uuidString + ".png"
+            let storageRef = storage.reference().child("posts/\(postIdx)/\(fileName)")
+
+            guard let imageData = newImage.pngData() else {
+                print("이미지를 PNG 데이터로 변환하는 데 실패했습니다.")
+                dispatchGroup.leave()
+                continue
+            }
+
+            storageRef.putData(imageData, metadata: nil) { _, error in
+                if let error = error {
+                    print("새 이미지를 업로드하는 중 오류 발생: \(error.localizedDescription)")
+                    dispatchGroup.leave()
+                    return
+                }
+
+                storageRef.downloadURL { url, error in
+                    if let error = error {
+                        print("새 이미지 다운로드 URL을 가져오는 중 오류 발생: \(error.localizedDescription)")
+                    } else if let url = url {
+                        let newPostImage = CreatePostImage(post_idx: postIdx, image_url: url.absoluteString, order: createPost.postImages.count)
+                        self.createPost.postImages.append(newPostImage)
+                        postImagesCollectionRef.addDocument(data: newPostImage.toDictionary())
+                    }
+                    dispatchGroup.leave()
+                }
+            }
+        }
+
+        // 모든 작업 완료 후 Firestore의 posts 문서 업데이트
+        dispatchGroup.notify(queue: .main) {
+            let postData = self.createPost.toDictionary()
+            self.db.collection("posts").document(postIdx).updateData(postData) { error in
+                if let error = error {
+                    print("게시물 업데이트 중 오류 발생: \(error.localizedDescription)")
+                    return
+                }
+                print("게시물이 성공적으로 업데이트되었습니다.")
+                completion() // 데이터 새로고침 트리거
             }
         }
     }
