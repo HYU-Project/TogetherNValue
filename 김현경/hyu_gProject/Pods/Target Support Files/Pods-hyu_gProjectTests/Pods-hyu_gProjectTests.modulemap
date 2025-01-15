@@ -1,6 +1,0 @@
-framework module Pods_hyu_gProjectTests {
-  umbrella header "Pods-hyu_gProjectTests-umbrella.h"
-
-  export *
-  module * { export * }
-}
