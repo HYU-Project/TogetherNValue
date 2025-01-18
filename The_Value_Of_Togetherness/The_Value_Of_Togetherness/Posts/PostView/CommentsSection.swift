@@ -156,6 +156,9 @@ struct CommentsSection: View {
                                         .frame(width: 300)
                                     
                                     HStack {
+                                        
+                                        Spacer()
+                                        
                                         Button("저장") {
                                             updateComment(commentId: comment.comment_idx, newContent: editingContent)
                                             editingCommentId = nil // 수정 완료
@@ -265,6 +268,9 @@ struct CommentsSection: View {
                                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                             
                                             HStack {
+                                                
+                                                Spacer()
+                                                
                                                 Button("저장") {
                                                     updateReply(commentId: comment.comment_idx, replyId: reply.reply_idx, newContent: editingContent)
                                                     editingReplyId = nil // 수정 완료

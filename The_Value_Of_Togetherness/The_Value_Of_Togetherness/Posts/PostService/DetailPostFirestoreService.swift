@@ -1,9 +1,3 @@
-//
-//  DetailPostFirestoreService.swift
-//  hkkim_front
-//
-//  Created by 김소민 on 12/30/24.
-//
 
 import FirebaseFirestore
 
