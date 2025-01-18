@@ -34,25 +34,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		AADEBDC12D1B2A9E0082307B /* hkkim_front.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = hkkim_front.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AADEBDD12D1B2AA10082307B /* hkkim_frontTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = hkkim_frontTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AADEBDDB2D1B2AA10082307B /* hkkim_frontUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = hkkim_frontUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AADEBDC12D1B2A9E0082307B /* The_Value_Of_Togetherness.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = The_Value_Of_Togetherness.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AADEBDD12D1B2AA10082307B /* The_Value_Of_TogethernessTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = The_Value_Of_TogethernessTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AADEBDDB2D1B2AA10082307B /* The_Value_Of_TogethernessUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = The_Value_Of_TogethernessUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		AADEBDC32D1B2A9E0082307B /* hkkim_front */ = {
+		AADEBDC32D1B2A9E0082307B /* The_Value_Of_Togetherness */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = hkkim_front;
+			path = The_Value_Of_Togetherness;
 			sourceTree = "<group>";
 		};
-		AADEBDD42D1B2AA10082307B /* hkkim_frontTests */ = {
+		AADEBDD42D1B2AA10082307B /* The_Value_Of_TogethernessTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = hkkim_frontTests;
+			path = The_Value_Of_TogethernessTests;
 			sourceTree = "<group>";
 		};
-		AADEBDDE2D1B2AA10082307B /* hkkim_frontUITests */ = {
+		AADEBDDE2D1B2AA10082307B /* The_Value_Of_TogethernessUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = hkkim_frontUITests;
+			path = The_Value_Of_TogethernessUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -92,9 +92,9 @@
 		AADEBDB82D1B2A9E0082307B = {
 			isa = PBXGroup;
 			children = (
-				AADEBDC32D1B2A9E0082307B /* hkkim_front */,
-				AADEBDD42D1B2AA10082307B /* hkkim_frontTests */,
-				AADEBDDE2D1B2AA10082307B /* hkkim_frontUITests */,
+				AADEBDC32D1B2A9E0082307B /* The_Value_Of_Togetherness */,
+				AADEBDD42D1B2AA10082307B /* The_Value_Of_TogethernessTests */,
+				AADEBDDE2D1B2AA10082307B /* The_Value_Of_TogethernessUITests */,
 				AADEBDC22D1B2A9E0082307B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -102,9 +102,9 @@
 		AADEBDC22D1B2A9E0082307B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AADEBDC12D1B2A9E0082307B /* hkkim_front.app */,
-				AADEBDD12D1B2AA10082307B /* hkkim_frontTests.xctest */,
-				AADEBDDB2D1B2AA10082307B /* hkkim_frontUITests.xctest */,
+				AADEBDC12D1B2A9E0082307B /* The_Value_Of_Togetherness.app */,
+				AADEBDD12D1B2AA10082307B /* The_Value_Of_TogethernessTests.xctest */,
+				AADEBDDB2D1B2AA10082307B /* The_Value_Of_TogethernessUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -112,9 +112,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AADEBDC02D1B2A9E0082307B /* hkkim_front */ = {
+		AADEBDC02D1B2A9E0082307B /* The_Value_Of_Togetherness */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AADEBDE52D1B2AA10082307B /* Build configuration list for PBXNativeTarget "hkkim_front" */;
+			buildConfigurationList = AADEBDE52D1B2AA10082307B /* Build configuration list for PBXNativeTarget "The_Value_Of_Togetherness" */;
 			buildPhases = (
 				AADEBDBD2D1B2A9E0082307B /* Sources */,
 				AADEBDBE2D1B2A9E0082307B /* Frameworks */,
@@ -125,9 +125,9 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				AADEBDC32D1B2A9E0082307B /* hkkim_front */,
+				AADEBDC32D1B2A9E0082307B /* The_Value_Of_Togetherness */,
 			);
-			name = hkkim_front;
+			name = The_Value_Of_Togetherness;
 			packageProductDependencies = (
 				AADEBE762D1B2CFE0082307B /* GoogleSignIn */,
 				AADEBE782D1B2CFE0082307B /* GoogleSignInSwift */,
@@ -138,12 +138,12 @@
 				7869A98F2D1D354D00DA962D /* FirebaseStorage */,
 			);
 			productName = hkkim_front;
-			productReference = AADEBDC12D1B2A9E0082307B /* hkkim_front.app */;
+			productReference = AADEBDC12D1B2A9E0082307B /* The_Value_Of_Togetherness.app */;
 			productType = "com.apple.product-type.application";
 		};
-		AADEBDD02D1B2AA10082307B /* hkkim_frontTests */ = {
+		AADEBDD02D1B2AA10082307B /* The_Value_Of_TogethernessTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AADEBDE82D1B2AA10082307B /* Build configuration list for PBXNativeTarget "hkkim_frontTests" */;
+			buildConfigurationList = AADEBDE82D1B2AA10082307B /* Build configuration list for PBXNativeTarget "The_Value_Of_TogethernessTests" */;
 			buildPhases = (
 				AADEBDCD2D1B2AA10082307B /* Sources */,
 				AADEBDCE2D1B2AA10082307B /* Frameworks */,
@@ -155,18 +155,18 @@
 				AADEBDD32D1B2AA10082307B /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				AADEBDD42D1B2AA10082307B /* hkkim_frontTests */,
+				AADEBDD42D1B2AA10082307B /* The_Value_Of_TogethernessTests */,
 			);
-			name = hkkim_frontTests;
+			name = The_Value_Of_TogethernessTests;
 			packageProductDependencies = (
 			);
 			productName = hkkim_frontTests;
-			productReference = AADEBDD12D1B2AA10082307B /* hkkim_frontTests.xctest */;
+			productReference = AADEBDD12D1B2AA10082307B /* The_Value_Of_TogethernessTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		AADEBDDA2D1B2AA10082307B /* hkkim_frontUITests */ = {
+		AADEBDDA2D1B2AA10082307B /* The_Value_Of_TogethernessUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AADEBDEB2D1B2AA10082307B /* Build configuration list for PBXNativeTarget "hkkim_frontUITests" */;
+			buildConfigurationList = AADEBDEB2D1B2AA10082307B /* Build configuration list for PBXNativeTarget "The_Value_Of_TogethernessUITests" */;
 			buildPhases = (
 				AADEBDD72D1B2AA10082307B /* Sources */,
 				AADEBDD82D1B2AA10082307B /* Frameworks */,
@@ -178,13 +178,13 @@
 				AADEBDDD2D1B2AA10082307B /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				AADEBDDE2D1B2AA10082307B /* hkkim_frontUITests */,
+				AADEBDDE2D1B2AA10082307B /* The_Value_Of_TogethernessUITests */,
 			);
-			name = hkkim_frontUITests;
+			name = The_Value_Of_TogethernessUITests;
 			packageProductDependencies = (
 			);
 			productName = hkkim_frontUITests;
-			productReference = AADEBDDB2D1B2AA10082307B /* hkkim_frontUITests.xctest */;
+			productReference = AADEBDDB2D1B2AA10082307B /* The_Value_Of_TogethernessUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -228,9 +228,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				AADEBDC02D1B2A9E0082307B /* hkkim_front */,
-				AADEBDD02D1B2AA10082307B /* hkkim_frontTests */,
-				AADEBDDA2D1B2AA10082307B /* hkkim_frontUITests */,
+				AADEBDC02D1B2A9E0082307B /* The_Value_Of_Togetherness */,
+				AADEBDD02D1B2AA10082307B /* The_Value_Of_TogethernessTests */,
+				AADEBDDA2D1B2AA10082307B /* The_Value_Of_TogethernessUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -286,12 +286,12 @@
 /* Begin PBXTargetDependency section */
 		AADEBDD32D1B2AA10082307B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AADEBDC02D1B2A9E0082307B /* hkkim_front */;
+			target = AADEBDC02D1B2A9E0082307B /* The_Value_Of_Togetherness */;
 			targetProxy = AADEBDD22D1B2AA10082307B /* PBXContainerItemProxy */;
 		};
 		AADEBDDD2D1B2AA10082307B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AADEBDC02D1B2A9E0082307B /* hkkim_front */;
+			target = AADEBDC02D1B2A9E0082307B /* The_Value_Of_Togetherness */;
 			targetProxy = AADEBDDC2D1B2AA10082307B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -423,7 +423,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"hkkim_front/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"The_Value_Of_Togetherness/Preview Content\"";
 				DEVELOPMENT_TEAM = T638N296XJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -453,7 +453,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"hkkim_front/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"The_Value_Of_Togetherness/Preview Content\"";
 				DEVELOPMENT_TEAM = T638N296XJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -560,7 +560,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AADEBDE52D1B2AA10082307B /* Build configuration list for PBXNativeTarget "hkkim_front" */ = {
+		AADEBDE52D1B2AA10082307B /* Build configuration list for PBXNativeTarget "The_Value_Of_Togetherness" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AADEBDE62D1B2AA10082307B /* Debug */,
@@ -569,7 +569,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AADEBDE82D1B2AA10082307B /* Build configuration list for PBXNativeTarget "hkkim_frontTests" */ = {
+		AADEBDE82D1B2AA10082307B /* Build configuration list for PBXNativeTarget "The_Value_Of_TogethernessTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AADEBDE92D1B2AA10082307B /* Debug */,
@@ -578,7 +578,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AADEBDEB2D1B2AA10082307B /* Build configuration list for PBXNativeTarget "hkkim_frontUITests" */ = {
+		AADEBDEB2D1B2AA10082307B /* Build configuration list for PBXNativeTarget "The_Value_Of_TogethernessUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AADEBDEC2D1B2AA10082307B /* Debug */,
