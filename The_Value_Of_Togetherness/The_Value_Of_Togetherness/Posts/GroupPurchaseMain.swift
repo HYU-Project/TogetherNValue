@@ -93,7 +93,6 @@ struct GroupPurchaseMain: View {
 
     var body: some View {
         NavigationView {
-            
             ZStack {
                 VStack {
                     HStack {
