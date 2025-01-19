@@ -103,12 +103,21 @@ struct MyPosts: View {
             }
         }
     }
-
     
-    // 게시글 삭제
     private func deletePost(post: MyPost) {
-        posts.removeAll { $0.post_idx == post.post_idx }
+        // Firestore에서 게시글 삭제 호출
+        firestoreService.deletePost(postIdx: post.post_idx) { success in
+            if success {
+                // 삭제 성공 시 로컬 상태 업데이트
+                posts.removeAll { $0.post_idx == post.post_idx }
+                print("게시글 삭제 완료: \(post.post_idx)")
+            } else {
+                // 삭제 실패 시 알림 또는 에러 처리
+                print("게시글 삭제 실패: \(post.post_idx)")
+            }
+        }
     }
+
 }
 
 #Preview {

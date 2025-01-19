@@ -120,7 +120,8 @@ struct InterestedPosts: View {
                                         post: post,
                                         toggleLikeAction: toggleLike
                                     )
-                                                                }
+                                    .padding(.bottom, 3)
+                                                        }
                                 .padding()
                             }
                         }
