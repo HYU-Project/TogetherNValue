@@ -226,7 +226,7 @@ struct SelectSchoolView: View {
                 }
                 Spacer()
                 
-                NavigationLink(destination: ContentView().navigationBarBackButtonHidden(true),
+                NavigationLink(destination: ContentView(),
                                isActive: $isContentViewActive){
                     Button(action: saveUserDataAndContinue) {
                         Text("다음")

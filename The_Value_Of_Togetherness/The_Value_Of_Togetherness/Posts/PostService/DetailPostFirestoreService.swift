@@ -1,8 +1,12 @@
 
 import FirebaseFirestore
+import FirebaseStorage
 
 class DetailPostFirestoreService {
+    
     private let db = Firestore.firestore()
+    
+    private let storage = Storage.storage()
     
     func fetchPostDetails(postIdx: String, completion: @escaping (Result<PostInfo, Error>) -> Void) {
         db.collection("posts").document(postIdx).getDocument { document, error in
@@ -360,6 +364,90 @@ class DetailPostFirestoreService {
             } else {
                 completion(.success(()))
             }
+        }
+    }
+    
+    // 게시물 삭제
+    func deletePost(postIdx: String, completion: @escaping (Bool) -> Void) {
+        let dispatchGroup = DispatchGroup()
+
+        // 1. 댓글 및 대댓글 삭제
+        dispatchGroup.enter()
+        db.collection("posts").document(postIdx).collection("comments").getDocuments { snapshot, error in
+            if let documents = snapshot?.documents {
+                for comment in documents {
+                    let commentId = comment.documentID
+                    
+                    // 대댓글 삭제
+                    dispatchGroup.enter()
+                    self.db.collection("posts")
+                        .document(postIdx)
+                        .collection("comments")
+                        .document(commentId)
+                        .collection("replies")
+                        .getDocuments { replySnapshot, replyError in
+                            if let replies = replySnapshot?.documents {
+                                for reply in replies {
+                                    reply.reference.delete()
+                                }
+                            }
+                            dispatchGroup.leave()
+                        }
+                    
+                    // 댓글 삭제
+                    comment.reference.delete()
+                }
+            }
+            dispatchGroup.leave()
+        }
+
+        // 2. 이미지 삭제 (Firestore 및 Storage)
+        dispatchGroup.enter()
+        db.collection("posts").document(postIdx).collection("postImages").getDocuments { snapshot, error in
+            if let documents = snapshot?.documents {
+                for document in documents {
+                    if let imageUrl = document.data()["image_url"] as? String {
+                        // Firebase Storage에서 이미지 삭제
+                        let storageRef = self.storage.reference(forURL: imageUrl)
+                        dispatchGroup.enter()
+                        storageRef.delete { error in
+                            if let error = error {
+                                print("Error deleting image from Storage: \(error)")
+                            }
+                            dispatchGroup.leave()
+                        }
+                    }
+                    // Firestore에서 이미지 문서 삭제
+                    document.reference.delete()
+                }
+            }
+            dispatchGroup.leave()
+        }
+
+        // 3. postLikes 삭제
+        dispatchGroup.enter()
+        db.collection("postLikes").whereField("post_idx", isEqualTo: postIdx).getDocuments { snapshot, error in
+            if let documents = snapshot?.documents {
+                for document in documents {
+                    document.reference.delete()
+                }
+            }
+            dispatchGroup.leave()
+        }
+
+        // 4. 게시물 삭제
+        dispatchGroup.enter()
+        db.collection("posts").document(postIdx).delete { error in
+            if let error = error {
+                print("Error deleting post: \(error)")
+            }
+            dispatchGroup.leave()
+        }
+
+        // 모든 삭제 작업 완료 후 처리
+        dispatchGroup.notify(queue: .main) {
+            print("Post \(postIdx) and related data deleted successfully")
+            completion(true)
         }
     }
 }

@@ -30,6 +30,8 @@ func timeAgo(from date: Date?) -> String{
 
 struct DetailPost: View {
     @EnvironmentObject var userManager: UserManager
+    @Environment(\.dismiss) private var dismiss
+    
     var post_idx: String // 전달받은 post_idx
     
     @State private var postDetails: PostInfo?
@@ -49,6 +51,10 @@ struct DetailPost: View {
     @State private var replyText: String = "" // 대댓글 입력 텍스트
     @State private var replyToCommentIdx: String = "" // 대댓글 대상 댓글 ID
     @State private var isReplying: Bool = false // 대댓글 작성 상태
+    
+    // 게시물 삭제 관련 알림
+    @State private var showAlert = false
+    @State private var alertMessage = ""
     
     private let firestoreService = DetailPostFirestoreService()
     
@@ -494,7 +500,15 @@ struct DetailPost: View {
                             isEditPostPresented = true // 게시물 수정
                         }),
                         .destructive(Text("게시물 삭제"), action: {
-                            // 게시물 삭제 동작
+                            firestoreService.deletePost(postIdx: post_idx) { success in
+                                    if success {
+                                        alertMessage = "게시물이 성공적으로 삭제되었습니다."
+                                                                        showAlert = true
+                                    } else {
+                                        alertMessage = "게시물 삭제에 실패했습니다. 다시 시도해주세요."
+                                                                        showAlert = true
+                                    }
+                                }
                         }),
                         .cancel(Text("취소"))
                     ]
@@ -507,9 +521,19 @@ struct DetailPost: View {
                     CreatePostView(post: postDetails.toCreatePost(), postDetails: $postDetails, isEditMode: true)
                 }
             }
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("알림"),
+                    message: Text(alertMessage),
+                    dismissButton: .default(Text("확인")) {
+                        if alertMessage == "게시물이 성공적으로 삭제되었습니다." {
+                            dismiss()
+                        }
+                    }
+                )
+            }
         }
     }
-
 }
         
 
