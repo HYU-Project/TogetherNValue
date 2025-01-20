@@ -12,7 +12,7 @@ class InterestedPostService {
 
     // 유저가 찜한 게시물 가져오기
     func fetchInterestedPosts(for userId: String, completion: @escaping (Result<[InterestedPost], Error>) -> Void) {
-        print("Fetching interested posts for userId: \(userId)")
+    
         db.collection("postLikes")
             .whereField("user_idx", isEqualTo: userId)
             .getDocuments { snapshot, error in
@@ -45,7 +45,7 @@ class InterestedPostService {
 
     // post_idx로 posts 정보 가져오기
     private func fetchPosts(by postIds: [String], completion: @escaping (Result<[InterestedPost], Error>) -> Void) {
-        print("Fetching posts with postIds: \(postIds)")
+        
         db.collection("posts")
             .whereField(FieldPath.documentID(), in: postIds)
             .getDocuments { snapshot, error in

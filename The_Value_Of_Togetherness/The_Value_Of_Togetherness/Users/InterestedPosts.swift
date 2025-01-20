@@ -1,9 +1,3 @@
-//
-//  InterestedPosts.swift
-//  hkkim_front
-//
-//  Created by 김소민 on 12/26/24.
-//
 
 import SwiftUI
 
