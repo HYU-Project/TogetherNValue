@@ -1,9 +1,3 @@
-//
-//  UserProfileUpdate.swift
-//  hkkim_front
-//
-//  Created by 김소민 on 12/26/24.
-//
 
 import SwiftUI
 import FirebaseFirestore
@@ -33,7 +27,8 @@ struct UserProfileUpdate: View {
             return
         }
 
-        // Firestore에서 사용자 데이터 가져오기
+        print("Fetching data for userId: \(userIdx)")
+
         db.collection("users").document(userIdx).getDocument { document, error in
             if let error = error {
                 print("Firestore에서 사용자 데이터를 가져오는 중 오류 발생: \(error.localizedDescription)")
@@ -42,21 +37,40 @@ struct UserProfileUpdate: View {
 
             if let document = document, document.exists {
                 let data = document.data()
-                if let userName = data?["name"] as? String,
-                   let schoolEmail = data?["schoolEmail"] as? String,
-                   let schoolIdx = data?["school_idx"] as? String,
-                   let profileImageString = data?["profile_image_url"] as? String
-                {
+
+                // 사용자 이름과 학교 이메일
+                if let userName = data?["name"] as? String {
                     self.userName = userName
+                } else {
+                    print("userName 데이터가 존재하지 않습니다.")
+                }
+
+                if let schoolEmail = data?["schoolEmail"] as? String {
                     self.schoolEmail = schoolEmail
+                } else {
+                    print("schoolEmail 데이터가 존재하지 않습니다.")
+                }
+
+                // 학교 정보 가져오기
+                if let schoolIdx = data?["school_idx"] as? String {
                     fetchSchoolName(schoolIdx: schoolIdx)
-                    self.profileImageURL = URL(string: profileImageString)
+                } else {
+                    print("school_idx 데이터가 존재하지 않습니다.")
+                }
+
+                // 프로필 이미지 URL 처리
+                if let profileImageString = data?["profile_image_url"] as? String, let url = URL(string: profileImageString) {
+                    self.profileImageURL = url
+                } else {
+                    print("profile_image_url이 존재하지 않거나 잘못된 형식입니다.")
+                    self.profileImageURL = nil // 기본 이미지를 표시하도록 설정
                 }
             } else {
-                print("사용자 문서가 존재하지 않습니다.")
+                print("사용자 문서가 Firestore에 존재하지 않습니다.")
             }
         }
     }
+
     
     func fetchSchoolName(schoolIdx: String) {
         db.collection("schools").document(schoolIdx).getDocument { document, error in
