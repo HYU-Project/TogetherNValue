@@ -91,6 +91,9 @@ struct InterestedPosts: View {
                     .padding(.bottom, 10)
                 
                 if isLoading {
+                    
+                    Spacer()
+                    
                     ProgressView("Loading...")
                         .padding()
                     

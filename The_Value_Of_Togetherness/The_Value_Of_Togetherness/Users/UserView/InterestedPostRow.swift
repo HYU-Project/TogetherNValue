@@ -14,7 +14,7 @@ struct InterestedPostRow: View {
     private let interestedPostService = InterestedPostService()
 
     var body: some View {
-        HStack (spacing: 5){
+        HStack (spacing: 10){
             if let imageUrl = URL(string: post.postImage_url ?? "NoImage") {
                 AsyncImage(url: imageUrl) { phase in
                     switch phase {
@@ -68,6 +68,7 @@ struct InterestedPostRow: View {
                     .frame(width: 30, height: 30)
                     .foregroundColor(.black)
             }
+            .padding()
                         
         }
         .padding()

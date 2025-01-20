@@ -50,6 +50,7 @@ class ParticipatePostService {
     private func fetchPosts(by postIds: [String], roomStates: [String: Bool], completion: @escaping (Result<[ParticiaptePost], Error>) -> Void) {
         db.collection("posts")
             .whereField(FieldPath.documentID(), in: postIds)
+            .order(by: "created_at", descending: true)
             .getDocuments { snapshot, error in
                 if let error = error {
                     print("Error fetching posts: \(error.localizedDescription)")

@@ -121,11 +121,31 @@ struct SharingPostInfoView: View {
             Text(post.title)
                 .font(.subheadline)
 
-            HStack {
-                Image(systemName: "mappin.and.ellipse")
-                Text(post.location)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+            if post.post_status == "거래완료"{
+                HStack{
+                    Text(post.post_status)
+                        .font(.caption)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .foregroundColor(.white)
+                        .background(Color.black)
+                        .cornerRadius(5)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 5)
+                }
+            }
+            else {
+                HStack{
+                    Text(post.post_status)
+                        .font(.caption)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .foregroundColor(.white)
+                        .background(Color.green)
+                        .cornerRadius(5)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 5)
+                }
             }
 
             HStack {

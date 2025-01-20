@@ -16,7 +16,7 @@ struct GroupPurchaseMain: View {
     
     let db = Firestore.firestore()
     
-    private let firestoreService = PurchaseFirestoreService() // 객체 선언
+    private let firestoreService = PurchaseFirestoreService()
 
     private func checkAndUpdatePostStatus(for post: PurchasePost) {
         firestoreService.fetchActiveChatRoomCount(for: post.post_idx) { activeChatRoomCount in

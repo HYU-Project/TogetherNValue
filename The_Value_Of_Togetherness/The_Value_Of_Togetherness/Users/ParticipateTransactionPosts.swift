@@ -51,6 +51,7 @@ struct ParticipateTransactionPosts: View {
                     .padding(.bottom, 10)
                 
                 RoomStateFilterView(selectedRoomState: $selectedRoomState, loadPosts: loadPosts)
+                    .padding()
                 
                 if isLoading {
                     ProgressView("Loading...")
@@ -58,6 +59,7 @@ struct ParticipateTransactionPosts: View {
                     
                     Spacer()
                 } else if filteredPosts.isEmpty {
+                    
                     Text("해당 상태의 게시물이 없습니다.")
                         .font(.headline)
                         .foregroundColor(.gray)
