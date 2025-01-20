@@ -464,17 +464,64 @@ struct ChatView: View {
     }
     
     func deleteChatRoom(chatRoomId: String) {
+        let chatRoomRef = db.collection("chattingRooms").document(chatRoomId)
+
+        // 하위 컬렉션 "messages" 삭제
+        chatRoomRef.collection("messages").getDocuments { snapshot, error in
+            if let error = error {
+                print("하위 컬렉션 삭제 실패: \(error.localizedDescription)")
+                return
+            }
+
+            guard let documents = snapshot?.documents else {
+                print("하위 컬렉션에 문서가 없습니다.")
+                return
+            }
+
+            // 하위 컬렉션의 모든 문서 삭제
+            let batch = self.db.batch()
+            for document in documents {
+                batch.deleteDocument(document.reference)
+            }
+
+            batch.commit { error in
+                if let error = error {
+                    print("하위 컬렉션 문서 삭제 실패: \(error.localizedDescription)")
+                    return
+                }
+
+                print("하위 컬렉션의 모든 문서가 성공적으로 삭제되었습니다.")
+
+                // 부모 문서 삭제
+                chatRoomRef.delete { error in
+                    if let error = error {
+                        print("채팅방 문서 삭제 실패: \(error.localizedDescription)")
+                    } else {
+                        print("채팅방 문서 및 하위 컬렉션 삭제 성공")
+                        verifyChatRoomDeletion(chatRoomId: chatRoomId)
+                    }
+                }
+            }
+        }
+    }
+
+    
+    func verifyChatRoomDeletion(chatRoomId: String) {
         db.collection("chattingRooms")
             .document(chatRoomId)
-            .delete { error in
+            .getDocument { document, error in
                 if let error = error {
-                    print("채팅방 삭제 오류: \(error.localizedDescription)")
+                    print("삭제 확인 중 오류 발생: \(error.localizedDescription)")
+                    return
+                }
+
+                if document?.exists == true {
+                    print("문서가 여전히 존재합니다.")
                 } else {
-                    print("채팅방 삭제 성공: \(chatRoomId)")
+                    print("문서가 성공적으로 삭제되었습니다.")
                 }
             }
     }
-
     
     func checkIfCurrentUserIsHost(){
         db.collection("chattingRooms")

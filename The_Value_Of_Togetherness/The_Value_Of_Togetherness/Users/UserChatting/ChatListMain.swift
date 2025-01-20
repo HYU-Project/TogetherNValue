@@ -65,22 +65,22 @@ struct ChatListMain: View {
        VStack{
            chattingCategoryButtonView(selectedCategory: $selectedCategory)
            
-           Divider()
-               .frame(height: 1)  // 구분선 두께 설정
-               .background(Color.black)  // 구분선 색상 설정
-               .padding(.horizontal, 15)  // 좌우 여백 추가
+           //Divider()
+             //  .frame(height: 1)
+             //.background(Color.black)
+             //  .padding(.horizontal, 15)
           
            if selectedCategory == "내 게시물 채팅 목록" {
-               if posts.isEmpty{
-                   VStack {
-                       Spacer()
-                       Text("현재 활성화된 게시물이 없습니다.")
-                           .font(.title2)
-                           .foregroundColor(.gray)
-                           .padding()
-                       Spacer()
-                   }
-               } else{
+               //if posts.isEmpty{
+                 //  VStack {
+                   //    Spacer()
+                     //  Text("현재 활성화된 게시물이 없습니다.")
+                       //    .font(.title2)
+                         //  .foregroundColor(.gray)
+                          // .padding()
+                       //Spacer()
+                   //}
+               //} else{
                    List{
                        ForEach(posts.keys.sorted(), id: \.self) {postId in
                            VStack{
@@ -156,12 +156,12 @@ struct ChatListMain: View {
                            }
                        }
                    }
-               }
+              // }
           }
            else {
-               if chattingRooms.isEmpty{
-                   EmptyView()
-               }else{
+               //if chattingRooms.isEmpty{
+                 //  EmptyView()
+               //}else{
                    List(chattingRooms.filter { !$0.isGuestLeft }) { room in
                        HStack {
                            if let imageUrl = postImages[room.postIdx], let url = URL(string: imageUrl) {
@@ -219,7 +219,7 @@ struct ChatListMain: View {
                        )
                    }
                }
-           }
+           //}
     }
     .onChange(of: selectedCategory, perform: { _ in
         loadChattingRooms()
