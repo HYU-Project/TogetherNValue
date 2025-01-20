@@ -60,11 +60,10 @@ struct PostItemView: View {
                     }
                 } else {
                     // 이미지가 없을 경우
-                    Text("No image available")
+                    Image("NoImage")
+                        .resizable()
+                        .scaledToFit()
                         .frame(width: 60, height: 60)
-                        .foregroundColor(.gray)
-                        .background(Color.secondary.opacity(0.2))
-                        .cornerRadius(8)
                 }
                 
                 VStack(alignment: .leading) {

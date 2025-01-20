@@ -416,9 +416,12 @@ struct DetailPost: View {
                                 .tabViewStyle(PageTabViewStyle())
                                 .frame(height: 250)
                             } else {
-                                Text("이미지가 없습니다")
-                                    .italic()
-                                    .padding()
+                                Image("NoImage")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 200)
+                                    .clipped()
                             }
                             
                             // 작성자 정보 표시
@@ -470,30 +473,32 @@ struct DetailPost: View {
                                 .padding()
                             
                             if let postDetails = postDetails {
-                                Picker("", selection: $selectedStatus) {
-                                    ForEach(statusOptions, id: \.self) { status in
-                                        Text(status)
-                                            .font(.title2)
-                                            .bold()
-                                            .foregroundColor(Color.black)
-                                            .tag(status)
+                                if postDetails.user_idx == userManager.userId { // 게시물 소유자 확인
+                                    Picker("", selection: $selectedStatus) {
+                                        ForEach(statusOptions, id: \.self) { status in
+                                            Text(status)
+                                                .font(.title2)
+                                                .bold()
+                                                .foregroundColor(Color.black)
+                                                .tag(status)
+                                        }
                                     }
-                                }
-                                .pickerStyle(MenuPickerStyle())
-                                .onChange(of: selectedStatus) { newValue in
-                                    if newValue != postDetails.post_status {
-                                        print("Selected status changed to: \(newValue)")
-                                        updatePostStatus(to: newValue)
+                                    .pickerStyle(MenuPickerStyle())
+                                    .onChange(of: selectedStatus) { newValue in
+                                        if newValue != postDetails.post_status {
+                                            print("Selected status changed to: \(newValue)")
+                                            updatePostStatus(to: newValue)
+                                        }
                                     }
+                                    .padding()
+                                    .background(Color.white)
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .stroke(Color.gray, lineWidth: 3)
+                                    }
+                                    .cornerRadius(8)
+                                    .padding(.trailing, 200)
                                 }
-                                .padding()
-                                .background(Color.white)
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(Color.gray, lineWidth: 3)
-                                }
-                                .cornerRadius(8)
-                                .padding(.trailing, 200)
                             }
                             
                             // 게시물 제목 및 설명
@@ -604,7 +609,7 @@ struct DetailPost: View {
                                 .frame(width: 40, height: 30)
                                 .foregroundColor(.black)
                         }
-                        //.disabled(selectedStatus == "거래완료")
+                        .disabled(selectedStatus == "거래완료")
                         .padding()
                         .onAppear {
                             checkIfLiked()
@@ -640,6 +645,7 @@ struct DetailPost: View {
                                     .cornerRadius(8)
                                     .padding(.leading)
                             }
+                            .disabled(selectedStatus == "거래완료" && !isChatRoomCreated)
                             .padding()
                         }
                         

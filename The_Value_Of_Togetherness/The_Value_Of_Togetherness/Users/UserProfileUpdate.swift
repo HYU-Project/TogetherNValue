@@ -133,7 +133,7 @@ struct UserProfileUpdate: View {
         }
     }
 
-    /// Firebase Storage URL에서 경로 추출
+    // Firebase Storage URL에서 경로 추출
     private func extractStoragePath(from url: URL) -> String? {
         let fullPath = url.path
         if let range = fullPath.range(of: "/o/") {

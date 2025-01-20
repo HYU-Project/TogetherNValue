@@ -82,7 +82,6 @@ struct ParticipateTransactionPosts: View {
     }
 }
 
-
 struct ParticipatePostRow: View {
     let post: ParticiaptePost
 
@@ -134,11 +133,10 @@ struct ParticipatePostRow: View {
                 }
             } else {
                 // 이미지가 없을 경우
-                Text("No image available")
+                Image("NoImage")
+                    .resizable()
+                    .scaledToFit()
                     .frame(width: 60, height: 60)
-                    .foregroundColor(.gray)
-                    .background(Color.secondary.opacity(0.2))
-                    .cornerRadius(8)
             }
             
             VStack(alignment: .leading, spacing: 4) {
@@ -150,9 +148,12 @@ struct ParticipatePostRow: View {
                     .font(.subheadline)
                     .foregroundColor(post.roomState ? .blue : .green)
             }
-            .padding(.leading, 8)
+            .padding()
         }
-        .padding(.vertical, 5)
+        .padding()
+        .background(Color.white)
+        .cornerRadius(12)
+        .shadow(radius: 5)
     }
 }
 
