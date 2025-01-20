@@ -2,32 +2,44 @@
 import SwiftUI
 import Firebase
 
-
 struct chattingCategoryButtonView: View{
    @Binding var selectedCategory: String
    var body: some View{
-       HStack(spacing: 5){
-           ForEach(["참여채팅 목록", "내 게시물 채팅 목록"], id:\.self){ category in
-               Button(action:{
-                   if selectedCategory == category{
-                       return
-                   }
-                   selectedCategory = category
-               }){
-                   Text(category)
-                       .frame(width: 165, height: 50)
-                       .foregroundColor(selectedCategory == category ? .white : .black)
-                       .background(selectedCategory == category ? Color.black : Color.clear)
-                       .overlay(
-                           RoundedRectangle(cornerRadius: 5)
-                               .stroke(Color.black, lineWidth: 2)
-                       )
-               }
-               .padding(.horizontal, 15)
+       
+       VStack {
+           HStack {
+               Text("채팅")
+                   .font(.largeTitle)
+                   .bold()
+               Spacer()
            }
+           .padding()
+           
+           HStack(spacing: 5){
+               ForEach(["참여채팅 목록", "내 게시물 채팅 목록"], id:\.self){ category in
+                   Button(action:{
+                       if selectedCategory == category{
+                           return
+                       }
+                       selectedCategory = category
+                   }){
+                       Text(category)
+                           .frame(width: 165, height: 50)
+                           .foregroundColor(selectedCategory == category ? .white : .black)
+                           .background(selectedCategory == category ? Color.black : Color.clear)
+                           .overlay(
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(Color.black, lineWidth: 2)
+                           )
+                   }
+                   .padding(.horizontal, 15)
+               }
+           }
+           .padding(.top, 10)
+           .padding(5)
+           
        }
-       .padding(.top, 10)
-       .padding(5)
+       .padding()
    }
 }
 
@@ -57,9 +69,17 @@ struct ChatListMain: View {
                .frame(height: 1)  // 구분선 두께 설정
                .background(Color.black)  // 구분선 색상 설정
                .padding(.horizontal, 15)  // 좌우 여백 추가
+          
            if selectedCategory == "내 게시물 채팅 목록" {
                if posts.isEmpty{
-                   EmptyView()
+                   VStack {
+                       Spacer()
+                       Text("현재 활성화된 게시물이 없습니다.")
+                           .font(.title2)
+                           .foregroundColor(.gray)
+                           .padding()
+                       Spacer()
+                   }
                } else{
                    List{
                        ForEach(posts.keys.sorted(), id: \.self) {postId in
@@ -76,7 +96,7 @@ struct ChatListMain: View {
                                                    .frame(width: 50, height: 50)
                                                    .cornerRadius(8)
                                            case .failure:
-                                               Image(systemName: "photo.fill")
+                                               Image("NoImage")
                                                    .resizable()
                                                    .scaledToFit()
                                                    .frame(width: 50, height: 50)
@@ -86,7 +106,7 @@ struct ChatListMain: View {
                                            }
                                        }
                                    } else {
-                                       Image(systemName: "photo.fill")
+                                       Image(systemName: "NoImage")
                                            .resizable()
                                            .scaledToFit()
                                            .frame(width: 50, height: 50)
@@ -155,7 +175,7 @@ struct ChatListMain: View {
                                            .frame(width: 50, height: 50)
                                            .cornerRadius(8)
                                    case .failure:
-                                       Image(systemName: "photo.fill")
+                                       Image("NoImage")
                                            .resizable()
                                            .scaledToFit()
                                            .frame(width: 50, height: 50)
@@ -165,7 +185,7 @@ struct ChatListMain: View {
                                    }
                                }
                            } else {
-                               Image(systemName: "photo.fill")
+                               Image("NoImage")
                                    .resizable()
                                    .scaledToFit()
                                    .frame(width: 50, height: 50)
