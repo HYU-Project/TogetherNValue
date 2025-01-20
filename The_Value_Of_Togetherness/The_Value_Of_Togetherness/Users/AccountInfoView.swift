@@ -23,9 +23,7 @@ struct AccountInfoView: View {
                     .foregroundColor(.blue)
             }
             
-            Button(action: {
-                checkUserProviderAndDelete()
-            }) {
+            NavigationLink(destination: AccountDeletionConfirmationView()){
                 Text("탈퇴하기")
                     .font(.title3)
                     .bold()
