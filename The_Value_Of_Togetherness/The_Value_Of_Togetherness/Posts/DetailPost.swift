@@ -1,6 +1,6 @@
 //  DetailPost : 공구/나눔 게시글 디테일
-
 import SwiftUI
+import FirebaseFirestore
 
 func timeAgo(from date: Date?) -> String{
     guard let date = date else { return "알 수 없음" }
@@ -28,6 +28,23 @@ func timeAgo(from date: Date?) -> String{
         }
 }
 
+func getCurrentTime() -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    return formatter.string(from: Date())
+}
+
+struct ChattingRoom: Identifiable {
+   var id: String
+   var postIdx: String
+   var hostIdx: String
+   var guestIdx: String
+   var isHostLeft: Bool
+   var isGuestLeft: Bool
+   var roomState: Bool
+}
+
+
 struct DetailPost: View {
     @EnvironmentObject var userManager: UserManager
     @Environment(\.dismiss) private var dismiss
@@ -42,9 +59,15 @@ struct DetailPost: View {
     @State private var isLiked = false
     @State private var isActionSheetPresented = false
     @State private var isEditPostPresented = false // 수정 화면 표시 여부
-    
     @State private var selectedStatus = ""
     let statusOptions = ["거래가능", "거래완료"]
+    
+    @State private var chatRoomId: String?
+    @State private var isChatRoomCreated = false // 채팅방 생성 상태
+    @State private var navigateToChatRoom = false // 채팅방으로 이동을 위한 상태
+    @State private var navigateToChatList = false //ChatListMain으로 이동 상태
+    @State private var showAlert2 = false //경고창
+    @State private var alertMessage2 = " "
     
     @State private var comments: [Comments] = [] // 댓글 리스트
     @State private var commentText: String = "" // 댓글 입력 텍스트
@@ -56,7 +79,13 @@ struct DetailPost: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
     
+    private var db = Firestore.firestore()
     private let firestoreService = DetailPostFirestoreService()
+    
+    var isPostOwner: Bool {
+        //현재 로그인 유저가 게시물 작성자인지 확인
+        return postUser?.user_idx == userManager.userId
+    }
     
     private func fetchData() {
         firestoreService.fetchPostDetails(postIdx: post_idx) { result in
@@ -79,8 +108,11 @@ struct DetailPost: View {
                 }
             }
         }
+        
+        //채팅방 존재 여부 확인
+        checkExistingChatRoom()
     }
-
+    
     private func fetchImages(for postIdx: String) {
         firestoreService.fetchPostImages(postIdx: postIdx) { result in
             switch result {
@@ -94,7 +126,7 @@ struct DetailPost: View {
             }
         }
     }
-
+    
     private func fetchUserDetails(for userIdx: String) {
         firestoreService.fetchUserDetails(userIdx: userIdx) { result in
             switch result {
@@ -110,7 +142,7 @@ struct DetailPost: View {
             }
         }
     }
-
+    
     private func toggleLike(){
         guard let userIdx = userManager.userId else { return }
         firestoreService.togglePostLike(postIdx: post_idx, userIdx: userIdx, isLiked: isLiked){
@@ -160,7 +192,7 @@ struct DetailPost: View {
             }
         }
     }
-
+    
     private func fetchCommentUserDetails(for userIdx: String, completion: @escaping (UserProperty?) -> Void) {
         firestoreService.fetchUserDetails(userIdx: userIdx) { result in
             switch result {
@@ -172,7 +204,7 @@ struct DetailPost: View {
             }
         }
     }
-
+    
     private func addComment(content: String) {
         guard let userIdx = userManager.userId else { return }
         firestoreService.addComment(postIdx: post_idx, userIdx: userIdx, content: content) { result in
@@ -187,7 +219,7 @@ struct DetailPost: View {
             }
         }
     }
-
+    
     private func addReply(to commentIdx: String, content: String) {
         guard let userIdx = userManager.userId else { return }
         firestoreService.addReply(commentIdx: commentIdx, postIdx: post_idx, userIdx: userIdx, content: content) { result in
@@ -202,6 +234,117 @@ struct DetailPost: View {
         }
     }
     
+    //채팅방 중복 체크 및 생성
+    private func checkExistingChatRoom(){
+        guard let currentUserId = userManager.userId else{
+            print("로그인된 유저 없음")
+            return
+        }
+        // Firestore에서 해당 채팅방이 이미 존재하는지 확인
+        db.collection("chattingRooms").whereField("post_idx", isEqualTo: post_idx)
+            .whereField ("guest_idx", isEqualTo: currentUserId)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("채팅방 확인 중 오류 발생: \(error.localizedDescription)")
+                } else {
+                    if snapshot?.documents.isEmpty == false {
+                        /// 이미 채팅방이 존재하면 해당 채팅방 ID를 가져오고, 상태 업데이트
+                        if let document = snapshot?.documents.first{
+                            self.chatRoomId = document.documentID
+                            self.isChatRoomCreated = true //채팅방 생성 상태로 설정
+                            print("채팅방 이미 존재: \(self.chatRoomId!)")
+                        } else{
+                            print("채팅방 없음")
+                        }
+                    }
+                }
+            }
+    }
+    
+    //채팅방생성
+    private func createChatRoom(){
+        guard let currentUserId = userManager.userId else{
+            print("로그인된 유저 없음")
+            return
+        }
+        //Firestore의 chattingRooms 컬렉션에 새 채팅방 정보 추가
+        let chatRoomData: [String: Any] = [
+            "post_idx": post_idx,
+            "host_idx": postUser?.user_idx ?? "",
+            "guest_idx": currentUserId,
+            "isHostLeft": false,
+            "isGuestLeft": false,
+            "roomState": false
+        ]
+        // 채팅방 정보 Firestore에 저장
+        db.collection("chattingRooms").addDocument(data: chatRoomData) { error in
+            if let error = error {
+                print("채팅방 생성 중 오류 발생: \(error.localizedDescription)")
+            } else {
+                print("채팅방이 성공적으로 생성되었습니다.")
+                // 채팅방이 성공적으로 생성되면 해당 채팅방으로 이동
+                loadChatRoomId()
+                //self.navigateToChatRoom = true
+            }
+        }
+    }
+    
+    //생성된 채팅방 ID 로드
+    private func loadChatRoomId(){
+        db.collection("chattingRooms").whereField("post_idx", isEqualTo: post_idx)
+            .whereField("guest_idx", isEqualTo: userManager.userId ?? "")
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("채팅방 ID를 불러오는 중 오류 발생: \(error.localizedDescription)")
+                } else {
+                    if let document = snapshot?.documents.first {
+                        chatRoomId = document.documentID
+                        self.isChatRoomCreated = true // 채팅방 생성 상태로 설정
+                        //채팅방이 생성되면 화면 이동 트리거
+                        DispatchQueue.main.async {
+                            print("채팅방 생성됨, ID: \(self.chatRoomId!)")
+                            self.navigateToChatRoom = true
+                        }
+                    } else{
+                        print("채팅방을 불러오는 데 실패했습니다.")
+                    }
+                }
+            }
+    }
+    
+    private func checkChatList() {
+        db.collection("chattingRooms")
+            .whereField("post_idx", isEqualTo: post_idx)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("채팅방 확인 오류: \(error.localizedDescription)")
+                } else if let documents = snapshot?.documents {
+                    // isGuestLeft가 false인 채팅방만 필터링
+                    let activeChatRooms = documents.filter { document in
+                        let data = document.data()
+                        return !(data["isHostLeft"] as? Bool ?? true) // isHostLeft가 false인 방만 포함
+                    }
+                    
+                    if !activeChatRooms.isEmpty {
+                        // 활성화된 채팅방이 있을 경우 ChatListMain으로 이동
+                        DispatchQueue.main.async {
+                            navigateToChatList = true
+                        }
+                    } else {
+                        // 활성화된 채팅방이 없을 경우 경고창 표시
+                        DispatchQueue.main.async {
+                            alertMessage2 = "게시물에 대한 채팅 목록이 없습니다."
+                            showAlert2 = true
+                        }
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        alertMessage2 = "게시물에 대한 채팅 목록이 없습니다."
+                        showAlert2 = true
+                    }
+                }
+            }
+    }
     
     var body: some View {
         if isLoading {
@@ -418,7 +561,7 @@ struct DetailPost: View {
                             .environmentObject(UserManager())
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
-                                
+                            
                             // 댓글, 대댓글 작성
                             CommentInput(
                                 isReplying: isReplying,
@@ -440,11 +583,11 @@ struct DetailPost: View {
                             )
                             
                             Spacer().frame(height: 60) // 하단 여유 공간 추가
+                        }
+                        .padding(.vertical)
+                        
                     }
-                    .padding(.vertical)
-                    
                 }
-            }
                 
                 VStack(spacing: 0) {
                     
@@ -459,9 +602,9 @@ struct DetailPost: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 40, height: 30)
-                                .foregroundColor(selectedStatus == "거래완료" ? .gray : .black)
+                                .foregroundColor(.black)
                         }
-                        .disabled(selectedStatus == "거래완료")
+                        //.disabled(selectedStatus == "거래완료")
                         .padding()
                         .onAppear {
                             checkIfLiked()
@@ -470,20 +613,54 @@ struct DetailPost: View {
                         Spacer()
                         
                         // 채팅하기 버튼
-                        Button(action: {
-                            // 채팅하기 버튼 액션
-                        }) {
-                            Text("채팅하기")
-                                .font(.title3)
-                                .frame(width: 80)
-                                .padding()
-                                .background(selectedStatus == "거래완료" ? Color.gray : Color.black)
-                                .foregroundColor(.white)
-                                .cornerRadius(8)
-                                .padding(.leading)
+                        if isPostOwner{
+                            Button(action: checkChatList){
+                                Text("채팅 목록")
+                                    .font(.headline)
+                                    .frame(width: 120)
+                                    .padding()
+                                    .background(Color.black)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(8)
+                            }
+                            .padding()
+                        } else {
+                            Button(action: {
+                                if !isChatRoomCreated {
+                                    createChatRoom()
+                                }
+                                self.navigateToChatRoom = true
+                            }) {
+                                Text( !isChatRoomCreated ? "채팅하기" : "채팅방으로 이동")
+                                    .font(.headline)
+                                    .frame(width: 80)
+                                    .padding()
+                                    .background(Color.black)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(8)
+                                    .padding(.leading)
+                            }
+                            .padding()
                         }
-                        .disabled(selectedStatus == "거래완료")
-                        .padding()
+                        
+                        // 채팅방으로 이동
+                        if let chatRoomId = chatRoomId {
+                            NavigationLink(
+                                destination: ChatView(postIdx: post_idx, chatRoomId: chatRoomId)
+                                    .environmentObject(userManager),
+                                isActive: $navigateToChatRoom
+                            ) {
+                                EmptyView()
+                            }
+                        }
+                        
+                        NavigationLink(
+                            destination: ChatListMain(selectedCategory: "내 게시물 채팅 목록", selectedPostId: post_idx).environmentObject(userManager),
+                            isActive: $navigateToChatList
+                        ) {
+                            EmptyView()
+                        }
+                        
                     }
                     .background(Color.white)
                 }
@@ -501,25 +678,28 @@ struct DetailPost: View {
                         }),
                         .destructive(Text("게시물 삭제"), action: {
                             firestoreService.deletePost(postIdx: post_idx) { success in
-                                    if success {
-                                        alertMessage = "게시물이 성공적으로 삭제되었습니다."
-                                                                        showAlert = true
-                                    } else {
-                                        alertMessage = "게시물 삭제에 실패했습니다. 다시 시도해주세요."
-                                                                        showAlert = true
-                                    }
+                                if success {
+                                    alertMessage = "게시물이 성공적으로 삭제되었습니다."
+                                    showAlert = true
+                                } else {
+                                    alertMessage = "게시물 삭제에 실패했습니다. 다시 시도해주세요."
+                                    showAlert = true
                                 }
+                            }
                         }),
                         .cancel(Text("취소"))
                     ]
                 )
             }
             .sheet(isPresented: $isEditPostPresented, onDismiss: {
-                        fetchData() // CreatePostView 닫힌 후 데이터 새로고침
-                    }){
+                fetchData() // CreatePostView 닫힌 후 데이터 새로고침
+            }){
                 if let postDetails = postDetails {
                     CreatePostView(post: postDetails.toCreatePost(), postDetails: $postDetails, isEditMode: true)
                 }
+            }
+            .alert(isPresented: $showAlert2){
+                Alert(title: Text("알림"), message: Text(alertMessage2), dismissButton: .default(Text("확인")))
             }
             .alert(isPresented: $showAlert) {
                 Alert(
@@ -533,6 +713,10 @@ struct DetailPost: View {
                 )
             }
         }
+    }
+    
+    init(post_idx: String) {
+        self.post_idx = post_idx
     }
 }
         
