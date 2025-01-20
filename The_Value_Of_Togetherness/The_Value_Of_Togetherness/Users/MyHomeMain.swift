@@ -5,11 +5,22 @@ import FirebaseFirestore
 import FirebaseAuth
 import GoogleSignIn
 
+func formatDate(_ date: Date?) -> String {
+    guard let date = date else { return "날짜 없음" }
+    
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yy.MM.dd" // 년도.월.일 형식
+    formatter.locale = Locale(identifier: "ko_KR") // 한국어 로케일
+    return formatter.string(from: date)
+}
+
 struct MyHomeMain: View {
     @EnvironmentObject var userManager: UserManager
     @State private var userName: String = ""
     @State private var schoolName: String = ""
     @State private var profileImageURL: URL? // 프로필 이미지 URL
+    @State private var createdAt : Date? = nil
+    @State private var formattedCreatedAt: String = "날짜 없음"
     
     private var db = Firestore.firestore()
     
@@ -46,6 +57,16 @@ struct MyHomeMain: View {
                     print("profile_image_url이 존재하지 않거나 잘못된 형식입니다.")
                     self.profileImageURL = nil // 기본 이미지를 보여주기 위해 nil로 설정
                 }
+                
+                // createdAt 필드 가져오기
+               if let timestamp = data?["createdAt"] as? Timestamp {
+                   self.createdAt = timestamp.dateValue() // Timestamp를 Date로 변환
+                   self.formattedCreatedAt = formatDate(self.createdAt) // 포맷된 날짜 저장
+               } else {
+                   print("createdAt 필드가 존재하지 않거나 잘못된 형식입니다.")
+                   self.createdAt = nil
+                   self.formattedCreatedAt = "날짜 없음"
+               }
             } else {
                 print("문서가 Firestore에 존재하지 않습니다.")
             }
@@ -219,7 +240,7 @@ struct MyHomeMain: View {
                                 
                                 Spacer()
                                 
-                                Text("카카오 (가입일: 2024.9.7)")
+                                Text("(가입일: \(formattedCreatedAt))")
                                     .font(.headline)
                                     .foregroundColor(.gray)
                             }
