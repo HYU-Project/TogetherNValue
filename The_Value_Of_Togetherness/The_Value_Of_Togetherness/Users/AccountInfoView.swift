@@ -46,20 +46,28 @@ struct AccountInfoView: View {
     }
     
     func logOut() {
-        do {
-            try userManager.logOut() // Firebase 로그아웃
-            GIDSignIn.sharedInstance.signOut() // Google 로그아웃
-            alertTitle = "로그아웃 완료"
-            alertMessage = "성공적으로 로그아웃되었습니다."
-            // userManager.userId를 nil로 설정
-            DispatchQueue.main.async {
-                userManager.userId = nil
-            }
-        } catch let error {
-            alertTitle = "로그아웃 실패"
-            alertMessage = "오류가 발생했습니다: \(error.localizedDescription)"
-        }
+        // 알림을 먼저 설정
+        alertTitle = "로그아웃 완료"
+        alertMessage = "성공적으로 로그아웃되었습니다."
         showAlert = true
+        
+        // 알림을 표시한 후 로그아웃 작업 수행
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { // 0.3초 지연
+            do {
+                try userManager.logOut() // Firebase 로그아웃
+                GIDSignIn.sharedInstance.signOut() // Google 로그아웃
+                
+                // userManager.userId를 nil로 설정
+                DispatchQueue.main.async {
+                    userManager.userId = nil
+                }
+            } catch let error {
+                // 로그아웃 실패 시 알림 업데이트
+                alertTitle = "로그아웃 실패"
+                alertMessage = "오류가 발생했습니다: \(error.localizedDescription)"
+                showAlert = true
+            }
+        }
     }
     
     func deleteAccountForGoogleUser() {
