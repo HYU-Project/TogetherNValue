@@ -81,7 +81,7 @@ struct RegisterView: View{
                         .padding(.horizontal)
                     
                     //이용약관
-                    NavigationLink(destination: ConsentView()) {
+                    NavigationLink(destination: PolicyView()) {
                         Text("이용약관동의")
                             //.font(.footnote)
                             .foregroundColor(.red)
