@@ -607,7 +607,7 @@ struct DetailPost: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 40, height: 30)
-                                .foregroundColor(.black)
+                                .foregroundColor(selectedStatus == "거래완료" ? Color.gray : Color.black)
                         }
                         .disabled(selectedStatus == "거래완료")
                         .padding()
@@ -640,7 +640,7 @@ struct DetailPost: View {
                                     .font(.headline)
                                     .frame(width: 80)
                                     .padding()
-                                    .background(Color.black)
+                                    .background(selectedStatus == "거래완료" && !isChatRoomCreated ? Color.gray : Color.black)
                                     .foregroundColor(.white)
                                     .cornerRadius(8)
                                     .padding(.leading)
