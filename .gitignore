@@ -27,8 +27,8 @@ DerivedData/
 !default.perspectivev3
 
 # Ignore environment configuration
-.env
-config/firebase-config.json
+GoogleService-Info.plist
+
 
 ## Obj-C/Swift specific
 *.hmap
