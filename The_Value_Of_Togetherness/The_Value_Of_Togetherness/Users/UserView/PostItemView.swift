@@ -72,10 +72,7 @@ struct PostItemView: View {
                         .foregroundColor(Color.black)
                     
                     Spacer()
-                    
-                    Text(post.post_status)
-                        .font(.subheadline)
-                        .foregroundColor(post.post_status == "거래가능" ? .red : .green)
+                
                 }
                 
                 Spacer()

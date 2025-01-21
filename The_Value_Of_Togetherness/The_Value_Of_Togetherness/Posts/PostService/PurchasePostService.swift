@@ -72,6 +72,8 @@ class PurchaseFirestoreService {
                 }
                 
                 dispatchGroup.notify(queue: .main) {
+                    // created_at 기준으로 내림차순 정렬
+                    loadedPosts.sort { $0.created_at > $1.created_at }
                     completion(loadedPosts)
                 }
             }

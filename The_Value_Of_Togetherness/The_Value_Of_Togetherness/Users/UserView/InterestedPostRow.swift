@@ -52,10 +52,10 @@ struct InterestedPostRow: View {
                 Text(post.post_status)
                     .padding()
                     .font(.subheadline)
-                    .frame(minWidth: 30)
+                    .frame(minWidth: 28, minHeight: 15)
                     .foregroundColor(.white)
                     .background(post.post_status == "거래가능" ? Color.green : Color.black)
-                    .cornerRadius(10)
+                    .cornerRadius(5)
                 
                 HStack{
                     Image(systemName: "heart")

@@ -119,6 +119,7 @@ class InterestedPostService {
                     print("Fetched and parsed posts: \(posts)")
                     completion(.success(posts))
                 }
+                
             }
     }
 
