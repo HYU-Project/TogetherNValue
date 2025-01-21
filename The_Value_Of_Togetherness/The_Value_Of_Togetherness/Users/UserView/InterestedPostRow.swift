@@ -47,12 +47,22 @@ struct InterestedPostRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(post.title)
                     .font(.headline)
+                    .foregroundColor(.black)
+                
                 Text(post.post_status)
+                    .padding()
                     .font(.subheadline)
-                    .foregroundColor(post.post_status == "거래중" ? .red : .green)
+                    .frame(minWidth: 30)
+                    .foregroundColor(.white)
+                    .background(post.post_status == "거래가능" ? Color.green : Color.black)
+                    .cornerRadius(10)
+                
                 HStack{
                     Image(systemName: "heart")
+                        .foregroundColor(.black)
+                    
                     Text("\(post.post_likeCnt)")
+                        .foregroundColor(.black)
                 }
             }
             
@@ -72,7 +82,7 @@ struct InterestedPostRow: View {
                         
         }
         .padding()
-        .frame(height: 90)
+        .frame(height: 100)
         .background(Color.white)
         .cornerRadius(12)
         .shadow(radius: 2)

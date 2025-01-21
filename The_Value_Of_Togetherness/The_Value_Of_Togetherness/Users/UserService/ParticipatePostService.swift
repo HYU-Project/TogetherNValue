@@ -9,6 +9,7 @@ class ParticipatePostService {
     func fetchParticipatePost(for userId: String, completion: @escaping (Result<[ParticiaptePost], Error>) -> Void) {
         db.collection("chattingRooms")
             .whereField("guest_idx", isEqualTo: userId)
+            .whereField("post_status", in: ["거래가능", "거래완료"])
             .getDocuments { snapshot, error in
                 if let error = error {
                     print("Error fetching chattingRooms: \(error.localizedDescription)")
@@ -50,7 +51,6 @@ class ParticipatePostService {
     private func fetchPosts(by postIds: [String], roomStates: [String: Bool], completion: @escaping (Result<[ParticiaptePost], Error>) -> Void) {
         db.collection("posts")
             .whereField(FieldPath.documentID(), in: postIds)
-            .order(by: "created_at", descending: true)
             .getDocuments { snapshot, error in
                 if let error = error {
                     print("Error fetching posts: \(error.localizedDescription)")

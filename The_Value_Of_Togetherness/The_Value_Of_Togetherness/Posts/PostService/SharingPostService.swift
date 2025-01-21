@@ -17,7 +17,6 @@ class SharingFirestoreService {
                 .whereField("school_idx", isEqualTo: school_idx)
                 .whereField("post_category", isEqualTo: category)
                 .whereField("post_status", in: ["거래가능", "거래완료"])
-                .order(by: "created_at", descending: true)
                 .getDocuments { (querySnapshot, error) in
                     if let error = error {
                         print("Error getting posts: \(error.localizedDescription)")

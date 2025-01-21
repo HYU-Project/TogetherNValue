@@ -262,11 +262,11 @@ struct UserProfileUpdate: View {
                     Text("수정하기")
                         .font(.title2)
                         .bold()
-                        .foregroundColor(Color.black)
+                        .foregroundColor(Color.white)
                         .frame(width: 280, height: 40)
                 }
                 .padding()
-                .background(Color.gray.opacity(0.3))
+                .background(Color.black)
                 .cornerRadius(10)
                 
         }

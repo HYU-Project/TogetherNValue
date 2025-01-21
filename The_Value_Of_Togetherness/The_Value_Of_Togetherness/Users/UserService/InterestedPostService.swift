@@ -48,7 +48,7 @@ class InterestedPostService {
         
         db.collection("posts")
             .whereField(FieldPath.documentID(), in: postIds)
-            .order(by: "created_at", descending: true)
+            .whereField("post_status", in: ["거래가능", "거래완료"])
             .getDocuments { snapshot, error in
                 if let error = error {
                     print("Error fetching posts: \(error.localizedDescription)")

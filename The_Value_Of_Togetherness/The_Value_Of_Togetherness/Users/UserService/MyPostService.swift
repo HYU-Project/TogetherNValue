@@ -18,7 +18,6 @@ class MyPostFirestoreService {
         db.collection("posts")
             .whereField("user_idx", isEqualTo: user_idx)
             .whereField("post_status", isEqualTo: post_status)
-            .order(by: "created_at", descending: true)
             .getDocuments { (querySnapshot, error) in
                 if let error {
                     print("Error getting errors: \(error.localizedDescription)")

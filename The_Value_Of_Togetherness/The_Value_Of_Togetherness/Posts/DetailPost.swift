@@ -503,9 +503,17 @@ struct DetailPost: View {
                             
                             // 게시물 제목 및 설명
                             VStack(alignment: .leading, spacing: 10) {
+                                    
                                 Text(postDetails?.title ?? "제목 없음")
                                     .font(.title)
                                     .bold()
+    
+                                if postDetails?.user_idx != userManager.userId {
+                                    Text("\(postDetails?.post_status ?? "상태 없음")")
+                                        .font(.title2)
+                                        .bold()
+                                        .foregroundColor(.gray)
+                                }
                                 
                                 HStack {
                                     Text("#\(postDetails?.post_category ?? "카테고리 없음")")
