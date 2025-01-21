@@ -28,7 +28,7 @@ DerivedData/
 
 # Ignore environment configuration
 The_Value_Of_Togetherness/The_Value_Of_Togetherness/GoogleService-Info.plist
-GoogleService-Info.plist
+**/GoogleService-Info.plist
 
 
 ## Obj-C/Swift specific
