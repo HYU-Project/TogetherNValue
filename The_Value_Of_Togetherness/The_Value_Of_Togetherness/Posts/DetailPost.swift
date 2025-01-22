@@ -248,7 +248,7 @@ struct DetailPost: View {
                     print("채팅방 확인 중 오류 발생: \(error.localizedDescription)")
                 } else {
                     if snapshot?.documents.isEmpty == false {
-                        /// 이미 채팅방이 존재하면 해당 채팅방 ID를 가져오고, 상태 업데이트
+                        // 이미 채팅방이 존재하면 해당 채팅방 ID를 가져오고, 상태 업데이트
                         if let document = snapshot?.documents.first{
                             self.chatRoomId = document.documentID
                             self.isChatRoomCreated = true //채팅방 생성 상태로 설정
@@ -261,7 +261,7 @@ struct DetailPost: View {
             }
     }
     
-    //채팅방생성
+    // 채팅방 생성
     private func createChatRoom(){
         guard let currentUserId = userManager.userId else{
             print("로그인된 유저 없음")
@@ -319,28 +319,30 @@ struct DetailPost: View {
                 if let error = error {
                     print("채팅방 확인 오류: \(error.localizedDescription)")
                 } else if let documents = snapshot?.documents {
+                    print("채팅방 문서 개수: \(documents.count)")
                     // isGuestLeft가 false인 채팅방만 필터링
                     let activeChatRooms = documents.filter { document in
                         let data = document.data()
                         return !(data["isHostLeft"] as? Bool ?? true) // isHostLeft가 false인 방만 포함
                     }
-                    
+                    print("활성화된 채팅방 개수: \(activeChatRooms.count)")
+
                     if !activeChatRooms.isEmpty {
                         // 활성화된 채팅방이 있을 경우 ChatListMain으로 이동
                         DispatchQueue.main.async {
-                            navigateToChatList = true
+                            self.navigateToChatList = true
                         }
                     } else {
                         // 활성화된 채팅방이 없을 경우 경고창 표시
                         DispatchQueue.main.async {
-                            alertMessage2 = "게시물에 대한 채팅 목록이 없습니다."
-                            showAlert2 = true
+                            self.alertMessage2 = "게시물에 대한 채팅 목록이 없습니다."
+                            self.showAlert2 = true
                         }
                     }
                 } else {
                     DispatchQueue.main.async {
-                        alertMessage2 = "게시물에 대한 채팅 목록이 없습니다."
-                        showAlert2 = true
+                        self.alertMessage2 = "게시물에 대한 채팅 목록이 없습니다."
+                        self.showAlert2 = true
                     }
                 }
             }
@@ -548,6 +550,7 @@ struct DetailPost: View {
                                             
                                             Text("거래 희망 장소 : \(postDetails?.location ?? "미정")")
                                                 .bold()
+                                                .padding(.trailing, 12)
                                         }
                                         
                                         HStack {
@@ -637,12 +640,14 @@ struct DetailPost: View {
                                     .cornerRadius(8)
                             }
                             .padding()
+                            
                         } else {
                             Button(action: {
                                 if !isChatRoomCreated {
                                     createChatRoom()
-                                }
-                                self.navigateToChatRoom = true
+                                } else {
+                                    navigateToChatRoom = true // 이미 생성된 경우 바로 이동
+                                            }
                             }) {
                                 Text( !isChatRoomCreated ? "채팅하기" : "채팅방으로 이동")
                                     .font(.headline)
@@ -680,6 +685,7 @@ struct DetailPost: View {
                 }
                 .onAppear {
                     fetchData() // 데이터 로드
+                    checkIfLiked() // 좋아요 상태 확인
                 }
             }
             .actionSheet(isPresented: $isActionSheetPresented){
@@ -712,13 +718,18 @@ struct DetailPost: View {
                     CreatePostView(post: postDetails.toCreatePost(), postDetails: $postDetails, isEditMode: true)
                 }
             }
-            .alert(isPresented: $showAlert2){
-                Alert(title: Text("알림"), message: Text(alertMessage2), dismissButton: .default(Text("확인")))
-            }
-            .alert(isPresented: $showAlert) {
+            .alert(isPresented: Binding<Bool>(
+                get: { showAlert || showAlert2 },
+                set: { newValue in
+                    if !newValue {
+                        showAlert = false
+                        showAlert2 = false
+                    }
+                }
+            )) {
                 Alert(
-                    title: Text("알림"),
-                    message: Text(alertMessage),
+                    title: Text(showAlert2 ? "알림" : "게시물 알림"),
+                    message: Text(showAlert2 ? alertMessage2 : alertMessage),
                     dismissButton: .default(Text("확인")) {
                         if alertMessage == "게시물이 성공적으로 삭제되었습니다." {
                             dismiss()
@@ -726,6 +737,7 @@ struct DetailPost: View {
                     }
                 )
             }
+
         }
     }
     

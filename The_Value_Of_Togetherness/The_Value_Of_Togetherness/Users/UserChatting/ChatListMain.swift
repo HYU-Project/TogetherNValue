@@ -196,6 +196,7 @@ struct ChatListMain: View {
                                if let hostName = userNames[room.hostIdx] {
                                    Text(hostName)
                                        .font(.headline)
+                                       .padding(.bottom, 5)
                                } else {
                                    Text("이름 불러오기 실패")
                                        .font(.subheadline)
@@ -207,6 +208,8 @@ struct ChatListMain: View {
                                        .foregroundColor(.gray)
                                }
                            }
+                           .padding(.leading, 10)
+                           
                            Spacer()
                        }
                        .padding(.vertical, 5)

@@ -61,13 +61,13 @@ struct ChatView: View {
                                     .frame(width: 80, height: 80)
                                     .clipped()
                             case .failure:
-                                Image(systemName: "photo")
+                                Image("NoImage")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 80, height: 80)
                                     .clipped()
                             @unknown default:
-                                Image(systemName: "photo")
+                                Image("NoImage")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 80, height: 80)
@@ -75,7 +75,7 @@ struct ChatView: View {
                             }
                         }
                     } else {
-                        Image(systemName: "photo")
+                        Image("NoImage")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 80, height: 80)
@@ -89,7 +89,7 @@ struct ChatView: View {
                             .font(.subheadline)
                         Text(postDetails.post_status)
                             .font(.subheadline)
-                            .foregroundColor(postDetails.post_status == "거래중" ? .green : .red)
+                            .foregroundColor(postDetails.post_status == "거래가능" ? .green : .red)
                     }
                                 
                     Spacer()
