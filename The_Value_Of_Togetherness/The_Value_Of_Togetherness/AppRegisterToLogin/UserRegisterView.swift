@@ -11,7 +11,17 @@ struct RegisterView: View{
     @State private var confirmPwd: String = ""
     @State private var errorMessage: String = ""
     @State private var isLoading = false
+    @State private var isAgreeToTerms = false
     @Environment(\.dismiss) var dismiss // 회원가입 후 로그인 화면으로 돌아가기
+    
+    private var isFormValid: Bool {
+           !userEmail.isEmpty &&
+           !userName.isEmpty &&
+           !userPhone.isEmpty &&
+           !userPwd.isEmpty &&
+           !confirmPwd.isEmpty &&
+           isAgreeToTerms
+       }
     
     var body: some View{
         ZStack{
@@ -46,6 +56,7 @@ struct RegisterView: View{
                     
                     // 전화번호 입력
                     TextField("전화번호", text: $userPhone)
+                        .keyboardType(.phonePad)
                         .padding()
                         .frame(height: 55) // 높이 조정
                         .background(Color.white)
@@ -55,6 +66,7 @@ struct RegisterView: View{
                     
                     // 이메일 입력
                     TextField("이메일", text: $userEmail)
+                        .keyboardType(.emailAddress)
                         .padding()
                         .frame(height: 55) // 높이 조정
                         .background(Color.white)
@@ -81,10 +93,16 @@ struct RegisterView: View{
                         .padding(.horizontal)
                     
                     //이용약관
-                    NavigationLink(destination: PolicyView()) {
-                        Text("이용약관동의")
-                            //.font(.footnote)
-                            .foregroundColor(.red)
+                    HStack{
+                        NavigationLink(destination: ConsentView()) {
+                            Text("이용약관동의")
+                                //.font(.footnote)
+                                .foregroundColor(.red)
+                        }
+                        Button(action: { isAgreeToTerms.toggle() }) {
+                            Image(systemName: isAgreeToTerms ? "checkmark.rectangle.fill" : "rectangle")
+                                .foregroundColor(isAgreeToTerms ? .blue : .gray)
+                        }
                     }
                     
                     // 오류 메시지
@@ -110,12 +128,12 @@ struct RegisterView: View{
                                 .foregroundColor(.white)
                                 .padding()
                                 .frame(maxWidth: .infinity)
-                                .background(Color.black.opacity(1))
+                                .background(isFormValid ? Color.black : Color.gray)
                                 .cornerRadius(8)
                         }
                     }
                     .padding(.horizontal)
-                    .disabled(isLoading) // 로딩 중 버튼 비활성화
+                    .disabled(!isFormValid || !isAgreeToTerms)
                     
                     Spacer()
                 }
@@ -129,31 +147,53 @@ struct RegisterView: View{
         }
     }
     
-    func register(){
-        guard !userEmail.isEmpty, !userPwd.isEmpty, !confirmPwd.isEmpty else {
-            errorMessage = "모든 필드를 입력하세요."
-            return
-        }
-
-        guard userPwd == confirmPwd else {
-            errorMessage = "비밀번호가 일치하지 않습니다."
-            return
-        }
-
-        guard userPwd.count >= 6 else {
-            errorMessage = "비밀번호는 6자 이상이어야 합니다."
-            return
-        }
-        isLoading = true
-        Auth.auth().createUser(withEmail: userEmail, password: userPwd) { result, error in
-            isLoading = false
-            if let error = error {
-                errorMessage = "회원가입 실패: \(error.localizedDescription)"
-            } else if let user = result?.user {
-                saveUserToFirestore(user: user)
+    func register() {
+            // 입력값 검증
+            guard validateInputs() else { return }
+            
+            isLoading = true
+            Auth.auth().createUser(withEmail: userEmail, password: userPwd) { result, error in
+                isLoading = false
+                if let error = error as NSError?, error.code == AuthErrorCode.emailAlreadyInUse.rawValue {
+                    errorMessage = "이미 등록된 이메일입니다."
+                } else if let error = error {
+                    errorMessage = "회원가입 실패: \(error.localizedDescription)"
+                } else if let user = result?.user {
+                    saveUserToFirestore(user: user)
+                }
             }
         }
-    }
+        
+        func validateInputs() -> Bool {
+            errorMessage = ""
+            
+            guard !userName.isEmpty, userName.range(of: "^[가-힣a-zA-Z ]{2,}$", options: .regularExpression) != nil else {
+                errorMessage = "이름은 2자 이상의 한글 또는 영어만 가능합니다."
+                return false
+            }
+            
+            guard !userPhone.isEmpty, userPhone.range(of: "^01[0-9]{8,9}$", options: .regularExpression) != nil else {
+                errorMessage = "전화번호 형식이 올바르지 않습니다."
+                return false
+            }
+            
+            guard !userEmail.isEmpty, userEmail.range(of: "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", options: .regularExpression) != nil else {
+                errorMessage = "이메일 형식이 올바르지 않습니다."
+                return false
+            }
+            
+            guard userPwd == confirmPwd else {
+                errorMessage = "비밀번호가 일치하지 않습니다."
+                return false
+            }
+            
+            guard userPwd.count >= 6 else {
+                errorMessage = "비밀번호는 6자 이상이어야 합니다."
+                return false
+            }
+            
+            return true
+        }
     
     func saveUserToFirestore(user: User){
         let db = Firestore.firestore()
@@ -177,3 +217,4 @@ struct RegisterView: View{
 #Preview{
     RegisterView()
 }
+

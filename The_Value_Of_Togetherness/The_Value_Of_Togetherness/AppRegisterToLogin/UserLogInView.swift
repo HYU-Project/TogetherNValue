@@ -37,6 +37,7 @@ struct LoginView: View {
                     VStack(spacing: 25) {
                         // 이메일과 비밀번호 입력 필드
                         TextField("이메일", text: $email)
+                            .keyboardType(.emailAddress)
                             .padding()
                             .frame(height: 60)
                             .background(Color.white)

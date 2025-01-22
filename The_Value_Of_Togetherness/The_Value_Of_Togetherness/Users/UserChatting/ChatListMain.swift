@@ -71,16 +71,17 @@ struct ChatListMain: View {
              //  .padding(.horizontal, 15)
           
            if selectedCategory == "내 게시물 채팅 목록" {
-               //if posts.isEmpty{
-                 //  VStack {
-                   //    Spacer()
-                     //  Text("현재 활성화된 게시물이 없습니다.")
-                       //    .font(.title2)
-                         //  .foregroundColor(.gray)
-                          // .padding()
-                       //Spacer()
-                   //}
-               //} else{
+               if posts.isEmpty{
+                   VStack {
+                       Spacer()
+                       Text("현재 참여 채팅목록이 없습니다.")
+                           .font(.title2)
+                           .foregroundColor(.gray)
+                           .padding()
+                       Spacer()
+                   }
+                   .frame(maxWidth: .infinity, maxHeight: .infinity)
+               } else{
                    List{
                        ForEach(posts.keys.sorted(), id: \.self) {postId in
                            VStack{
@@ -156,12 +157,20 @@ struct ChatListMain: View {
                            }
                        }
                    }
-              // }
+               }
           }
            else {
-               //if chattingRooms.isEmpty{
-                 //  EmptyView()
-               //}else{
+               if chattingRooms.isEmpty{
+                   VStack {
+                       Spacer()
+                       Text("현재 게시물에 대한 채팅이 없습니다.")
+                           .font(.title2)
+                           .foregroundColor(.gray)
+                           .padding()
+                       Spacer()
+                   }
+                   .frame(maxWidth: .infinity, maxHeight: .infinity)
+               }else{
                    List(chattingRooms.filter { !$0.isGuestLeft }) { room in
                        HStack {
                            if let imageUrl = postImages[room.postIdx], let url = URL(string: imageUrl) {
@@ -222,7 +231,7 @@ struct ChatListMain: View {
                        )
                    }
                }
-           //}
+           }
     }
     .onChange(of: selectedCategory, perform: { _ in
         loadChattingRooms()
@@ -279,6 +288,7 @@ struct ChatListMain: View {
                         if let error = error {
                             print("게시물 로드 오류: \(error.localizedDescription)")
                             self.posts = [:]
+                            self.chattingRooms = []
                         } else {
                             self.posts = snapshot?.documents.reduce(into: [String: String]()) { result, document in
                                 let data = document.data()
@@ -286,7 +296,12 @@ struct ChatListMain: View {
                                     result[document.documentID] = postTitle
                                 }
                             } ?? [:]
-                            self.loadChattingRoomsForPost(postIds: Array(self.posts.keys))
+                            if self.posts.isEmpty {
+                                print("현재 사용자의 게시물이 없습니다.")
+                                self.chattingRooms = []
+                            } else {
+                                self.loadChattingRoomsForPost(postIds: Array(self.posts.keys))
+                            }
                         }
                     }
             }
