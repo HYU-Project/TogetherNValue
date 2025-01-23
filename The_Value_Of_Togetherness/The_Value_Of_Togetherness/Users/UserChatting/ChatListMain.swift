@@ -103,7 +103,7 @@ struct ChatListMain: View {
                                            }
                                        }
                                    } else {
-                                       Image(systemName: "NoImage")
+                                       Image("NoImage")
                                            .resizable()
                                            .scaledToFit()
                                            .frame(width: 50, height: 50)
