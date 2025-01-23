@@ -1,161 +1,106 @@
-
 import SwiftUI
+import FirebaseFirestore
 
 struct ParticipateTransactionPosts: View {
     @EnvironmentObject var userManager: UserManager
-    
-    @State private var posts: [ParticiaptePost] = []
+    @State private var participatedPosts: [(postId: String, title: String)] = [] // 참여한 게시물 목록
     @State private var isLoading = true
-    @State private var selectedRoomState: String = "참여중"
-    
-    private let participatePostService = ParticipatePostService()
-    
-    private func loadPosts() {
-        guard let userId = userManager.userId else {
-            print("User ID is nil")
-            return
-        }
-        
-        isLoading = true
-        participatePostService.fetchParticipatePost(for: userId) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let fetchedPosts):
-                    self.posts = fetchedPosts
-                case .failure(let error):
-                    print("Error fetching posts: \(error.localizedDescription)")
-                }
-                self.isLoading = false
-            }
-        }
-    }
-    
-    // 선택한 상태에 따라 필터링된 게시물
-    var filteredPosts: [ParticiaptePost] {
-        posts.filter { post in
-            selectedRoomState.isEmpty ||
-            (selectedRoomState == "참여중" ? post.roomState : !post.roomState)
-        }
-    }
-    
+    private var db = Firestore.firestore()
+
     var body: some View {
         NavigationView {
             VStack {
-                Text("참여 거래")
-                    .font(.title)
-                    .bold()
-                    .padding()
-                    .padding(.bottom, 20)
-                
-                Divider()
-                    .padding(.bottom, 10)
-                
-                RoomStateFilterView(selectedRoomState: $selectedRoomState, loadPosts: loadPosts)
-                    .padding()
-                
                 if isLoading {
-                    ProgressView("Loading...")
+                    ProgressView("로딩 중...")
                         .padding()
-                    
-                    Spacer()
-                } else if filteredPosts.isEmpty {
-                    
-                    Text("해당 상태의 게시물이 없습니다.")
+                } else if participatedPosts.isEmpty {
+                    Text("참여한 거래가 없습니다.")
                         .font(.headline)
                         .foregroundColor(.gray)
                         .padding()
-                    
-                    Spacer()
                 } else {
-                    ScrollView {
-                        VStack {
-                            ForEach(filteredPosts) { post in
-                                ParticipatePostRow(post: post)
+                    List(participatedPosts, id: \.postId) { post in
+                        NavigationLink(
+                            destination: DetailPost(post_idx: post.postId),
+                            label: {
+                                Text(post.title)
+                                    .font(.headline)
                             }
-                        }
-                        .padding()
+                        )
                     }
                 }
             }
-            .onAppear {
-                loadPosts()
-            }
+            .navigationTitle("참여한 거래")
+        }
+        .onAppear {
+            fetchParticipatedPosts()
         }
     }
-}
 
-struct ParticipatePostRow: View {
-    let post: ParticiaptePost
-
-    var body: some View {
-        HStack {
-            if let postImageUrl = post.postImage_url, !postImageUrl.isEmpty {
-                // 로컬 파일 경로 처리
-                if postImageUrl.starts(with: "file://"), let url = URL(string: postImageUrl) {
-                    let localFileURL = URL(fileURLWithPath: url.path)  // file:// 프로토콜을 처리하는 방식
-                    if let uiImage = UIImage(contentsOfFile: localFileURL.path) {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 60, height: 60)
-                            .cornerRadius(8)
-                    } else {
-                        Image("NoImage")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 60, height: 60)
-                    }
-                } else if let url = URL(string: postImageUrl) {
-                    // URL로 이미지 로드
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .empty:
-                            ProgressView()
-                                .frame(width: 60, height: 60)
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 60, height: 60)
-                                .cornerRadius(8)
-                        case .failure:
-                            Image("NoImage")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 60, height: 60)
-                        @unknown default:
-                            EmptyView()
-                        }
-                    }
-                } else {
-                    Image("NoImage")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 60, height: 60)
-                }
-            } else {
-                // 이미지가 없을 경우
-                Image("NoImage")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 60, height: 60)
-            }
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(post.title)
-                    .font(.headline)
-                    .lineLimit(2)
-
-                Text(post.roomState ? "참여중" : "참여완료")
-                    .font(.subheadline)
-                    .foregroundColor(post.roomState ? .blue : .green)
-            }
-            .padding()
+    private func fetchParticipatedPosts() {
+        guard let userId = userManager.userId else {
+            print("유저 ID 없음")
+            self.isLoading = false
+            return
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(radius: 5)
+
+        db.collection("chattingRooms")
+            .whereField("guest_idx", isEqualTo: userId)
+            .whereField("roomState", isEqualTo: true)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("채팅방 로드 오류: \(error.localizedDescription)")
+                    self.isLoading = false
+                    return
+                }
+
+                guard let documents = snapshot?.documents else {
+                    print("참여한 거래 데이터 없음")
+                    self.isLoading = false
+                    return
+                }
+
+                // chattingRooms의 post_idx 수집
+                let postIds = documents.compactMap { $0.data()["post_idx"] as? String }
+
+                if postIds.isEmpty {
+                    print("관련 게시물 없음")
+                    self.isLoading = false
+                    return
+                }
+
+                // post_idx를 사용하여 posts 정보 가져오기
+                self.fetchPosts(postIds: postIds)
+            }
+    }
+
+    private func fetchPosts(postIds: [String]) {
+        db.collection("posts")
+            .whereField(FieldPath.documentID(), in: postIds)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("게시물 로드 오류: \(error.localizedDescription)")
+                    self.isLoading = false
+                    return
+                }
+
+                guard let documents = snapshot?.documents else {
+                    print("게시물 데이터 없음")
+                    self.isLoading = false
+                    return
+                }
+
+                // postId와 제목 저장
+                self.participatedPosts = documents.compactMap { document in
+                    let data = document.data()
+                    if let title = data["title"] as? String {
+                        return (postId: document.documentID, title: title)
+                    }
+                    return nil
+                }
+
+                self.isLoading = false
+            }
     }
 }
 

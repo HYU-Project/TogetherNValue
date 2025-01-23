@@ -20,6 +20,7 @@ struct Message: Identifiable, Codable {
     let text: String
     let isCurrentUser: Bool
     let timestamp: Date
+    //var isRead: Bool
 }
 
 struct ChatView: View {
@@ -31,6 +32,8 @@ struct ChatView: View {
     @State private var postDetails: FetchPostInfo?  // 게시물 정보
     @State private var postImages: [PostImage] = []  // 게시물 이미지 목록
     @State private var isLoading = true
+    @State private var roomState: Bool = false
+
     
     @State private var isShowingPhotoOptions = false
     @State private var isShowingPhotoPicker = false
@@ -39,6 +42,9 @@ struct ChatView: View {
     @State private var selectedImage: UIImage?
     @State private var showTransactionAlert = false // 거래 완료 확인창
     @State private var isHost: Bool = false //현재 사용자가 호스트인가?
+    
+    //@State private var unreadCount: Int = 0
+    
     
     //@ObservedObject var viewModel: ChatListViewModel
     @Environment(\.presentationMode) var presentationMode  // presentationMode를 통해 뷰를 닫기 위함
@@ -122,8 +128,9 @@ struct ChatView: View {
                             if message.senderID == "system"{
                                 Spacer()
                                 Text(message.text)
+                                    .frame(width: 250, height: 5)
                                     .padding()
-                                    .background(Color.orange.opacity(0.2))
+                                    .background(Color.orange.opacity(0.15))
                                     .cornerRadius(10)
                                     .foregroundColor(.black)
                                 Spacer()
@@ -199,20 +206,30 @@ struct ChatView: View {
             loadMessages()
             loadPostDetails()
             checkIfCurrentUserIsHost()
+            fetchRoomState() 
+            //markMessagesAsRead()
         }
         .sheet(isPresented: $isShowingPhotoPicker) {
             ImagePicker(sourceType: isShowingCamera ? .camera : .photoLibrary, selectedImage: $selectedImage)
         }
         .alert(isPresented: $showTransactionAlert) {
-            Alert(
-                title: Text("거래 완료"),
-                message: Text("거래를 완료하시겠습니까?"),
-                primaryButton: .default(Text("확인")) {
-                    completeTransaction()
-                },
-                secondaryButton: .cancel()
-            )
-        }
+                if roomState { // 거래 완료된 상태
+                    return Alert(
+                        title: Text("거래 완료"),
+                        message: Text("이미 거래를 완료하셨습니다."),
+                        dismissButton: .default(Text("확인"))
+                    )
+                } else { // 거래 미완료 상태
+                    return Alert(
+                        title: Text("거래 완료"),
+                        message: Text("거래를 완료하시겠습니까?"),
+                        primaryButton: .default(Text("확인")) {
+                            completeTransaction()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
+            }
     }
 
     // Firestore에서 게시물 정보 로드
@@ -266,13 +283,16 @@ struct ChatView: View {
                         let data = document.data()
                         if let senderID = data["senderID"] as? String,
                            let messageText = data["messageText"] as? String,
-                           let timestamp = data["timestamp"] as? Timestamp {
+                           let timestamp = data["timestamp"] as? Timestamp
+                           //let isRead = data["isRead"] as? Bool
+                        {
                             return Message(
                                 id: document.documentID,
                                 senderID: senderID,
                                 text: messageText,
                                 isCurrentUser: senderID == userManager.userId,
                                 timestamp: timestamp.dateValue()
+                                //isRead: isRead
                             )
                         }
                         return nil
@@ -280,6 +300,8 @@ struct ChatView: View {
                     DispatchQueue.main.async {
                         self.isLoading = false
                     }
+                    
+                    //markMessagesAsRead()
                 }
             }
     }
@@ -297,6 +319,7 @@ struct ChatView: View {
             text: newMessage,
             isCurrentUser: true,
             timestamp: Date()
+            //isRead: false
         )
         messages.append(newMessageObj)
         
@@ -305,6 +328,7 @@ struct ChatView: View {
             "senderID": userManager.userId ?? "",
             "messageText": newMessage,
             "timestamp": Timestamp()
+            //"isRead": false
         ]
         
         db.collection("chattingRooms")
@@ -322,6 +346,83 @@ struct ChatView: View {
         saveMessages()
     }
     
+//    func fetchUnreadMessageCount(){
+//        guard let currentUserId = userManager.userId else {return}
+//        db.collection("chattingRooms")
+//            .document(chatRoomId)
+//            .collection("messages")
+//            .whereField("isRead", isEqualTo: false)
+//            .whereField("senderID",isNotEqualTo: currentUserId)
+//            .getDocuments{ snapshot, error in
+//                if let error = error{
+//                    print("읽지 않은 메시지 개수 가져오기 오류: \(error.localizedDescription)")
+//                }else{
+//                    self.unreadCount = snapshot?.documents.count ?? 0
+//                    print("읽지 않은 메시지 개수: \(unreadCount)")
+//                }
+//            }
+//    }
+    
+//    func markMessagesAsRead() {
+//        guard let currentUserId = userManager.userId else { return }
+//        let query = db.collection("chattingRooms")
+//            .document(chatRoomId)
+//            .collection("messages")
+//            .whereField("isRead", isEqualTo: false)
+//            .whereField("senderID", isNotEqualTo: currentUserId)
+//
+//        query.getDocuments { snapshot, error in
+//            if let error = error {
+//                print("메시지 읽음 업데이트 오류: \(error.localizedDescription)")
+//            } else {
+//                let batch = db.batch()
+//                snapshot?.documents.forEach { document in
+//                    batch.updateData(["isRead": true], forDocument: document.reference)
+//                }
+//                batch.commit { error in
+//                    if let error = error {
+//                        print("읽음 상태 업데이트 실패: \(error.localizedDescription)")
+//                    } else {
+//                        print("읽음 상태 업데이트 성공")
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
+//    func observeMessages() {
+//        db.collection("chattingRooms")
+//            .document(chatRoomId)
+//            .collection("messages")
+//            .order(by: "timestamp")
+//            .addSnapshotListener { snapshot, error in
+//                if let error = error {
+//                    print("메시지 감지 오류: \(error.localizedDescription)")
+//                } else {
+//                    self.messages = snapshot?.documents.compactMap { document in
+//                        let data = document.data()
+//                        if let senderID = data["senderID"] as? String,
+//                           let messageText = data["messageText"] as? String,
+//                           let timestamp = data["timestamp"] as? Timestamp,
+//                           let isRead = data["isRead"] as? Bool {
+//                            return Message(
+//                                id: document.documentID,
+//                                senderID: senderID,
+//                                text: messageText,
+//                                isCurrentUser: senderID == userManager.userId,
+//                                timestamp: timestamp.dateValue(),
+//                                isRead: isRead
+//                            )
+//                        }
+//                        return nil
+//                    } ?? []
+//                    markMessagesAsRead() // 메시지 실시간 로드 후 읽음 처리
+//                }
+//            }
+//    }
+
+
+    
     func formatTimestamp(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "a h:mm"
@@ -337,18 +438,35 @@ struct ChatView: View {
 
     
     func completeTransaction() {
-        //거래 완료 로직
+        // Firestore에서 roomState를 확인
         db.collection("chattingRooms")
             .document(chatRoomId)
-            .updateData(["roomState": true]){ error in
-                if let error = error{
-                    print("거래완료상태 업데이트 실패: \(error.localizedDescription)")
-                }else{
-                    print("거래완료상태 업데이트 성공")
-                    self.addCompletionMessage()
+            .getDocument { document, error in
+                if let error = error {
+                    print("거래 완료 상태 확인 오류: \(error.localizedDescription)")
+                    return
                 }
+                
+                if let document = document, let data = document.data(),
+                   let currentState = data["roomState"] as? Bool, currentState {
+                    print("거래가 이미 완료된 상태입니다.")
+                    return // 이미 완료된 경우 종료
+                }
+                
+                // roomState 업데이트
+                self.db.collection("chattingRooms")
+                    .document(chatRoomId)
+                    .updateData(["roomState": true]) { error in
+                        if let error = error {
+                            print("거래 완료 상태 업데이트 실패: \(error.localizedDescription)")
+                        } else {
+                            print("거래 완료 상태 업데이트 성공")
+                            self.addCompletionMessage()
+                        }
+                    }
             }
     }
+
     
     func addCompletionMessage(){
         let completionMessage: [String: Any] = [
@@ -538,25 +656,46 @@ struct ChatView: View {
             }
     }
     
-    func getActionSheetButtons() -> [ActionSheet.Button] {
-        var buttons: [ActionSheet.Button] = [
-            .destructive(Text("채팅방 나가기")){
-                leaveChatRoom()
+    func fetchRoomState() {
+        db.collection("chattingRooms")
+            .document(chatRoomId)
+            .getDocument { document, error in
+                if let error = error {
+                    print("거래 상태 가져오기 오류: \(error.localizedDescription)")
+                    return
+                }
+
+                if let document = document, let data = document.data(),
+                    let currentState = data["roomState"] as? Bool {
+                    DispatchQueue.main.async {
+                        self.roomState = currentState
+                    }
+                } else {
+                    print("거래 상태 로드 실패: \(error?.localizedDescription ?? "알 수 없는 오류")")
+                }
             }
-        ]
-        
-        if isHost{
-            buttons.insert(
-                .default(Text("거래 완료")){
-                    showTransactionAlert = true
-                },
-                at: 0
-            )
-        }
-        buttons.append(.cancel())
-        
-        return buttons
     }
+
+    
+    func getActionSheetButtons() -> [ActionSheet.Button] {
+            var buttons: [ActionSheet.Button] = [
+                .destructive(Text("채팅방 나가기")){
+                    leaveChatRoom()
+                }
+            ]
+            
+            if isHost{
+                buttons.insert(
+                    .default(Text("거래 완료")){
+                        showTransactionAlert = true
+                    },
+                    at: 0
+                )
+            }
+            buttons.append(.cancel())
+            
+            return buttons
+        }
     
     public init(postIdx: String, chatRoomId: String) {
             self.postIdx = postIdx

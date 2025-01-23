@@ -53,6 +53,7 @@ struct ChatListMain: View {
    @State private var posts: [String: String] = [:] // 게시물 정보 저장
    @State private var selectedPostId: String? = nil // 선택한 게시물의 ID
    @State private var expandedPostId: String? = nil // 현재 열려있는 게시물
+  // @State private var unreadMessageCounts: [String: Int] = [:] // 채팅방별 안 읽은 메시지 개수
    private var db = Firestore.firestore()
     
     init(selectedCategory: String = "참여채팅 목록", selectedPostId: String? = nil) {
@@ -64,11 +65,6 @@ struct ChatListMain: View {
    var body: some View {
        VStack{
            chattingCategoryButtonView(selectedCategory: $selectedCategory)
-           
-           //Divider()
-             //  .frame(height: 1)
-             //.background(Color.black)
-             //  .padding(.horizontal, 15)
           
            if selectedCategory == "내 게시물 채팅 목록" {
                if posts.isEmpty{
@@ -149,6 +145,14 @@ struct ChatListMain: View {
                                                     .foregroundColor(.gray)
                                             }
                                             Spacer() // 빈 공간 추가
+//                                            if let unreadCount = unreadMessageCounts[room.id], unreadCount > 0 {
+//                                                    Text("\(unreadCount)")
+//                                                        .font(.caption)
+//                                                        .foregroundColor(.white)
+//                                                        .padding(6)
+//                                                        .background(Color.red)
+//                                                        .clipShape(Circle())
+//                                                }
                                         }
                                         .padding(.vertical, 5)
                                     }
@@ -216,10 +220,19 @@ struct ChatListMain: View {
                                        .font(.subheadline)
                                        .foregroundColor(.gray)
                                }
+//                               if let unreadCount = unreadMessageCounts[room.id], unreadCount > 0 {
+//                                       Text("\(unreadCount)")
+//                                           .font(.caption)
+//                                           .foregroundColor(.white)
+//                                           .padding(6)
+//                                           .background(Color.red)
+//                                           .clipShape(Circle())
+//                                   }
                            }
                            .padding(.leading, 10)
                            
                            Spacer()
+                           
                        }
                        .padding(.vertical, 5)
                        .background(
@@ -278,6 +291,7 @@ struct ChatListMain: View {
                                 self.loadPostImages()
                                 self.loadUserNames()
                                 self.loadLastMessages()
+                                //self.loadUnreadMessageCounts()
                             }
                         }
                     }
@@ -302,13 +316,13 @@ struct ChatListMain: View {
                             } else {
                                 self.loadChattingRoomsForPost(postIds: Array(self.posts.keys))
                             }
+                           // self.loadUnreadMessageCounts()
                         }
                     }
             }
         }
     
     func loadChattingRoomsForPost(postIds: [String]) {
-        
         guard let userId = userManager.userId else { return }
         db.collection("chattingRooms")
             .whereField("post_idx", in: postIds)
@@ -427,6 +441,30 @@ struct ChatListMain: View {
            print("Navigating to Chat Room - Post ID: \(postIdx), Chat Room ID: \(chatRoomId)")
        
        }
+    
+//    func loadUnreadMessageCounts() {
+//        guard let userId = userManager.userId else { return }
+//
+//        for room in chattingRooms {
+//            db.collection("chattingRooms")
+//                .document(room.id)
+//                .collection("messages")
+//                .whereField("isRead", isEqualTo: false)
+//                .whereField("senderID", isNotEqualTo: userId) // 내가 보낸 메시지는 제외
+//                .getDocuments { snapshot, error in
+//                    if let error = error {
+//                        print("안 읽은 메시지 개수 로드 오류: \(error.localizedDescription)")
+//                    } else {
+//                        let unreadCount = snapshot?.documents.count ?? 0
+//                        DispatchQueue.main.async {
+//                            print("채팅방 \(room.id)의 안 읽은 메시지 개수: \(unreadCount)")
+//                            self.unreadMessageCounts[room.id] = unreadCount
+//                        }
+//                    }
+//                }
+//        }
+//    }
+
 }
 
 #Preview {
