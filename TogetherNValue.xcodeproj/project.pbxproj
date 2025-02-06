@@ -1,0 +1,666 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		78070B172D54636200380419 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 78070B162D54636200380419 /* FirebaseAuth */; };
+		78070B192D54636200380419 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 78070B182D54636200380419 /* FirebaseCore */; };
+		78070B1B2D54636200380419 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 78070B1A2D54636200380419 /* FirebaseFirestore */; };
+		78070B1D2D54636200380419 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 78070B1C2D54636200380419 /* FirebaseStorage */; };
+		78070BA42D54655300380419 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 78070BA32D54655300380419 /* GoogleSignIn */; };
+		78070BA72D54656000380419 /* GTMAppAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 78070BA62D54656000380419 /* GTMAppAuth */; };
+		78070BAA2D54657300380419 /* AppAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 78070BA92D54657300380419 /* AppAuth */; };
+		78070BAC2D5465FA00380419 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 78070BAB2D5465FA00380419 /* FirebaseFunctions */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		78070A5F2D5460D200380419 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 78070A462D5460D000380419 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 78070A4D2D5460D000380419;
+			remoteInfo = TogetherNValue;
+		};
+		78070A692D5460D200380419 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 78070A462D5460D000380419 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 78070A4D2D5460D000380419;
+			remoteInfo = TogetherNValue;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		78070A5E2D5460D200380419 /* TogetherNValueTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = TogetherNValueTests.xctest; path = "/Users/ksm/Desktop/gProject/TogetherNValue/build/Debug-iphoneos/TogetherNValue.app/PlugIns/TogetherNValueTests.xctest"; sourceTree = "<absolute>"; };
+		78070A682D5460D200380419 /* TogetherNValueUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = TogetherNValueUITests.xctest; path = "/Users/ksm/Desktop/gProject/TogetherNValue/build/Debug-iphoneos/TogetherNValueUITests-Runner.app/PlugIns/TogetherNValueUITests.xctest"; sourceTree = "<absolute>"; };
+		78070BAD2D54670700380419 /* TogetherNValue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TogetherNValue.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		78070A502D5460D000380419 /* TogetherNValue */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TogetherNValue;
+			sourceTree = "<group>";
+		};
+		78070A612D5460D200380419 /* TogetherNValueTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TogetherNValueTests;
+			sourceTree = "<group>";
+		};
+		78070A6B2D5460D200380419 /* TogetherNValueUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TogetherNValueUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		78070A4B2D5460D000380419 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				78070BA42D54655300380419 /* GoogleSignIn in Frameworks */,
+				78070B192D54636200380419 /* FirebaseCore in Frameworks */,
+				78070B1D2D54636200380419 /* FirebaseStorage in Frameworks */,
+				78070BAC2D5465FA00380419 /* FirebaseFunctions in Frameworks */,
+				78070B172D54636200380419 /* FirebaseAuth in Frameworks */,
+				78070B1B2D54636200380419 /* FirebaseFirestore in Frameworks */,
+				78070BAA2D54657300380419 /* AppAuth in Frameworks */,
+				78070BA72D54656000380419 /* GTMAppAuth in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		78070A5B2D5460D200380419 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		78070A652D5460D200380419 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		78070A452D5460D000380419 = {
+			isa = PBXGroup;
+			children = (
+				78070A502D5460D000380419 /* TogetherNValue */,
+				78070A612D5460D200380419 /* TogetherNValueTests */,
+				78070A6B2D5460D200380419 /* TogetherNValueUITests */,
+				78070BAD2D54670700380419 /* TogetherNValue.app */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		78070A4D2D5460D000380419 /* TogetherNValue */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 78070A722D5460D200380419 /* Build configuration list for PBXNativeTarget "TogetherNValue" */;
+			buildPhases = (
+				78070A4A2D5460D000380419 /* Sources */,
+				78070A4B2D5460D000380419 /* Frameworks */,
+				78070A4C2D5460D000380419 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				78070A502D5460D000380419 /* TogetherNValue */,
+			);
+			name = TogetherNValue;
+			packageProductDependencies = (
+				78070B162D54636200380419 /* FirebaseAuth */,
+				78070B182D54636200380419 /* FirebaseCore */,
+				78070B1A2D54636200380419 /* FirebaseFirestore */,
+				78070B1C2D54636200380419 /* FirebaseStorage */,
+				78070BA32D54655300380419 /* GoogleSignIn */,
+				78070BA62D54656000380419 /* GTMAppAuth */,
+				78070BA92D54657300380419 /* AppAuth */,
+				78070BAB2D5465FA00380419 /* FirebaseFunctions */,
+			);
+			productName = TogetherNValue;
+			productReference = 78070BAD2D54670700380419 /* TogetherNValue.app */;
+			productType = "com.apple.product-type.application";
+		};
+		78070A5D2D5460D200380419 /* TogetherNValueTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 78070A752D5460D200380419 /* Build configuration list for PBXNativeTarget "TogetherNValueTests" */;
+			buildPhases = (
+				78070A5A2D5460D200380419 /* Sources */,
+				78070A5B2D5460D200380419 /* Frameworks */,
+				78070A5C2D5460D200380419 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				78070A602D5460D200380419 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				78070A612D5460D200380419 /* TogetherNValueTests */,
+			);
+			name = TogetherNValueTests;
+			packageProductDependencies = (
+			);
+			productName = TogetherNValueTests;
+			productReference = 78070A5E2D5460D200380419 /* TogetherNValueTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		78070A672D5460D200380419 /* TogetherNValueUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 78070A782D5460D200380419 /* Build configuration list for PBXNativeTarget "TogetherNValueUITests" */;
+			buildPhases = (
+				78070A642D5460D200380419 /* Sources */,
+				78070A652D5460D200380419 /* Frameworks */,
+				78070A662D5460D200380419 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				78070A6A2D5460D200380419 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				78070A6B2D5460D200380419 /* TogetherNValueUITests */,
+			);
+			name = TogetherNValueUITests;
+			packageProductDependencies = (
+			);
+			productName = TogetherNValueUITests;
+			productReference = 78070A682D5460D200380419 /* TogetherNValueUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		78070A462D5460D000380419 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1610;
+				LastUpgradeCheck = 1610;
+				TargetAttributes = {
+					78070A4D2D5460D000380419 = {
+						CreatedOnToolsVersion = 16.1;
+					};
+					78070A5D2D5460D200380419 = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = 78070A4D2D5460D000380419;
+					};
+					78070A672D5460D200380419 = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = 78070A4D2D5460D000380419;
+					};
+				};
+			};
+			buildConfigurationList = 78070A492D5460D000380419 /* Build configuration list for PBXProject "TogetherNValue" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 78070A452D5460D000380419;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				78070B152D54636200380419 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				78070BA22D54655300380419 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				78070BA52D54656000380419 /* XCRemoteSwiftPackageReference "GTMAppAuth" */,
+				78070BA82D54657300380419 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 78070A452D5460D000380419;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				78070A4D2D5460D000380419 /* TogetherNValue */,
+				78070A5D2D5460D200380419 /* TogetherNValueTests */,
+				78070A672D5460D200380419 /* TogetherNValueUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		78070A4C2D5460D000380419 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		78070A5C2D5460D200380419 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		78070A662D5460D200380419 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		78070A4A2D5460D000380419 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		78070A5A2D5460D200380419 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		78070A642D5460D200380419 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		78070A602D5460D200380419 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 78070A4D2D5460D000380419 /* TogetherNValue */;
+			targetProxy = 78070A5F2D5460D200380419 /* PBXContainerItemProxy */;
+		};
+		78070A6A2D5460D200380419 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 78070A4D2D5460D000380419 /* TogetherNValue */;
+			targetProxy = 78070A692D5460D200380419 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		78070A702D5460D200380419 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		78070A712D5460D200380419 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		78070A732D5460D200380419 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"TogetherNValue/Preview Content\"";
+				DEVELOPMENT_TEAM = CFPF7H3BWZ;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "같이N가치";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adrop.hyu2025.TogetherNValue.TogetherNValue;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		78070A742D5460D200380419 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"TogetherNValue/Preview Content\"";
+				DEVELOPMENT_TEAM = CFPF7H3BWZ;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "같이N가치";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adrop.hyu2025.TogetherNValue.TogetherNValue;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		78070A762D5460D200380419 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U2H7XBD3BD;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adrop.hyu2025.TogetherNValue.TogetherNValueTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TogetherNValue.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TogetherNValue";
+			};
+			name = Debug;
+		};
+		78070A772D5460D200380419 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U2H7XBD3BD;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adrop.hyu2025.TogetherNValue.TogetherNValueTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TogetherNValue.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TogetherNValue";
+			};
+			name = Release;
+		};
+		78070A792D5460D200380419 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U2H7XBD3BD;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adrop.hyu2025.TogetherNValue.TogetherNValueUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TogetherNValue;
+			};
+			name = Debug;
+		};
+		78070A7A2D5460D200380419 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U2H7XBD3BD;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adrop.hyu2025.TogetherNValue.TogetherNValueUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TogetherNValue;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		78070A492D5460D000380419 /* Build configuration list for PBXProject "TogetherNValue" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				78070A702D5460D200380419 /* Debug */,
+				78070A712D5460D200380419 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		78070A722D5460D200380419 /* Build configuration list for PBXNativeTarget "TogetherNValue" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				78070A732D5460D200380419 /* Debug */,
+				78070A742D5460D200380419 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		78070A752D5460D200380419 /* Build configuration list for PBXNativeTarget "TogetherNValueTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				78070A762D5460D200380419 /* Debug */,
+				78070A772D5460D200380419 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		78070A782D5460D200380419 /* Build configuration list for PBXNativeTarget "TogetherNValueUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				78070A792D5460D200380419 /* Debug */,
+				78070A7A2D5460D200380419 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		78070B152D54636200380419 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.8.1;
+			};
+		};
+		78070BA22D54655300380419 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
+		78070BA52D54656000380419 /* XCRemoteSwiftPackageReference "GTMAppAuth" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GTMAppAuth";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.1.1;
+			};
+		};
+		78070BA82D54657300380419 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/openid/AppAuth-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.7.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		78070B162D54636200380419 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 78070B152D54636200380419 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		78070B182D54636200380419 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 78070B152D54636200380419 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		78070B1A2D54636200380419 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 78070B152D54636200380419 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		78070B1C2D54636200380419 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 78070B152D54636200380419 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		78070BA32D54655300380419 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 78070BA22D54655300380419 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		78070BA62D54656000380419 /* GTMAppAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 78070BA52D54656000380419 /* XCRemoteSwiftPackageReference "GTMAppAuth" */;
+			productName = GTMAppAuth;
+		};
+		78070BA92D54657300380419 /* AppAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 78070BA82D54657300380419 /* XCRemoteSwiftPackageReference "AppAuth-iOS" */;
+			productName = AppAuth;
+		};
+		78070BAB2D5465FA00380419 /* FirebaseFunctions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 78070B152D54636200380419 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFunctions;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 78070A462D5460D000380419 /* Project object */;
+}
