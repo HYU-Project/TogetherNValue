@@ -70,8 +70,10 @@ struct PostItemView: View {
                     Text(post.title)
                         .font(.headline)
                         .foregroundColor(Color.black)
+                        .padding(.bottom, 5)
                     
-                    Spacer()
+                    Text("#\(post.post_category) #\(post.post_categoryType)")
+                        .foregroundColor(.gray)
                 
                 }
                 
@@ -90,6 +92,7 @@ struct PostItemView: View {
                 }
             }
             .padding()
+            .frame(height: 100)
             .background(Color.white)
             .cornerRadius(12)
             .shadow(radius: 5)

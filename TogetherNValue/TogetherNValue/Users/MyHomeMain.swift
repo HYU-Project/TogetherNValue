@@ -162,8 +162,8 @@ struct MyHomeMain: View {
                         NavigationLink{InterestedPosts().environmentObject(UserManager())
                         }label:{
                             HStack(){
-                                Image(systemName:"heart")
-                                Text("관심 목록")
+                                Image(systemName:"heart.fill")
+                                Text(" 관심 목록")
                                     .font(.title2)
                                     .bold()
                                 Spacer()
@@ -175,7 +175,7 @@ struct MyHomeMain: View {
                         NavigationLink{MyPosts()}label:{
                             HStack(){
                                 Image(systemName:"pencil")
-                                Text("내가 작성한 게시물")
+                                Text(" 내가 작성한 게시물")
                                     .font(.title2)
                                     .bold()
                                 Spacer()
@@ -186,13 +186,13 @@ struct MyHomeMain: View {
                         
                         NavigationLink{ParticipateTransactionPosts()}label:{
                             HStack(){
-                                Image(systemName:"hand.raised")
+                                Image(systemName:"figure.2")
                                 Text("참여한 거래")
                                     .font(.title2)
                                     .bold()
                                 Spacer()
                             }
-                            .padding(.trailing, 200)
+                            .padding(.trailing, 150)
                         }
                         .foregroundStyle(.black)
                         

@@ -48,15 +48,37 @@ struct InterestedPostRow: View {
                 Text(post.title)
                     .font(.headline)
                     .foregroundColor(.black)
+                    .padding(.bottom, 5)
+                
+                Text("#\(post.post_category) #\(post.post_categoryType)")
+                    .foregroundColor(.gray)
                 
                 Text(post.post_status)
                     .padding()
                     .font(.subheadline)
-                    .frame(minWidth: 28, minHeight: 15)
+                    .frame(minWidth: 25, minHeight: 20)
                     .foregroundColor(.white)
                     .background(post.post_status == "거래가능" ? Color.green : Color.black)
                     .cornerRadius(5)
                 
+            }
+            
+            Spacer()
+            
+            VStack{
+                // 좋아요 버튼
+                Button(action: {
+                    toggleLikeAction(post)
+                }) {
+                    Image(systemName: "heart.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 30, height: 30)
+                        .foregroundColor(.black)
+                }
+                .padding(.bottom , 10)
+                
+                // 좋아요 수
                 HStack{
                     Image(systemName: "heart")
                         .foregroundColor(.black)
@@ -65,24 +87,10 @@ struct InterestedPostRow: View {
                         .foregroundColor(.black)
                 }
             }
-            
-            Spacer()
-            
-            // 좋아요 버튼
-            Button(action: {
-                toggleLikeAction(post)
-            }) {
-                Image(systemName: "heart.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 30, height: 30)
-                    .foregroundColor(.black)
-            }
             .padding()
-                        
         }
         .padding()
-        .frame(height: 100)
+        .frame(height: 120)
         .background(Color.white)
         .cornerRadius(12)
         .shadow(radius: 2)
