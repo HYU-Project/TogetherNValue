@@ -1,6 +1,10 @@
 # 같이N가치
-### 🏫 한양대학교 졸업 프로젝트
+### 🏫 한양대학교 졸업 프로젝트 with A.drop
 ## About Project
+## Tech
+Frontend : Swift UI (버전)
+Backend : Firebase 
+## 화면
 ## 팀원
 
 - 김소민 [![GitHub](https://img.shields.io/badge/GitHub-black?style=flat-square&logo=github)](https://github.com/thals304)
