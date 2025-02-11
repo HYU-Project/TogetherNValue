@@ -282,7 +282,7 @@ struct CreatePostView: View {
                                                         .background(Color.white)
                                                         .clipShape(Circle())
                                                 }
-                                                .offset(x: -10, y: 10) // 위치 조정
+                                                .offset(x: -5, y: 5) // 위치 조정
                                             }
                                         }
                                     }
@@ -327,6 +327,7 @@ struct CreatePostView: View {
                                             .foregroundColor(.gray)
                                     }
                                 }
+                                .padding(.leading, 20)
                             }
                         }
                         .sheet(isPresented: $showImagePicker) {
@@ -356,8 +357,8 @@ struct CreatePostView: View {
                             .bold()
                     }
                     .padding()
-                    .frame(width: 350)
-                    .background(isValidPost ? Color.blue : Color.gray.opacity(0.2))
+                    .frame(width: 350, height: 70)
+                    .background(isValidPost ? Color.black : Color.gray.opacity(0.5))
                     .cornerRadius(10)
                     .onAppear {
                         validatePost() // 화면이 나타날 때 유효성 검사

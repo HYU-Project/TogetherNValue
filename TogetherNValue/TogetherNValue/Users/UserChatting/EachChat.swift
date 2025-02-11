@@ -54,48 +54,56 @@ struct ChatView: View {
         VStack {
             // 게시물 정보 표시
             if let postDetails = postDetails {
-                HStack {
-                    // 게시물 이미지 (첫 번째 이미지)
-                    if let firstImage = postImages.first, let imageURL = URL(string: firstImage.image_url) {
-                        AsyncImage(url: imageURL) { phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
-                            case .success(let image):
-                                image.resizable()
-                                    .scaledToFill()
-                                    .frame(width: 80, height: 80)
-                                    .clipped()
-                            case .failure:
-                                Image("NoImage")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 80, height: 80)
-                                    .clipped()
-                            @unknown default:
-                                Image("NoImage")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 80, height: 80)
-                                    .clipped()
+                    HStack {
+                        NavigationLink(destination: DetailPost(post_idx: postIdx)){
+                        // 게시물 이미지 (첫 번째 이미지)
+                        if let firstImage = postImages.first, let imageURL = URL(string: firstImage.image_url) {
+                            AsyncImage(url: imageURL) { phase in
+                                switch phase {
+                                case .empty:
+                                    ProgressView()
+                                case .success(let image):
+                                    image.resizable()
+                                        .scaledToFill()
+                                        .frame(width: 80, height: 80)
+                                        .clipped()
+                                        .cornerRadius(8)
+                                case .failure:
+                                    Image("NoImage")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 80, height: 80)
+                                        .clipped()
+                                @unknown default:
+                                    Image("NoImage")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 80, height: 80)
+                                        .clipped()
+                                }
                             }
+                        } else {
+                            Image("NoImage")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 80, height: 80)
+                                .clipped()
                         }
-                    } else {
-                        Image("NoImage")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 80, height: 80)
-                            .clipped()
-                    }
-
-                    VStack(alignment: .leading) {
-                        Text(postDetails.title)
-                            .font(.headline)
-                        Text(postDetails.location)
-                            .font(.subheadline)
-                        Text(postDetails.post_status)
-                            .font(.subheadline)
-                            .foregroundColor(postDetails.post_status == "거래가능" ? .green : .red)
+                        
+                        VStack(alignment: .leading) {
+                            Text(postDetails.title)
+                                .font(.headline)
+                                .bold()
+                                .foregroundColor(.black)
+                            Text(postDetails.location)
+                                .font(.subheadline)
+                                .bold()
+                                .foregroundColor(.black)
+                            Text(postDetails.post_status)
+                                .font(.subheadline)
+                                .bold()
+                                .foregroundColor(postDetails.post_status == "거래가능" ? .green : .red)
+                        }
                     }
                                 
                     Spacer()
@@ -106,6 +114,7 @@ struct ChatView: View {
                     }) {
                         Image(systemName: "ellipsis.circle")
                             .font(.title)
+                            .foregroundColor(.black)
                     }
                     .padding()
                     .actionSheet(isPresented: $isShowingActionSheet) {

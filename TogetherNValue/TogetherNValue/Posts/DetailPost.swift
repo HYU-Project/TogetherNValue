@@ -55,6 +55,7 @@ struct DetailPost: View {
     @State private var postImages: [PostImages] = []
     @State private var postUser: UserProperty?
     @State private var currentImageIndex = 0
+    @State private var isFullScreenPresented = false
     @State private var isLoading = true
     @State private var isLiked = false
     @State private var isActionSheetPresented = false
@@ -369,10 +370,13 @@ struct DetailPost: View {
                                 Image("appSetting")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                                    .frame(width: 50)
+                                    .frame(width: 40)
                             }
+                            .padding(.trailing, 10)
                         }
+                        .frame(height: 60)
                     }
+                    
                     ScrollView {
                         VStack(spacing: 16) {
                             // 이미지 슬라이더
@@ -387,8 +391,11 @@ struct DetailPost: View {
                                                 case .success(let image):
                                                     image.resizable()
                                                         .scaledToFill()
-                                                        .frame(height: 400)
+                                                        .frame(height: 300)
                                                         .clipped()
+                                                        .onTapGesture{
+                                                            isFullScreenPresented = true
+                                                        }
                                                 case .failure:
                                                     Image("NoImage")
                                                         .resizable()
@@ -405,6 +412,8 @@ struct DetailPost: View {
                                                         .clipped()
                                                 }
                                             }
+                                            .tabViewStyle(PageTabViewStyle())
+                                            .frame(height: 250)
                                         } else {
                                             Image("NoImage")
                                                 .resizable()
@@ -736,6 +745,56 @@ struct DetailPost: View {
                         }
                     }
                 )
+            }
+            .fullScreenCover(isPresented: $isFullScreenPresented) {
+                    ZStack(alignment: .topTrailing) {
+                        Color.black.ignoresSafeArea()
+                        TabView(selection: $currentImageIndex) {
+                            ForEach(postImages.indices, id: \.self) { index in
+                                if let imageURL = URL(string: postImages[index].image_url) {
+                                    AsyncImage(url: imageURL) { phase in
+                                        switch phase {
+                                        case .empty:
+                                            ProgressView()
+                                        case .success(let image):
+                                            image.resizable()
+                                                .scaledToFit()
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        case .failure:
+                                            Image("NoImage")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(maxWidth: .infinity)
+                                                .frame(height: 200)
+                                        @unknown default:
+                                            Image("NoImage")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(maxWidth: .infinity)
+                                                .frame(height: 200)
+                                        }
+                                    }
+                                } else {
+                                    Image("NoImage")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 200)
+                                }
+                            }
+                        }
+                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always)) // 인디케이터 표시
+                        .background(Color.black)
+
+                        Button(action: {
+                            isFullScreenPresented = false
+                        }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.system(size: 30))
+                                .foregroundColor(.white)
+                                .padding()
+                        }
+                }
             }
 
         }

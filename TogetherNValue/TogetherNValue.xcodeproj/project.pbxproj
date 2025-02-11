@@ -15,7 +15,6 @@
 		783ADBA82D547AA3004E22EE /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 783ADBA72D547AA3004E22EE /* FirebaseFirestore */; };
 		783ADBAA2D547AA3004E22EE /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 783ADBA92D547AA3004E22EE /* FirebaseFunctions */; };
 		783ADBAC2D547AA3004E22EE /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 783ADBAB2D547AA3004E22EE /* FirebaseStorage */; };
-		783ADBAE2D547B38004E22EE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 783ADBAD2D547B38004E22EE /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +38,6 @@
 		783ADB6C2D547A19004E22EE /* TogetherNValue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TogetherNValue.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		783ADB7C2D547A1B004E22EE /* TogetherNValueTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TogetherNValueTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		783ADB862D547A1B004E22EE /* TogetherNValueUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TogetherNValueUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		783ADBAD2D547B38004E22EE /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -100,7 +98,6 @@
 				783ADB7F2D547A1B004E22EE /* TogetherNValueTests */,
 				783ADB892D547A1B004E22EE /* TogetherNValueUITests */,
 				783ADB6D2D547A19004E22EE /* Products */,
-				783ADBAD2D547B38004E22EE /* GoogleService-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -248,7 +245,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				783ADBAE2D547B38004E22EE /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

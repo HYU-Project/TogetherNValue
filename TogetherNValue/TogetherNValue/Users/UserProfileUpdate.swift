@@ -6,7 +6,7 @@ import FirebaseStorage
 
 struct UserProfileUpdate: View {
     @EnvironmentObject var userManager: UserManager
-    @State private var navigateToHome = false
+    @Environment(\.dismiss) private var dismiss
     
     @State private var userName: String = ""
     @State private var schoolEmail: String = ""
@@ -263,7 +263,7 @@ struct UserProfileUpdate: View {
                         .font(.title2)
                         .bold()
                         .foregroundColor(Color.white)
-                        .frame(width: 280, height: 40)
+                        .frame(width: 300, height: 40)
                 }
                 .padding()
                 .background(Color.black)
@@ -279,13 +279,11 @@ struct UserProfileUpdate: View {
                   message: Text(alertMessage),
                   dismissButton: .default(Text("확인"), action: {
                       if alertMessage == "프로필이 수정되었습니다." {
-                          navigateToHome = true
+                          // 홈화면으로 이동
+                          dismiss()
                       }
                   })
             )
-        }
-        .navigationDestination(isPresented: $navigateToHome) {
-            MyHomeMain()
         }
     }
 }
