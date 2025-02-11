@@ -19,18 +19,18 @@ TogetherNValue/
 ├── TogetherNValue/
 │   ├── TogetherNValueApp.swift             # SwiftUI 진입점
 │   ├── ContentView.swift                   # 메인 콘텐츠 뷰
-│   ├── AppRegisterToLogin/                 # 로그인/회원가입 관련 뷰
-│   │   ├── FirstAppLoadingView.swift       # 앱 첫 로딩 화면
-│   │   ├── RootView.swift                  # 루트 뷰 관리
-│   │   ├── UserLoginView.swift             # 사용자 로그인 뷰
-│   │   ├── UserRegisterView.swift          # 사용자 회원가입 뷰
-│   │   └── SelectedSchoolView.swift        # 학교 선택 뷰
 │
 │   ├── Components/                         # 재사용 가능한 UI 컴포넌트
 │   │   ├── ImagePicker.swift               # 단일 이미지 선택기
 │   │   └── MultiImagePicker.swift          # 다중 이미지 선택기
 │
 │   ├── Features/                           # 주요 기능 모듈 통합
+│   │   ├── AppRegisterToLogin/             # 로그인/회원가입 관련 뷰
+│   │   │   ├── FirstAppLoadingView.swift   # 앱 첫 로딩 화면
+│   │   │   ├── RootView.swift              # 루트 뷰 관리
+│   │   │   ├── UserLoginView.swift         # 사용자 로그인 뷰
+│   │   │   ├── UserRegisterView.swift      # 사용자 회원가입 뷰
+│   │   │   └── SelectedSchoolView.swift    # 학교 선택 뷰
 │   │   ├── Posts/                          # 게시글 관리
 │   │   │   ├── PostModel/                  # 게시글 데이터 모델
 │   │   │   ├── PostView/                   # 게시글 관련 뷰
@@ -44,10 +44,10 @@ TogetherNValue/
 │   │   └── Settings/                       # 앱 설정
 │   │       ├── FAQListView.swift           # FAQ 리스트 뷰
 │   │       └── PolicyView.swift            # 정책 관련 뷰
-│   │
+│   
 │   ├── Resources/                          # 앱 리소스 관리
 │   │   └── Assets.xcassets                 # 앱 아이콘 및 이미지 에셋
-│   │
+│   
 │   └── Firebase/                           # Firebase 설정 파일
 │       └── GoogleService-Info.plist
 └── README.md                               # 프로젝트 설명서
