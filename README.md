@@ -5,7 +5,7 @@
 > 대학 내의 다양한 자원과 정보를 효율적으로 교환하고, 이를 통해 사용자의 편의성을 극대화하는 플랫폼입니다.
 ## 🚀 Tech Stack
 ### Frontend
-- **Language:** Swift 6.0.2
+- **Language:** Swift
 - **Framework:** SwiftUI
   
 ### Backend (Firebase)
