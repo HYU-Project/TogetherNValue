@@ -16,17 +16,18 @@
 <pre>
 TogetherNValue/
 ├── TogetherNValue.xcodeproj                # Xcode 프로젝트 파일
-├── App/
+├── TogetherNValue/
 │   ├── TogetherNValueApp.swift             # SwiftUI 진입점
 │   ├── ContentView.swift                   # 메인 콘텐츠 뷰
-│   ├── ImagePicker.swift                   # 단일 이미지 선택기
-│   ├── MultiImagePicker.swift              # 다중 이미지 선택기
 │   └── AppRegisterToLogin/
 │       ├── FirstAppLoadingView.swift       # 앱 첫 로딩 화면
 │       ├── RootView.swift                  # 루트 뷰 관리
 │       ├── UserLoginView.swift             # 사용자 로그인 뷰
 │       ├── UserRegisterView.swift          # 사용자 회원가입 뷰
 │       └── SelectedSchoolView.swift        # 학교 선택 뷰
+│   Components/
+│   ├── ImagePicker.swift                   # 단일 이미지 선택기
+│   └── MultiImagePicker.swift              # 다중 이미지 선택기
 ├── Posts/
 │   ├── PostModel/                          # 게시글 데이터 모델
 │   ├── PostView/                           # 게시글 관련 뷰
@@ -35,7 +36,7 @@ TogetherNValue/
 │   ├── UserModel/                          # 사용자 데이터 모델
 │   ├── UserView/                           # 사용자 관련 뷰
 │   ├── UserService/                        # 사용자 서비스 로직
-│   └── UserManager/
+├── UserManager/
 │       └── UserManager.swift               # 사용자 관리 로직
 ├── Settings/
 │   ├── FAQListView.swift                   # FAQ 리스트 뷰
