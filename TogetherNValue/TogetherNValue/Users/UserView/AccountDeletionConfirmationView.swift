@@ -18,29 +18,33 @@ struct AccountDeletionConfirmationView: View {
             Color.skyblue
                 .edgesIgnoringSafeArea(.all)
             
-            VStack(spacing: 20){
+            VStack{
                 VStack{
-                    Text("같이N가치를")
+                    Text("같이N가치")
                         .font(.title)
                         .bold()
-                        .padding(.trailing, 100)
+                        .foregroundColor(.blue)
+                        .padding(.trailing, 145)
                     
                     Text("정말 탈퇴하시겠습니까?")
                         .font(.title)
                         .bold()
                 }
-                .padding()
+                .padding(.top, 20)
+                .padding(.trailing, 50)
+                
+                Spacer()
                 
                 // 앱 사진 슬라이드 쇼
                 FeatureSlideshowView()
                     .padding(.bottom, 50)
+                
                 
                 Text("탈퇴 후에는\n모든 데이터가 삭제되며 복구할 수 없습니다.")
                     .font(.body)
                     .bold()
                     .multilineTextAlignment(.center)
                     .padding()
-                
                 
                 if isProcessing{
                     ProgressView()
@@ -53,7 +57,7 @@ struct AccountDeletionConfirmationView: View {
                             .font(.title2)
                             .bold()
                             .foregroundColor(Color.white)
-                            .frame(width: 280, height: 40)
+                            .frame(width: 350, height: 70)
                             .background(Color.black)
                             .cornerRadius(10)
                     }

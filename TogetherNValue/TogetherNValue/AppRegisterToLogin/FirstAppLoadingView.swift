@@ -21,13 +21,13 @@ struct FirstPageView: View {
                         .frame(width: 350, height: 350)
                     
                     Text("같이N가치")
-                        .font(.largeTitle)
+                        .font(.custom("Noteworthy-Bold", size: 38))
                         .bold()
                         .foregroundStyle(Color.white)
-                        .padding(.bottom, 10.0)
+                        .padding(.bottom, 0.1)
                     
                     Text("Together & Value")
-                        .font(.title3)
+                        .font(.custom("Noteworthy-Bold", size: 24))
                         .bold()
                         .foregroundStyle(Color.white)
                 }
