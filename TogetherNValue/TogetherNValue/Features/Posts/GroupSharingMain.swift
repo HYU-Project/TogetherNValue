@@ -117,7 +117,7 @@ struct GroupSharingMain: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.gray.opacity(0.1))
-                        .foregroundStyle(Color.red)
+                        .foregroundStyle(Color.blue)
                         .cornerRadius(8)
                         .padding(.horizontal)
                     

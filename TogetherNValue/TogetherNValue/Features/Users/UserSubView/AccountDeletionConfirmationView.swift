@@ -3,11 +3,29 @@ import SwiftUI
 import FirebaseStorage
 import FirebaseFirestore
 
+enum AlertType {
+    case confirmDeletion
+    case result(message: String)
+}
+
+extension AlertType: Identifiable {
+    var id: String {
+        switch self {
+        case .confirmDeletion:
+            return "confirm"
+        case .result(let message):
+            return message
+        }
+    }
+}
+
 struct AccountDeletionConfirmationView: View {
     @EnvironmentObject var userManager: UserManager
     @State private var isProcessing = false
     @State private var showAlert = false
     @State private var alertMessage = ""
+    @State private var showConfirmationAlert = false
+    @State private var activeAlert: AlertType?
     
     let db = Firestore.firestore()
     let storage = Storage.storage()
@@ -37,7 +55,7 @@ struct AccountDeletionConfirmationView: View {
                 
                 // 앱 사진 슬라이드 쇼
                 FeatureSlideshowView()
-                    .padding(.bottom, 50)
+                    .padding(.bottom, 40)
                 
                 
                 Text("탈퇴 후에는\n모든 데이터가 삭제되며 복구할 수 없습니다.")
@@ -51,26 +69,39 @@ struct AccountDeletionConfirmationView: View {
                         .padding()
                 } else {
                     Button(action: {
-                        deleteAccount()
+                        activeAlert = .confirmDeletion
                     }){
                         Text("탈퇴하기")
                             .font(.title2)
                             .bold()
                             .foregroundColor(Color.white)
                             .frame(width: 350, height: 70)
-                            .background(Color.black)
+                            .background(Color.blue)
                             .cornerRadius(10)
                     }
                     .padding()
                 }
             }
             .padding()
-            .alert(isPresented: $showAlert){
-                Alert(
-                    title: Text("알림"),
-                    message: Text(alertMessage),
-                    dismissButton: .default(Text("확인"))
-                )
+            .alert(item: $activeAlert) { alert in
+                switch alert {
+                case .confirmDeletion:
+                    return Alert(
+                        title: Text("정말로 탈퇴하시겠습니까?"),
+                        message: Text("확인을 누르면 계정이 완전히 삭제되며 복구할 수 없습니다."),
+                        primaryButton: .destructive(Text("취소")) ,
+                        secondaryButton: .cancel(Text("확인")){
+                                deleteAccount()
+                        }
+                        
+                    )
+                case .result(let message):
+                    return Alert(
+                        title: Text("알림"),
+                        message: Text(message),
+                        dismissButton: .default(Text("확인"))
+                    )
+                }
             }
         }
     }
@@ -78,7 +109,7 @@ struct AccountDeletionConfirmationView: View {
     func deleteAccount() {
         guard let userId = userManager.userId else {
             alertMessage = "로그인된 사용자 정보가 없습니다."
-            showAlert = true
+            activeAlert = .result(message: "회원 탈퇴가 완료되었습니다.")
             return
         }
         
@@ -325,8 +356,7 @@ struct AccountDeletionConfirmationView: View {
     // 계정 삭제 완료 처리
    private func completeAccountDeletion() {
        self.isProcessing = false
-       self.alertMessage = "회원 탈퇴가 완료되었습니다."
-       self.showAlert = true
+       self.activeAlert = .result(message: "회원 탈퇴가 완료되었습니다.")
        self.userManager.userId = nil
    }
     
@@ -334,7 +364,7 @@ struct AccountDeletionConfirmationView: View {
 
 struct FeatureSlideshowView: View {
     @State private var currentIndex = 0
-    private let images = ["Mainlogo","Image1", "Image2"]
+    private let images = ["Image1", "Image2"]
     
     var body: some View {
         TabView(selection: $currentIndex) {
@@ -346,7 +376,7 @@ struct FeatureSlideshowView: View {
             }
         }
         .tabViewStyle(PageTabViewStyle())
-        .frame(width: .infinity, height: 350)
+        .frame(width: .infinity, height: 400)
         .onAppear {
             startAutoSlide()
         }
