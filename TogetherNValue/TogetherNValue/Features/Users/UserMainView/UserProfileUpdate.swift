@@ -266,7 +266,7 @@ struct UserProfileUpdate: View {
                         .frame(width: 300, height: 40)
                 }
                 .padding()
-                .background(Color.black)
+                .background(Color.blue)
                 .cornerRadius(10)
                 
         }

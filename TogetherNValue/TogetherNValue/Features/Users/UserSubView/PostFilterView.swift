@@ -21,10 +21,10 @@ struct PostFilterView: View {
                     Text(status)
                         .frame(width: 100, height: 50)
                         .foregroundColor(selectedPostStatus == status ? .white : .black)
-                        .background(selectedPostStatus == status ? Color.black : Color.clear)
+                        .background(selectedPostStatus == status ? Color.blue : Color.clear)
                         .overlay(
                             RoundedRectangle(cornerRadius: 5)
-                                .stroke(Color.black, lineWidth: 2)
+                                .stroke(Color.black, lineWidth: 1)
                         )
                 }
             }
