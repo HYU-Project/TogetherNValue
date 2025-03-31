@@ -370,7 +370,7 @@ struct DetailPost: View {
                                 Image("appSetting")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                                    .frame(width: 40)
+                                    .frame(width: 30)
                             }
                             .padding(.trailing, 10)
                         }

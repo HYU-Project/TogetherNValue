@@ -112,7 +112,7 @@ struct GroupSharingMain: View {
                         HeaderView(schoolName: schoolName)
                     }
                     
-                    Text("나누는 기쁨, 함께 나눠요.")
+                    Text("오늘도 나누는 기쁨, 함께 나눠요.")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()

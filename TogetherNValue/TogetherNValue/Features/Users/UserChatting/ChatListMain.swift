@@ -53,7 +53,9 @@ struct ChatListMain: View {
    @State private var posts: [String: String] = [:] // 게시물 정보 저장
    @State private var selectedPostId: String? = nil // 선택한 게시물의 ID
    @State private var expandedPostId: String? = nil // 현재 열려있는 게시물
-  // @State private var unreadMessageCounts: [String: Int] = [:] // 채팅방별 안 읽은 메시지 개수
+   @State private var lastMessagesTimestamps: [String: Timestamp] = [:]
+    // @State private var unreadMessageCounts: [String: Int] = [:] // 채팅방별 안 읽은 메시지 개수
+    
    private var db = Firestore.firestore()
     
     init(selectedCategory: String = "참여채팅 목록", selectedPostId: String? = nil) {
@@ -78,89 +80,83 @@ struct ChatListMain: View {
                    }
                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                } else{
-                   List{
-                       ForEach(posts.keys.sorted(), id: \.self) {postId in
-                           VStack{
-                               HStack{
-                                   if let imageUrl = postImages[postId], let url = URL(string: imageUrl) {
-                                       AsyncImage(url: url) { phase in
-                                           switch phase {
-                                           case .empty:
-                                               ProgressView()
-                                           case .success(let image):
-                                               image.resizable()
-                                                   .scaledToFill()
-                                                   .frame(width: 50, height: 50)
-                                                   .cornerRadius(8)
-                                           case .failure:
-                                               Image("NoImage")
-                                                   .resizable()
-                                                   .scaledToFit()
-                                                   .frame(width: 50, height: 50)
-                                                   .foregroundColor(.gray)
-                                           @unknown default:
-                                               EmptyView()
+                   ScrollView {
+                       LazyVStack(spacing: 0) {
+                           ForEach(chattingRooms.filter { !$0.isGuestLeft }.indices, id: \.self) { index in
+                               let room = chattingRooms.filter { !$0.isGuestLeft }[index]
+                               
+                               NavigationLink(
+                                   destination: ChatView(postIdx: room.postIdx, chatRoomId: room.id)
+                               ) {
+                                   HStack(spacing: 12) {
+                                       // 썸네일
+                                       if let imageUrl = postImages[room.postIdx], let url = URL(string: imageUrl) {
+                                           AsyncImage(url: url) { phase in
+                                               switch phase {
+                                               case .empty:
+                                                   ProgressView()
+                                                       .frame(width: 55, height: 55)
+                                               case .success(let image):
+                                                   image
+                                                       .resizable()
+                                                       .scaledToFill()
+                                                       .frame(width: 55, height: 55)
+                                                       .clipShape(RoundedRectangle(cornerRadius: 10))
+                                               case .failure:
+                                                   Image("NoImage")
+                                                       .resizable()
+                                                       .scaledToFill()
+                                                       .frame(width: 55, height: 55)
+                                                       .clipShape(RoundedRectangle(cornerRadius: 10))
+                                               @unknown default:
+                                                   EmptyView()
+                                               }
                                            }
+                                       } else {
+                                           Image("NoImage")
+                                               .resizable()
+                                               .scaledToFill()
+                                               .frame(width: 55, height: 55)
+                                               .clipShape(RoundedRectangle(cornerRadius: 10))
                                        }
-                                   } else {
-                                       Image("NoImage")
-                                           .resizable()
-                                           .scaledToFit()
-                                           .frame(width: 50, height: 50)
-                                           .foregroundColor(.gray)
-                                   }
-                                   
-                                   VStack(alignment: .leading) {
-                                       if let postTitle = posts[postId] {
-                                           Text(postTitle)
-                                               .font(.headline)
+
+                                       // 텍스트 정보
+                                       VStack(alignment: .leading, spacing: 5) {
+                                           HStack{
+                                               Text(userNames[room.guestIdx] ?? "이름 불러오기 실패")
+                                                   .font(.headline)
+                                               
+                                               Spacer()
+                                               
+                                               // 마지막 메시지 시간 표시
+                                               if let messageTime = lastMessagesTimestamps[room.id] {
+                                                               Text(formatTimestamp(messageTime))
+                                                                   .font(.caption)
+                                                                   .foregroundColor(.gray)
+                                                           }
+                                           }
+
+                                           Text(lastMessages[room.id] ?? "")
+                                               .font(.subheadline)
+                                               .foregroundColor(.gray)
+                                               .lineLimit(1)
+                                               .truncationMode(.tail)
                                        }
+
+                                       Spacer()
                                    }
+                                   .padding(.vertical, 12)
+                                   .padding(.horizontal)
                                }
-                               .onTapGesture{
-                                   withAnimation {
-                                       expandedPostId = expandedPostId == postId ? nil : postId
-                                   }
-                               }
-                           }
-                           //해당 게시물 채팅방 목록
-                           if expandedPostId == postId {
-                               ForEach(chattingRooms.filter { $0.postIdx == postId && !$0.isHostLeft }) { room in
-                                   NavigationLink(
-                                    destination: ChatView(postIdx: room.postIdx, chatRoomId: room.id),
-                                    label: {
-                                        HStack {
-                                            // 게스트 이름
-                                            if let guestName = userNames[room.guestIdx] {
-                                                Text(guestName)
-                                                    .font(.subheadline)
-                                            } else {
-                                                Text("이름 불러오기 실패")
-                                                    .font(.subheadline)
-                                            }
-                                            // 마지막 메시지
-                                            if let lastMessage = lastMessages[room.id] {
-                                                Text(lastMessage)
-                                                    .font(.subheadline)
-                                                    .foregroundColor(.gray)
-                                            }
-                                            Spacer()
-//                                            if let unreadCount = unreadMessageCounts[room.id], unreadCount > 0 {
-//                                                    Text("\(unreadCount)")
-//                                                        .font(.caption)
-//                                                        .foregroundColor(.white)
-//                                                        .padding(6)
-//                                                        .background(Color.red)
-//                                                        .clipShape(Circle())
-//                                                }
-                                        }
-                                        .padding(.vertical, 5)
-                                    }
-                                   )
+
+                               if index != chattingRooms.filter { !$0.isGuestLeft }.count - 1 {
+                                   Divider()
+                                       .padding(.leading, 80) // 이미지 공간만큼 들여쓰기 (선택)
                                }
                            }
                        }
                    }
+
                }
           }
            else {
@@ -174,75 +170,83 @@ struct ChatListMain: View {
                        Spacer()
                    }
                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-               }else{
-                   List(chattingRooms.filter { !$0.isGuestLeft }) { room in
-                       HStack {
-                           if let imageUrl = postImages[room.postIdx], let url = URL(string: imageUrl) {
-                               AsyncImage(url: url) { phase in
-                                   switch phase {
-                                   case .empty:
-                                       ProgressView()
-                                   case .success(let image):
-                                       image.resizable()
-                                           .scaledToFill()
-                                           .frame(width: 50, height: 50)
-                                           .cornerRadius(8)
-                                   case .failure:
-                                       Image("NoImage")
-                                           .resizable()
-                                           .scaledToFit()
-                                           .frame(width: 50, height: 50)
-                                           .foregroundColor(.gray)
-                                   @unknown default:
-                                       EmptyView()
-                                   }
-                               }
-                           } else {
-                               Image("NoImage")
-                                   .resizable()
-                                   .scaledToFit()
-                                   .frame(width: 50, height: 50)
-                                   .foregroundColor(.gray)
-                           }
-                           
-                           VStack(alignment: .leading) {
-                               if let hostName = userNames[room.hostIdx] {
-                                   Text(hostName)
-                                       .font(.headline)
-                                       .padding(.bottom, 5)
-                               } else {
-                                   Text("이름 불러오기 실패")
-                                       .font(.subheadline)
-                               }
+               } else {
+                   ScrollView {
+                       LazyVStack(spacing: 0) {
+                           ForEach(chattingRooms.filter { !$0.isGuestLeft }.indices, id: \.self) { index in
+                               let room = chattingRooms.filter { !$0.isGuestLeft }[index]
                                
-                               if let lastMessage = lastMessages[room.id] {
-                                   Text(lastMessage)
-                                       .font(.subheadline)
-                                       .foregroundColor(.gray)
+                               NavigationLink(
+                                   destination: ChatView(postIdx: room.postIdx, chatRoomId: room.id)
+                               ) {
+                                   HStack(spacing: 12) {
+                                       if let imageUrl = postImages[room.postIdx], let url = URL(string: imageUrl) {
+                                           AsyncImage(url: url) { phase in
+                                               switch phase {
+                                               case .empty:
+                                                   ProgressView()
+                                                       .frame(width: 55, height: 55)
+                                               case .success(let image):
+                                                   image
+                                                       .resizable()
+                                                       .scaledToFill()
+                                                       .frame(width: 55, height: 55)
+                                                       .clipShape(RoundedRectangle(cornerRadius: 10))
+                                               case .failure:
+                                                   Image("NoImage")
+                                                       .resizable()
+                                                       .scaledToFill()
+                                                       .frame(width: 55, height: 55)
+                                                       .clipShape(RoundedRectangle(cornerRadius: 10))
+                                               @unknown default:
+                                                   EmptyView()
+                                               }
+                                           }
+                                       } else {
+                                           Image("NoImage")
+                                               .resizable()
+                                               .scaledToFill()
+                                               .frame(width: 55, height: 55)
+                                               .clipShape(RoundedRectangle(cornerRadius: 10))
+                                       }
+
+                                       VStack(alignment: .leading, spacing: 5) {
+                                           HStack{
+                                               Text(userNames[room.hostIdx] ?? "이름 불러오기 실패")
+                                                   .font(.headline)
+                                               
+                                               Spacer()
+                                               
+                                               // 마지막 메시지 시간 표시
+                                               if let messageTime = lastMessagesTimestamps[room.id] {
+                                                               Text(formatTimestamp(messageTime))
+                                                                   .font(.caption)
+                                                                   .foregroundColor(.gray)
+                                                           }
+                                               
+                                           }
+
+                                           Text(lastMessages[room.id] ?? "")
+                                               .font(.subheadline)
+                                               .foregroundColor(.gray)
+                                               .lineLimit(1)
+                                               .truncationMode(.tail)
+                                       }
+
+                                       Spacer()
+                                   }
+                                   .padding(.vertical, 12)
+                                   .padding(.horizontal)
                                }
-//                               if let unreadCount = unreadMessageCounts[room.id], unreadCount > 0 {
-//                                       Text("\(unreadCount)")
-//                                           .font(.caption)
-//                                           .foregroundColor(.white)
-//                                           .padding(6)
-//                                           .background(Color.red)
-//                                           .clipShape(Circle())
-//                                   }
+
+                               if index != chattingRooms.filter { !$0.isGuestLeft }.count - 1 {
+                                   Divider()
+                                       .padding(.leading, 80)
+                               }
                            }
-                           .padding(.leading, 10)
-                           
-                           Spacer()
-                           
                        }
-                       .padding(.vertical, 5)
-                       .background(
-                        NavigationLink(
-                            destination: ChatView(postIdx: room.postIdx, chatRoomId: room.id),
-                            label: { EmptyView() }
-                        )
-                        .opacity(0)
-                       )
                    }
+
                }
            }
     }
@@ -429,18 +433,35 @@ struct ChatListMain: View {
                        if let error = error {
                            print("메시지 로드 오류: \(error.localizedDescription)")
                        } else {
-                           if let document = snapshot?.documents.first, let messageText = document["messageText"] as? String {
-                               lastMessages[room.id] = messageText
+                           
+                           if let document = snapshot?.documents.first {
+                               if let messageText = document["messageText"] as? String {
+                                   lastMessages[room.id] = messageText
+                               }
+                               if let timestamp = document["timestamp"] as? Timestamp {
+                                   lastMessagesTimestamps[room.id] = timestamp
+                               } else {
+                                   print("⚠️ timestamp 없음 in room \(room.id), data: \(document.data())")
+                               }
                            }
+                           
                        }
                    }
-           }
+               }
        }
    
    func navigateToChatRoom(postIdx: String, chatRoomId: String) {
            print("Navigating to Chat Room - Post ID: \(postIdx), Chat Room ID: \(chatRoomId)")
        
-       }
+    }
+    
+    func formatTimestamp(_ timestamp: Timestamp) -> String {
+        let date = timestamp.dateValue()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "a h:mm" // or "HH:mm" for 24시간
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter.string(from: date)
+    }
     
 //    func loadUnreadMessageCounts() {
 //        guard let userId = userManager.userId else { return }
