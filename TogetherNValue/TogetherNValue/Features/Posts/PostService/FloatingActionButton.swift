@@ -20,7 +20,7 @@ struct FloatingActionButton: View {
                     Image(systemName: "plus.square.fill")
                         .resizable()
                         .frame(width: 60, height: 60)
-                        .foregroundColor(.black)
+                        .foregroundColor(.blue)
                         .padding()
                 }
                 .sheet(isPresented: $showCreatePostView) {

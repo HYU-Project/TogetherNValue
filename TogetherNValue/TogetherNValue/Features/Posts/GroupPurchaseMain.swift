@@ -57,11 +57,12 @@ struct GroupPurchaseMain: View {
                     if let schoolName = viewModel.schoolName {
                         HeaderView(schoolName: schoolName)
                     }
-                    Text("여기에 광고 배너 들어가기")
+                    Text("친구들과 함께 공동구매를 시작해보세요!")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.gray.opacity(0.3))
+                        .background(Color.gray.opacity(0.1))
+                        .foregroundStyle(Color.blue)
                         .cornerRadius(8)
                         .padding(.horizontal)
                     

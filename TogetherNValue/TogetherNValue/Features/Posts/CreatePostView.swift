@@ -169,7 +169,7 @@ struct CreatePostView: View {
                                     }) {
                                         Text("# \(categoryType)")
                                             .padding()
-                                            .background(createPost.post_categoryType == categoryType ? Color.yellow : Color.gray.opacity(0.2))
+                                            .background(createPost.post_categoryType == categoryType ? .skyblue : Color.gray.opacity(0.2))
                                             .cornerRadius(8)
                                             .foregroundColor(.black)
                                     }

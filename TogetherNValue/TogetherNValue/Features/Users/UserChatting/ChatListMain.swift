@@ -26,10 +26,10 @@ struct chattingCategoryButtonView: View{
                        Text(category)
                            .frame(width: 165, height: 50)
                            .foregroundColor(selectedCategory == category ? .white : .black)
-                           .background(selectedCategory == category ? Color.black : Color.clear)
+                           .background(selectedCategory == category ? Color.blue : Color.clear)
                            .overlay(
                             RoundedRectangle(cornerRadius: 5)
-                                .stroke(Color.black, lineWidth: 2)
+                                .stroke(Color.black, lineWidth: 1)
                            )
                    }
                    .padding(.horizontal, 15)
@@ -144,7 +144,7 @@ struct ChatListMain: View {
                                                     .font(.subheadline)
                                                     .foregroundColor(.gray)
                                             }
-                                            Spacer() // 빈 공간 추가
+                                            Spacer()
 //                                            if let unreadCount = unreadMessageCounts[room.id], unreadCount > 0 {
 //                                                    Text("\(unreadCount)")
 //                                                        .font(.caption)

@@ -112,11 +112,12 @@ struct GroupSharingMain: View {
                         HeaderView(schoolName: schoolName)
                     }
                     
-                    Text("여기에 광고 배너 들어가기")
+                    Text("나누는 기쁨, 함께 나눠요.")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.gray.opacity(0.3))
+                        .background(Color.gray.opacity(0.1))
+                        .foregroundStyle(Color.red)
                         .cornerRadius(8)
                         .padding(.horizontal)
                     
