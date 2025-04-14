@@ -397,42 +397,46 @@ struct DetailPost: View {
                                                             isFullScreenPresented = true
                                                         }
                                                 case .failure:
-                                                    Image("NoImage")
-                                                        .resizable()
-                                                        .scaledToFit()
+                                                    Text("No Image")
+                                                        .font(.title)
+                                                        .bold()
+                                                        .foregroundColor(.white)
                                                         .frame(maxWidth: .infinity)
-                                                        .frame( height: 200)
-                                                        .clipped()
+                                                        .frame(height: 120)
+                                                        .background(Color.whiteGray)
                                                 @unknown default:
-                                                    Image("NoImage")
-                                                        .resizable()
-                                                        .scaledToFit()
+                                                    Text("No Image")
+                                                        .font(.title)
+                                                        .bold()
+                                                        .foregroundColor(.white)
                                                         .frame(maxWidth: .infinity)
-                                                        .frame(height: 200)
-                                                        .clipped()
+                                                        .frame(height: 120)
+                                                        .background(Color.whiteGray)
                                                 }
                                             }
                                             .tabViewStyle(PageTabViewStyle())
                                             .frame(height: 250)
                                         } else {
-                                            Image("NoImage")
-                                                .resizable()
-                                                .scaledToFit()
+                                            Text("No Image")
+                                                .font(.title)
+                                                .bold()
+                                                .foregroundColor(.white)
                                                 .frame(maxWidth: .infinity)
-                                                .frame(height: 200)
-                                                .clipped()
+                                                .frame(height: 120)
+                                                .background(Color.whiteGray)
                                         }
                                     }
                                 }
                                 .tabViewStyle(PageTabViewStyle())
                                 .frame(height: 250)
                             } else {
-                                Image("NoImage")
-                                    .resizable()
-                                    .scaledToFit()
+                                Text("No Image")
+                                    .font(.title)
+                                    .bold()
+                                    .foregroundColor(.white)
                                     .frame(maxWidth: .infinity)
-                                    .frame(height: 200)
-                                    .clipped()
+                                    .frame(height: 120)
+                                    .background(Color.whiteGray)
                             }
                             
                             // 작성자 정보 표시
@@ -450,24 +454,27 @@ struct DetailPost: View {
                                                 .clipShape(Circle())
                                                 .overlay(Circle().stroke(Color.gray, lineWidth: 2))
                                         case .failure:
-                                            Image(systemName: "person.circle")
+                                            Image(systemName: "person.circle.fill")
                                                 .resizable()
                                                 .frame(width: 50, height: 50)
                                                 .clipShape(Circle())
+                                                .foregroundColor(Color.gray)
                                                 .overlay(Circle().stroke(Color.gray, lineWidth: 1))
                                         @unknown default:
-                                            Image(systemName: "person.circle")
+                                            Image(systemName: "person.circle.fill")
                                                 .resizable()
                                                 .frame(width: 50, height: 50)
                                                 .clipShape(Circle())
+                                                .foregroundColor(Color.gray)
                                                 .overlay(Circle().stroke(Color.gray, lineWidth: 2))
                                         }
                                     }
                                 } else {
-                                    Image(systemName: "person.circle")
+                                    Image(systemName: "person.circle.fill")
                                         .resizable()
                                         .frame(width: 50, height: 50)
                                         .clipShape(Circle())
+                                        .foregroundColor(Color.gray)
                                         .overlay(Circle().stroke(Color.gray, lineWidth: 1))
                                 }
                                 

@@ -62,6 +62,7 @@ struct SharingPostImageView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 60, height: 60)
+                            .cornerRadius(8)
                             .onAppear {
                                 print("Failed to load local image: \(url.path)")
                             }
@@ -83,6 +84,7 @@ struct SharingPostImageView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 60, height: 60)
+                                .cornerRadius(8)
                                 .onAppear {
                                     print("Failed to load image from URL: \(url)")
                                 }
@@ -95,6 +97,7 @@ struct SharingPostImageView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 60, height: 60)
+                        .cornerRadius(8)
                         .onAppear {
                             print("Invalid URL: \(postImageUrl)")
                         }

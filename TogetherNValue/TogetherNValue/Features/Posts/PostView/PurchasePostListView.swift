@@ -56,6 +56,7 @@ struct PurchasePostImageView: View {
                     case .empty:
                         ProgressView()
                             .frame(width: 60, height: 60)
+                            .cornerRadius(8)
                     case .success(let image):
                         image
                             .resizable()
@@ -77,6 +78,7 @@ struct PurchasePostImageView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 60, height: 60)
+                    .cornerRadius(8)
             }
         }
     }

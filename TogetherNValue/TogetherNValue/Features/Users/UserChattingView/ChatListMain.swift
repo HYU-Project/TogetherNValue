@@ -24,13 +24,17 @@ struct chattingCategoryButtonView: View{
                        selectedCategory = category
                    }){
                        Text(category)
+                           .bold()
                            .frame(width: 165, height: 50)
                            .foregroundColor(selectedCategory == category ? .white : .black)
                            .background(selectedCategory == category ? Color.blue : Color.clear)
+                           .cornerRadius(10)
                            .overlay(
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(Color.black, lineWidth: 1)
-                           )
+                           RoundedRectangle(cornerRadius: 10)
+                            .stroke(selectedCategory == category ? Color.blue : Color.black, lineWidth: 1)
+                          )
+
+                           
                    }
                    .padding(.horizontal, 15)
                }
