@@ -79,6 +79,7 @@ struct ChatView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 80, height: 80)
+                                        .cornerRadius(8)
                                         .clipped()
                                 }
                             }
@@ -87,6 +88,7 @@ struct ChatView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 80, height: 80)
+                                .cornerRadius(8)
                                 .clipped()
                         }
                         
