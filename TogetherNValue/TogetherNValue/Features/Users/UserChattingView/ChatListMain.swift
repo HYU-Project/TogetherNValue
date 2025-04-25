@@ -254,6 +254,8 @@ struct ChatListMain: View {
                }
            }
     }
+       .padding(.leading, 10)
+       .padding(.trailing, 10)
     .onChange(of: selectedCategory, perform: { _ in
         loadChattingRooms()
     })
@@ -461,10 +463,24 @@ struct ChatListMain: View {
     
     func formatTimestamp(_ timestamp: Timestamp) -> String {
         let date = timestamp.dateValue()
+        let now = Date()
+        let calendar = Calendar.current
+        
         let formatter = DateFormatter()
-        formatter.dateFormat = "a h:mm" // or "HH:mm" for 24시간
-        formatter.locale = Locale(identifier: "ko_KR")
-        return formatter.string(from: date)
+            formatter.locale = Locale(identifier: "ko_KR")
+            
+        if calendar.isDateInToday(date) {
+            // 오늘이면 hh:mm
+            formatter.dateFormat = "h:mm"
+            return formatter.string(from: date)
+        } else if calendar.isDateInYesterday(date) {
+            // 어제면 "어제"
+            return "어제"
+        } else {
+            // 그 외는 월/일 표시
+            formatter.dateFormat = "M월 d일"
+            return formatter.string(from: date)
+        }
     }
     
 //    func loadUnreadMessageCounts() {
