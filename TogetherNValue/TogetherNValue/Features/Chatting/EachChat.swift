@@ -196,7 +196,7 @@ struct ChatView: View {
 
                     let messageData: [String: Any] = [
                         "senderID": currentUserId,
-                        "messageText": "",
+                        "messageText": "(사진)",
                         "imageUrl": downloadUrl.absoluteString,
                         "timestamp": Timestamp()
                     ]
