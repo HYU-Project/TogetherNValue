@@ -29,6 +29,7 @@ struct PostItemView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 60, height: 60)
+                                .cornerRadius(8)
                         }
                     } else if let url = URL(string: postImageUrl) {
                         // URL로 이미지 로드
@@ -48,6 +49,7 @@ struct PostItemView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 60, height: 60)
+                                    .cornerRadius(8)
                             @unknown default:
                                 EmptyView()
                             }
@@ -57,6 +59,7 @@ struct PostItemView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 60, height: 60)
+                            .cornerRadius(8)
                     }
                 } else {
                     // 이미지가 없을 경우
@@ -64,6 +67,7 @@ struct PostItemView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 60, height: 60)
+                        .cornerRadius(8)
                 }
                 
                 VStack(alignment: .leading) {
@@ -95,7 +99,7 @@ struct PostItemView: View {
             .frame(height: 100)
             .background(Color.white)
             .cornerRadius(12)
-            .shadow(radius: 5)
+            .shadow(radius: 3)
         }
     }
 }

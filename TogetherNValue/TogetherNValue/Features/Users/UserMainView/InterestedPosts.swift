@@ -109,7 +109,7 @@ struct InterestedPosts: View {
                 }
                 else {
                     ScrollView {
-                        VStack{
+                        VStack(spacing: 5){
                             ForEach(posts){ post in
                                 NavigationLink(destination: DetailPost(post_idx: post.post_idx)) {
                                     
@@ -117,11 +117,11 @@ struct InterestedPosts: View {
                                         post: post,
                                         toggleLikeAction: toggleLike
                                     )
-                                    .padding(.bottom, 3)
-                                                        }
-                                .padding()
+                                    .padding(5)
+                                }
                             }
                         }
+                        .padding(.horizontal, 10)
                     }
                 }
                 

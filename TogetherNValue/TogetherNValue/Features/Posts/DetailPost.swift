@@ -429,15 +429,8 @@ struct DetailPost: View {
                                 }
                                 .tabViewStyle(PageTabViewStyle())
                                 .frame(height: 250)
-                            } else {
-                                Text("No Image")
-                                    .font(.title)
-                                    .bold()
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 120)
-                                    .background(Color.whiteGray)
                             }
+                            // 이미지가 없을 경우는 게시물 내용 위로 땡기기
                             
                             // 작성자 정보 표시
                             HStack(spacing: 16) {

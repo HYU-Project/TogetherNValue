@@ -9,7 +9,7 @@ class ParticipatePostService {
     func fetchParticipatePost(for userId: String, completion: @escaping (Result<[ParticiaptePost], Error>) -> Void) {
         db.collection("chattingRooms")
             .whereField("guest_idx", isEqualTo: userId)
-            .whereField("post_status", in: ["거래가능", "거래완료"])
+            .whereField("roomState", isEqualTo: true)
             .getDocuments { snapshot, error in
                 if let error = error {
                     print("Error fetching chattingRooms: \(error.localizedDescription)")

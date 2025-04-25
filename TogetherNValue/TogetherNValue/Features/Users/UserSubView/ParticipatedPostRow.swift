@@ -1,21 +1,13 @@
-//
-//  InterestedPostRow.swift
-//  hkkim_front
-//
-//  Created by 김소민 on 1/7/25.
-//
-
 import SwiftUI
 
-struct InterestedPostRow: View {
-    let post: InterestedPost
-    let toggleLikeAction: (InterestedPost) -> Void
+struct ParticipatedPostRow: View {
+    let post: ParticiaptePost
     
-    private let interestedPostService = InterestedPostService()
-
     var body: some View {
-        HStack (spacing: 10){
-            if let imageUrl = URL(string: post.postImage_url ?? "NoImage") {
+        HStack(spacing: 10) {
+            if let imageUrlString = post.postImage_url,
+               !imageUrlString.isEmpty,
+               let imageUrl = URL(string: imageUrlString) {
                 AsyncImage(url: imageUrl) { phase in
                     switch phase {
                     case .empty:
@@ -44,8 +36,7 @@ struct InterestedPostRow: View {
                     .frame(width: 70, height: 70)
                     .cornerRadius(8)
             }
-            
-            // 텍스트와 버튼 섹션
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(post.title)
                     .font(.headline)
@@ -56,33 +47,15 @@ struct InterestedPostRow: View {
                     .foregroundColor(.gray)
                 
                 Text(post.post_status)
-                    .padding()
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
                     .font(.subheadline)
-                    .frame(minWidth: 25, minHeight: 20)
                     .foregroundColor(.white)
                     .background(post.post_status == "거래가능" ? Color.green : Color.black)
                     .cornerRadius(5)
-                
             }
-            
+
             Spacer()
-            
-            VStack(spacing: 4){
-                // 좋아요 버튼
-                Button(action: {
-                    toggleLikeAction(post)
-                }) {
-                    Image(systemName: "heart.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 30, height: 30)
-                        .foregroundColor(.black)
-                }
-                
-                Text("\(post.post_likeCnt)")
-                    .foregroundColor(.black)
-            }
-            .padding()
         }
         .padding()
         .frame(height: 120)
@@ -91,4 +64,3 @@ struct InterestedPostRow: View {
         .shadow(radius: 3)
     }
 }
-

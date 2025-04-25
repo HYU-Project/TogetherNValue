@@ -163,7 +163,7 @@ struct MyHomeMain: View {
                         }label:{
                             HStack(){
                                 Image(systemName:"heart.fill")
-                                Text(" 관심 목록")
+                                Text(" 내 관심 목록")
                                     .font(.title2)
                                     .bold()
                                 Spacer()
@@ -187,7 +187,7 @@ struct MyHomeMain: View {
                         NavigationLink{ParticipateTransactionPosts()}label:{
                             HStack(){
                                 Image(systemName:"figure.2")
-                                Text("참여한 거래")
+                                Text("내가 참여 완료한 거래")
                                     .font(.title2)
                                     .bold()
                                 Spacer()

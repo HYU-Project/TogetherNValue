@@ -19,12 +19,14 @@ struct PostFilterView: View {
                     loadPosts()
                 }) {
                     Text(status)
-                        .frame(width: 100, height: 50)
+                        .bold()
+                        .frame(width: 150, height: 50)
                         .foregroundColor(selectedPostStatus == status ? .white : .black)
                         .background(selectedPostStatus == status ? Color.blue : Color.clear)
+                        .cornerRadius(10)
                         .overlay(
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(Color.black, lineWidth: 1)
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(selectedPostStatus == status ? Color.blue : Color.black , lineWidth: 1)
                         )
                 }
             }
