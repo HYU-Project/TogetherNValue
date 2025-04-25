@@ -1,4 +1,4 @@
-//앱 클릭시 로그 로딩 화면
+// 앱 클릭시 로그 로딩 화면
 import SwiftUI
 
 struct FirstPageView: View {
@@ -35,7 +35,7 @@ struct FirstPageView: View {
             }
         }
         .onAppear{
-            //3초 후에 isActive상태를 true로 바꿔서 다음 페이지로 이동
+            // 3초 후에 isActive상태를 true로 바꿔서 다음 페이지로 이동
             DispatchQueue.main.asyncAfter(deadline: .now()+3.0){
                 withAnimation{
                     isActive = true
