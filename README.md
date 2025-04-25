@@ -44,7 +44,8 @@ TogetherNValue/
 │   │   │   └── UserManager.swift
 │   │   └── Settings/                       # 앱 설정
 │   │       ├── FAQListView.swift           # FAQ 리스트 뷰
-│   │       └── PolicyView.swift            # 정책 관련 뷰
+│   │       ├── PrivacyPolicyView.swift     # 개인정보 처리방침 관련 뷰
+│   │       └── TermsOfServiceView.swift    # 이용약관 관련 뷰
 │   
 │   ├── Resources/                          # 앱 리소스 관리
 │   │   └── Assets.xcassets                 # 앱 아이콘 및 이미지 에셋
