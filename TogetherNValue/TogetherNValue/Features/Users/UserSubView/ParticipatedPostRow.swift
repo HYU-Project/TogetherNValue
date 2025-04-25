@@ -47,9 +47,9 @@ struct ParticipatedPostRow: View {
                     .foregroundColor(.gray)
                 
                 Text(post.post_status)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
+                    .padding()
                     .font(.subheadline)
+                    .frame(minWidth: 25, minHeight: 20)
                     .foregroundColor(.white)
                     .background(post.post_status == "거래가능" ? Color.green : Color.black)
                     .cornerRadius(5)
