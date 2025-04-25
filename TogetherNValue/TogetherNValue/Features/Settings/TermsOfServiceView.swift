@@ -12,8 +12,7 @@ struct TermsOfServiceView: View {
                     .font(.title)
                     .bold()
                     .padding()
-                    .padding(.leading, 120)
-                    .padding(.bottom, 10)
+                    .padding(.leading, 125)
                 
                 Divider()
                     .padding(.bottom, 10)

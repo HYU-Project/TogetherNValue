@@ -12,8 +12,7 @@ struct PrivacyPolicyView: View {
                     .font(.title)
                     .bold()
                     .padding()
-                    .padding(.leading, 60)
-                    .padding(.bottom, 10)
+                    .padding(.leading, 70)
                 
                 Divider()
                     .padding(.bottom, 10)
