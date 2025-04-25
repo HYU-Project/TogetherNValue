@@ -1,27 +1,7 @@
 import SwiftUI
+import FirebaseStorage
 import FirebaseFirestore
 import Combine
-
-struct FetchPostInfo {
-    var title: String
-    var location: String
-    var post_status: String
-}
-
-struct PostImage: Identifiable, Codable {
-    @DocumentID var id: String?
-    var image_url: String
-}
-
-// Message 구조체 정의
-struct Message: Identifiable, Codable {
-    @DocumentID var id: String?
-    let senderID: String
-    let text: String
-    let isCurrentUser: Bool
-    let timestamp: Date
-    //var isRead: Bool
-}
 
 struct ChatView: View {
     @EnvironmentObject var userManager: UserManager
@@ -45,171 +25,28 @@ struct ChatView: View {
     
     //@State private var unreadCount: Int = 0
     
-    
     //@ObservedObject var viewModel: ChatListViewModel
     @Environment(\.presentationMode) var presentationMode  // presentationMode를 통해 뷰를 닫기 위함
     private var db = Firestore.firestore()
 
     var body: some View {
         VStack {
-            // 게시물 정보 표시
-            if let postDetails = postDetails {
-                    HStack {
-                        NavigationLink(destination: DetailPost(post_idx: postIdx)){
-                        // 게시물 이미지 (첫 번째 이미지)
-                        if let firstImage = postImages.first, let imageURL = URL(string: firstImage.image_url) {
-                            AsyncImage(url: imageURL) { phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                case .success(let image):
-                                    image.resizable()
-                                        .scaledToFill()
-                                        .frame(width: 80, height: 80)
-                                        .clipped()
-                                        .cornerRadius(8)
-                                case .failure:
-                                    Image("NoImage")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 80, height: 80)
-                                        .clipped()
-                                @unknown default:
-                                    Image("NoImage")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 80, height: 80)
-                                        .cornerRadius(8)
-                                        .clipped()
-                                }
-                            }
-                        } else {
-                            Image("NoImage")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 80, height: 80)
-                                .cornerRadius(8)
-                                .clipped()
-                        }
-                        
-                        VStack(alignment: .leading) {
-                            Text(postDetails.title)
-                                .font(.headline)
-                                .bold()
-                                .foregroundColor(.black)
-                            Text(postDetails.location)
-                                .font(.subheadline)
-                                .bold()
-                                .foregroundColor(.black)
-                            Text(postDetails.post_status)
-                                .font(.subheadline)
-                                .bold()
-                                .foregroundColor(postDetails.post_status == "거래가능" ? .green : .red)
-                        }
-                    }
-                                
-                    Spacer()
-                
-                    // 옵션 선택 버튼
-                    Button(action: {
-                        isShowingActionSheet = true
-                    }) {
-                        Image(systemName: "ellipsis.circle")
-                            .font(.title)
-                            .foregroundColor(.black)
-                    }
-                    .padding()
-                    .actionSheet(isPresented: $isShowingActionSheet) {
-                        ActionSheet(
-                            title: Text("옵션 선택"),
-                            buttons: getActionSheetButtons()
-                        )
-                    }
-                }
-                .padding()
-            } else {
-                Text("게시물 정보를 불러오는 중...")
-                    .padding()
-            }
+            // 게시물 정보 분리된 뷰
+            PostInfoView(postDetails: postDetails, postImages: postImages, postIdx: postIdx, isShowingActionSheet: $isShowingActionSheet, getActionSheetButtons: getActionSheetButtons)
 
+            // 메시지 리스트 분리
             ScrollView {
                 ForEach(messages) { message in
-                    VStack(alignment: message.isCurrentUser ? .trailing : .leading, spacing: 4){
-                        HStack {
-                            if message.senderID == "system"{
-                                Spacer()
-                                Text(message.text)
-                                    .frame(width: 250, height: 5)
-                                    .padding()
-                                    .background(Color.orange.opacity(0.15))
-                                    .cornerRadius(10)
-                                    .foregroundColor(.black)
-                                Spacer()
-                            }else if message.isCurrentUser {
-                                Spacer()
-                                Text(message.text)
-                                    .padding()
-                                    .background(Color.blue)
-                                    .cornerRadius(10)
-                                    .foregroundColor(.white)
-                            } else {
-                                Text(message.text)
-                                    .padding()
-                                    .background(Color.gray.opacity(0.2))
-                                    .cornerRadius(10)
-                                    .foregroundColor(.black)
-                                Spacer()
-                            }
-                        }
-                        if message.senderID != "system" {
-                            Text(formatTimestamp(message.timestamp)) // 메시지 보낸 시간 표시
-                                .font(.caption)
-                                .foregroundColor(.gray)
-                        }
-                    }
-                    .padding(.horizontal)
-                    .padding(.vertical, 4)
+                    ChatMessageView(message: message, formatTimestamp: formatTimestamp)
                 }
             }
-
-            HStack {
-                Button(action: {
-                    isShowingPhotoOptions = true
-                }) {
-                    Image(systemName: "plus")
-                        .font(.title)
-                        .padding()
-                        .foregroundColor(.blue)
-                }
-                .actionSheet(isPresented: $isShowingPhotoOptions) {
-                    ActionSheet(
-                        title: Text("사진 추가"),
-                        buttons: [
-                            .default(Text("앨범에서 선택")) {
-                                isShowingPhotoPicker = true
-                            },
-                            .default(Text("카메라 열기")) {
-                                isShowingCamera = true
-                            },
-                            .cancel()
-                        ]
-                    )
-                }
-
-                TextField("메시지를 입력하세요", text: $newMessage)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(minHeight: 40)
-
-                Button(action: sendMessage) {
-                    Text("전송")
-                        .font(.headline)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                }
-            }
-            .padding()
+            
+            // 입력창
+            ChatInputView(newMessage: $newMessage,
+                          isShowingPhotoOptions: $isShowingPhotoOptions,
+                          isShowingPhotoPicker: $isShowingPhotoPicker,
+                          isShowingCamera: $isShowingCamera,
+                          sendMessageAction: { sendMessage(text: newMessage) })
         }
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
@@ -217,11 +54,19 @@ struct ChatView: View {
             loadMessages()
             loadPostDetails()
             checkIfCurrentUserIsHost()
-            fetchRoomState() 
+            fetchRoomState()
             //markMessagesAsRead()
         }
-        .sheet(isPresented: $isShowingPhotoPicker) {
-            ImagePicker(sourceType: isShowingCamera ? .camera : .photoLibrary, selectedImage: $selectedImage)
+        .sheet(isPresented: $isShowingPhotoPicker) { // 앨범 시트
+            ImagePicker(sourceType: .photoLibrary, selectedImage: $selectedImage)
+        }
+        .sheet(isPresented: $isShowingCamera) { // 카메라 시트
+            ImagePicker(sourceType: .camera, selectedImage: $selectedImage)
+        }
+        .onChange(of: selectedImage) { newImage in
+            if let imageToSend = newImage {
+                sendMessage(image: imageToSend)
+            }
         }
         .alert(isPresented: $showTransactionAlert) {
                 if roomState { // 거래 완료된 상태
@@ -274,18 +119,22 @@ struct ChatView: View {
 
             if let snapshot = snapshot {
                 self.postImages = snapshot.documents.compactMap { document in
-                    try? document.data(as: PostImage.self)
+                    let data = document.data()
+                    guard let imageUrl = data["image_url"] as? String else {
+                        return nil
+                    }
+                    return PostImage(id: document.documentID, image_url: imageUrl)
                 }
             }
         }
     }
 
-    
+
     func loadMessages() {
         db.collection("chattingRooms")
-            .document(chatRoomId)  // 해당 채팅방의 documentId
-            .collection("messages")  // 'messages' 서브컬렉션
-            .order(by: "timestamp")  // 타임스탬프 기준으로 정렬
+            .document(chatRoomId)
+            .collection("messages")
+            .order(by: "timestamp")
             .addSnapshotListener { snapshot, error in
                 if let error = error {
                     print("메시지 로드 오류: \(error.localizedDescription)")
@@ -294,16 +143,17 @@ struct ChatView: View {
                         let data = document.data()
                         if let senderID = data["senderID"] as? String,
                            let messageText = data["messageText"] as? String,
-                           let timestamp = data["timestamp"] as? Timestamp
-                           //let isRead = data["isRead"] as? Bool
-                        {
+                           let timestamp = data["timestamp"] as? Timestamp {
+                            
+                            let imageUrl = data["imageUrl"] as? String  // Optional 처리
+                            
                             return Message(
                                 id: document.documentID,
                                 senderID: senderID,
                                 text: messageText,
                                 isCurrentUser: senderID == userManager.userId,
-                                timestamp: timestamp.dateValue()
-                                //isRead: isRead
+                                timestamp: timestamp.dateValue(),
+                                imageUrl: imageUrl
                             )
                         }
                         return nil
@@ -311,51 +161,93 @@ struct ChatView: View {
                     DispatchQueue.main.async {
                         self.isLoading = false
                     }
-                    
-                    //markMessagesAsRead()
                 }
             }
     }
 
-    // 메세지 Firebase Firestore에 저장
-    func sendMessage() {
+    // firestore에 text or image 전송
+    func sendMessage(text: String? = nil, image: UIImage? = nil) {
         guard let currentUserId = userManager.userId else {
             print("로그인된 사용자가 없습니다.")
             return
         }
-        
-        let newMessageObj = Message(
-            id: UUID().uuidString,
-            senderID: currentUserId,
-            text: newMessage,
-            isCurrentUser: true,
-            timestamp: Date()
-            //isRead: false
-        )
-        messages.append(newMessageObj)
-        
-        //Firestore에 메세지 추가
-        let messageData: [String: Any] = [
-            "senderID": userManager.userId ?? "",
-            "messageText": newMessage,
-            "timestamp": Timestamp()
-            //"isRead": false
-        ]
-        
-        db.collection("chattingRooms")
-            .document(chatRoomId)
-            .collection("messages")
-            .addDocument(data: messageData){ error in
+
+        if let image = image {
+            // 1. 이미지 업로드 후 메시지 전송
+            let storageRef = Storage.storage().reference()
+            let imageName = UUID().uuidString + ".jpg"
+            let imageRef = storageRef.child("chat_images/\(imageName)")
+
+            guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+
+            imageRef.putData(imageData, metadata: nil) { metadata, error in
                 if let error = error {
-                    print("메시지 전송 오류: \(error.localizedDescription)")
-                } else{
-                    print("메시지가 Firestore에 성공적으로 저장됨")
+                    print("이미지 업로드 실패: \(error.localizedDescription)")
+                    return
+                }
+
+                imageRef.downloadURL { url, error in
+                    if let error = error {
+                        print("URL 가져오기 실패: \(error.localizedDescription)")
+                        return
+                    }
+
+                    guard let downloadUrl = url else { return }
+
+                    let messageData: [String: Any] = [
+                        "senderID": currentUserId,
+                        "messageText": "",
+                        "imageUrl": downloadUrl.absoluteString,
+                        "timestamp": Timestamp()
+                    ]
+
+                    db.collection("chattingRooms")
+                        .document(chatRoomId)
+                        .collection("messages")
+                        .addDocument(data: messageData) { error in
+                            if let error = error {
+                                print("이미지 메시지 저장 실패: \(error.localizedDescription)")
+                            } else {
+                                print("이미지 메시지 저장 성공")
+                                selectedImage = nil
+                            }
+                        }
                 }
             }
-        
-        newMessage = "" //메세지 입력 초기화
-        saveMessages()
+        } else if let text = text, !text.isEmpty {
+            // 텍스트 메시지 전송
+            let messageData: [String: Any] = [
+                "senderID": currentUserId,
+                "messageText": text,
+                "timestamp": Timestamp()
+            ]
+
+            db.collection("chattingRooms")
+                .document(chatRoomId)
+                .collection("messages")
+                .addDocument(data: messageData) { error in
+                    if let error = error {
+                        print("텍스트 메시지 저장 실패: \(error.localizedDescription)")
+                    } else {
+                        print("텍스트 메시지 저장 성공")
+                    }
+                }
+
+            let newMessageObj = Message(
+                id: UUID().uuidString,
+                senderID: currentUserId,
+                text: text,
+                isCurrentUser: true,
+                timestamp: Date(),
+                imageUrl: nil
+            )
+
+            messages.append(newMessageObj)
+            newMessage = ""
+            saveMessages()
+        }
     }
+
     
 //    func fetchUnreadMessageCount(){
 //        guard let currentUserId = userManager.userId else {return}
@@ -442,9 +334,18 @@ struct ChatView: View {
     }
 
     func saveMessages() {
-        if let encodedData = try? JSONEncoder().encode(messages) {
-            UserDefaults.standard.set(encodedData, forKey: "messages_\(chatRoomId)")
+        let messageDicts = messages.map { message in
+            return [
+                "id": message.id ?? "",
+                "senderID": message.senderID,
+                "text": message.text,
+                "isCurrentUser": message.isCurrentUser,
+                "timestamp": message.timestamp.timeIntervalSince1970,
+                "imageUrl": message.imageUrl ?? ""
+            ] as [String : Any]
         }
+
+        UserDefaults.standard.set(messageDicts, forKey: "messages_\(chatRoomId)")
     }
 
     
@@ -716,6 +617,13 @@ struct ChatView: View {
 }
 
 
+
+
+#Preview {
+    let userManager = UserManager()
+    ChatView(postIdx: "PUYPuhmRrl7adGojXJbz", chatRoomId:"lHMhLxLWC0VqAOS1jSJy")
+        .environmentObject(userManager)
+}
 
 
 #Preview {
