@@ -207,9 +207,9 @@ struct MyHomeMain: View {
                             .bold()
                             .padding(.trailing, 200)
                         
-                        NavigationLink(destination: PolicyView()) {
+                        NavigationLink(destination: FAQListView()){
                             HStack {
-                                Text("이용약관 (개인 정보 처리 방침)")
+                                Text("자주하는 질문 FAQ")
                                     .font(.title2)
                                     .bold()
                                     .foregroundColor(Color.black)
@@ -219,9 +219,21 @@ struct MyHomeMain: View {
                             .padding(.trailing, 50)
                         }
                         
-                        NavigationLink(destination: FAQListView()){
+                        NavigationLink(destination: TermsOfServiceView()) {
                             HStack {
-                                Text("자주하는 질문 FAQ")
+                                Text("이용약관")
+                                    .font(.title2)
+                                    .bold()
+                                    .foregroundColor(Color.black)
+                                
+                                Spacer()
+                            }
+                            .padding(.trailing, 50)
+                        }
+                        
+                        NavigationLink(destination: PrivacyPolicyView()) {
+                            HStack {
+                                Text("개인정보 처리방침")
                                     .font(.title2)
                                     .bold()
                                     .foregroundColor(Color.black)
