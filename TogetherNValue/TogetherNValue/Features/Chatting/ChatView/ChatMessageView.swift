@@ -19,10 +19,10 @@ struct ChatMessageView: View {
                     if message.isCurrentUser{
                         Spacer()
                         
-                        AsyncImageView(url: url)
+                        AsyncImageView(url: url, isUploading: message.isUploading)
                     }
                     else {
-                        AsyncImageView(url: url)
+                        AsyncImageView(url: url, isUploading: message.isUploading)
                                 
                         Spacer()
                     }
@@ -57,25 +57,38 @@ struct ChatMessageView: View {
 }
 
 @ViewBuilder
-func AsyncImageView(url: URL) -> some View {
-    AsyncImage(url: url) { phase in
-        switch phase {
-        case .empty:
-            ProgressView()
-        case .success(let image):
-            image.resizable()
-                .scaledToFit()
-                .frame(width: 120, height: 100)
-                .cornerRadius(10)
-        case .failure:
-            Image("NoImage")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 120, height: 100)
-                .cornerRadius(8)
-                .foregroundColor(.gray)
-        @unknown default:
-            EmptyView()
+func AsyncImageView(url: URL?, isUploading: Bool = false) -> some View {
+    if isUploading {
+        // 업로드 중 프리뷰
+        Rectangle()
+            .fill(Color.gray.opacity(0.3))
+            .frame(width: 120, height: 100)
+            .overlay(
+                ProgressView()
+            )
+            .cornerRadius(10)
+    } else if let url = url {
+        AsyncImage(url: url) { phase in
+            switch phase {
+            case .empty:
+                ProgressView()
+            case .success(let image):
+                image.resizable()
+                    .scaledToFill()
+                    .frame(width: 120, height: 100)
+                    .clipped()
+                    .cornerRadius(10)
+            case .failure:
+                Image("NoImage")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 120, height: 100)
+                    .clipped()
+                    .cornerRadius(8)
+            @unknown default:
+                EmptyView()
+            }
         }
     }
 }
+

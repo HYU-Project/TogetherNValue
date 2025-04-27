@@ -18,4 +18,5 @@ struct Message: Identifiable {
     let isCurrentUser: Bool
     let timestamp: Date
     let imageUrl: String?
+    var isUploading: Bool = false
 }

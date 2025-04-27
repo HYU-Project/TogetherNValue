@@ -1,5 +1,5 @@
 {
-  "originHash" : "a27e718d31af15572692895a46fc221cdc45b5374b39de2c9117b13761ada4f2",
+  "originHash" : "2ea18f31377a1813971399e51acbd8d3735e5d6a145c41bc62355708168d1984",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -137,12 +137,39 @@
       }
     },
     {
+      "identity" : "prynttrimmerview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/HHK1/PryntTrimmerView",
+      "state" : {
+        "revision" : "ac1b60a22c7e6a6514de7a66d2f3d5b537c956d5",
+        "version" : "4.0.2"
+      }
+    },
+    {
+      "identity" : "stevia",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/freshOS/Stevia",
+      "state" : {
+        "revision" : "cfb1a1d2159277bb553c3dc46f3f742c0275566d",
+        "version" : "5.1.2"
+      }
+    },
+    {
       "identity" : "swift-protobuf",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-protobuf.git",
       "state" : {
         "revision" : "ebc7251dd5b37f627c93698e4374084d98409633",
         "version" : "1.28.2"
+      }
+    },
+    {
+      "identity" : "ypimagepicker",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Yummypets/YPImagePicker",
+      "state" : {
+        "revision" : "9d1c5e938c2de8f851da54af9037eda2d98ea649",
+        "version" : "5.3.0"
       }
     }
   ],

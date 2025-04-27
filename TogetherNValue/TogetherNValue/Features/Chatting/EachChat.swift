@@ -173,6 +173,19 @@ struct ChatView: View {
         }
 
         if let image = image {
+            // 0. 프리뷰 메시지 먼저 추가
+            let tempMessageId = UUID().uuidString
+            let tempMessage = Message(
+                id: tempMessageId,
+                senderID: currentUserId,
+                text: "(사진)",
+                isCurrentUser: true,
+                timestamp: Date(),
+                imageUrl: nil,
+                isUploading: true
+            )
+            messages.append(tempMessage)
+            
             // 1. 이미지 업로드 후 메시지 전송
             let storageRef = Storage.storage().reference()
             let imageName = UUID().uuidString + ".jpg"
