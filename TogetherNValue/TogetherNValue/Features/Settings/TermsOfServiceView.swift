@@ -9,9 +9,9 @@ struct TermsOfServiceView: View {
             VStack(alignment: .leading) {
                 
                 Text("이용약관")
-                    .font(.title)
+                    .font(.title2)
                     .bold()
-                    .padding(.leading, 135)
+                    .padding(.leading, 140)
                 
                 Divider()
                     .padding(.bottom, 10)

@@ -82,7 +82,7 @@ struct InterestedPosts: View {
         NavigationView{
             VStack{
                 Text("관심 목록")
-                    .font(.title)
+                    .font(.title2)
                     .bold()
                 
                 Divider()

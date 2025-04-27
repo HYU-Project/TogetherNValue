@@ -14,7 +14,7 @@ struct ParticipateTransactionPosts: View {
             VStack {
                 
                 Text("내가 참여한 거래")
-                    .font(.title)
+                    .font(.title2)
                     .bold()
                 
                 Divider()

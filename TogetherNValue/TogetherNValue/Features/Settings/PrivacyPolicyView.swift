@@ -9,9 +9,9 @@ struct PrivacyPolicyView: View {
             VStack(alignment: .leading) {
                 
                 Text("개인정보 처리방침")
-                    .font(.title)
+                    .font(.title2)
                     .bold()
-                    .padding(.leading, 90)
+                    .padding(.leading, 100)
                 
                 Divider()
                     .padding(.bottom, 10)

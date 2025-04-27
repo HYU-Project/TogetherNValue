@@ -23,7 +23,7 @@ struct FAQListView: View {
             VStack {
                 HStack {
                     Text("자주하는 질문 FAQ")
-                        .font(.title)
+                        .font(.title2)
                         .bold()
                 }
                 .padding()

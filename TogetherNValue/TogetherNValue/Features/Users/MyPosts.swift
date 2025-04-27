@@ -35,7 +35,7 @@ struct MyPosts: View {
         NavigationView {
             VStack {
                 Text("내가 작성한 게시물")
-                    .font(.title)
+                    .font(.title2)
                     .bold()
                 
                 Divider()
