@@ -36,6 +36,8 @@ struct SelectSchoolView: View {
     @Environment(\.dismiss) var dismiss
     @State private var isContentViewActive = false // 다음화면으로 이동 여부
     
+    @State private var isLoggedOut = false // 로그인 상태 체크용
+    
     // Firebase Functions 인스턴스 생성
     @State private var functions = Functions.functions()
     // Firestore에서 가져올 학교 리스트
@@ -270,8 +272,29 @@ struct SelectSchoolView: View {
                     .disabled(!isFormValid)
                 }
                 .padding(.top, 20)
+                NavigationLink(destination: LoginView()
+                        .navigationBarBackButtonHidden(true),
+                               isActive: $isLoggedOut) {
+                        EmptyView()
+                }
             }
             .padding()
+            .onAppear {
+                checkLoginStatus()
+                if !isLoggedOut {
+                    fetchUserData()
+                    fetchSchools()
+                }
+            }
+        }
+    }
+    
+    private func checkLoginStatus() {
+        if Auth.auth().currentUser == nil {
+            print("로그인 안 됨 → LoginView로 이동")
+            isLoggedOut = true
+        } else {
+            isLoggedOut = false
         }
     }
     

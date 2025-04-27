@@ -45,29 +45,30 @@ struct RegisterView: View{
     var body: some View{
         ZStack{
             Color.skyblue
+                .opacity(0.8)
                 .edgesIgnoringSafeArea(.all)
             
-            VStack(alignment: .center, spacing: 20){
+            VStack(alignment: .center, spacing: 10){
                 Spacer()
                 Spacer()
                 VStack(spacing: 0){
-                    Image("logo_2")
+                    Image("logo_3")
                         .resizable()
-                        .frame(width:280,height:100)
-                        .padding()
-                        .padding(.top, 20)
+                        .frame(width:300,height:130)
+                        //.padding()
+                        .padding(.top, 5)
                     
                     Text("회원가입을 완료해주세요")
                         .font(.system(size: 15, weight: .regular, design: .rounded))
-                        .padding(.top, 5)
+                        .padding()
                 }
                 
-                VStack(spacing: 25){
+                VStack(spacing: 20){
                     
                     // 이름 입력
                     TextField("이름", text: $userName)
                         .padding()
-                        .frame(height: 55) // 높이 조정
+                        .frame(height: 50) // 높이 조정
                         .background(Color.white)
                         .cornerRadius(8)
                         .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
@@ -77,7 +78,7 @@ struct RegisterView: View{
                     TextField("전화번호", text: $userPhone)
                         .keyboardType(.phonePad)
                         .padding()
-                        .frame(height: 55) // 높이 조정
+                        .frame(height: 50) // 높이 조정
                         .background(Color.white)
                         .cornerRadius(8)
                         .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
@@ -116,7 +117,7 @@ struct RegisterView: View{
                             .cornerRadius(8)
                             .shadow(color: Color.gray.opacity(0.3), radius: 2, x: 0, y: 1)
                         }
-                        .frame(height: 55)
+                        .frame(height: 50)
                         .padding(.horizontal)
                         
                         // 인증 버튼 - 밑칸으로 이동 & 오른쪽 정렬
@@ -181,7 +182,7 @@ struct RegisterView: View{
                     // 비밀번호 입력
                     SecureField("비밀번호", text: $userPwd)
                         .padding()
-                        .frame(height: 55) // 높이 조정
+                        .frame(height: 50) // 높이 조정
                         .background(Color.white)
                         .cornerRadius(8)
                         .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
@@ -190,7 +191,7 @@ struct RegisterView: View{
                     // 비밀번호 확인 입력
                     SecureField("비밀번호 확인", text: $confirmPwd)
                         .padding()
-                        .frame(height: 55) // 높이 조정
+                        .frame(height: 50) // 높이 조정
                         .background(Color.white)
                         .cornerRadius(8)
                         .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)

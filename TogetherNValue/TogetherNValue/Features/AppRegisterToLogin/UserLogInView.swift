@@ -21,17 +21,17 @@ struct LoginView: View {
                     .opacity(0.8)
                     .ignoresSafeArea()
                        
-                VStack(alignment: .center, spacing: 60) {
+                VStack(alignment: .center, spacing: 50) {
                     Spacer()
                     VStack(spacing: 0) {
-                        Image("logo_2")
+                        Image("logo_3")
                             .resizable()
-                            .frame(width:300,height:120)
+                            .frame(width:350,height:170)
                             .padding()
                         
                         Text("서비스 이용을 위해 로그인 해주세요")
                             .font(.system(size: 15, weight: .regular, design: .rounded))
-                            .padding(.top, 10)
+                            .padding(.top, 5)
                     }
                         
                     VStack(spacing: 25) {
