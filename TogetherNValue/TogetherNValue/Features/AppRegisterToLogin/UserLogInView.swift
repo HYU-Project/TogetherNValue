@@ -139,7 +139,7 @@ struct LoginView: View {
     
     func login() {
         guard !email.isEmpty, !password.isEmpty else {
-            errorMessage = "모든 필드를 입력하세요."
+            errorMessage = "이메일과 비밀번호를 모두 입력하세요."
             return
         }
         isLoading = true

@@ -92,115 +92,127 @@ struct SelectSchoolView: View {
     }
     
     var body: some View {
-        NavigationView{
-            VStack(spacing: 15) {
-                
-                HStack {
-                    Button(action: {
-                        showSchoolPicker = true
-                    }){
-                        Text(selectedSchool.isEmpty ? "학교를 선택하세요" : selectedSchool)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .frame(height: 50)
+        
+            NavigationView {
+            
+                VStack(spacing: 15) {
+                    
+                    HStack {
+                        Button(action: {
+                            showSchoolPicker = true
+                        }){
+                            HStack {
+                                Image(systemName: "building.columns")
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                                    .foregroundColor(.blue)
+                                
+                                Text(selectedSchool.isEmpty ? "학교 선택하기" : selectedSchool)
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.blue)
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 50)
                             .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(RoundedRectangle(cornerRadius: 10).stroke(Color.blue, lineWidth: 2))
-                            .foregroundColor(.blue)
+                            .background(RoundedRectangle(cornerRadius: 10).stroke(Color.blue, lineWidth: 3))
+                            
+                        }
+                        .sheet(isPresented: $showSchoolPicker){
+                            VStack{
+                                TextField("학교 검색", text: $searchText)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .padding()
+                                
+                                List(filteredSchools, id: \.schoolName){
+                                    school in
+                                    Button(action: {
+                                        selectedSchool = school.schoolName
+                                        selectedSchoolDomain = school.schoolDomain
+                                        selectedSchoolID = school.schoolID
+                                        showSchoolPicker = false
+                                        // 이메일, 인증 코드, 타이머 초기화
+                                        email = ""
+                                        fullEmail = ""
+                                        emailCode = ""
+                                        sentCode = ""
+                                        isEmailVerified = false
+                                        showEmailCodeFields = false
+                                        codeExpired = false
+                                        isButtonActive = true
+                                        timer?.invalidate()
+                                        remainingTime = 0
+                                    }){
+                                        Text(school.schoolName)
+                                            .foregroundColor(.black)
+                                            .fontWeight(.medium)
+                                    }
+                                    .listRowBackground(Color.white)
+                                }
+                                .background(Color.white)
+                                .foregroundColor(.black)
+                            }
+                            .padding()
+                        }
                     }
-                    .sheet(isPresented: $showSchoolPicker){
-                        VStack{
-                            TextField("학교 검색", text: $searchText)
+                    .padding()
+                    
+                    VStack(spacing: 15){
+                        // 이름 입력
+                        HStack {
+                            Text("   이름")
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .frame(width: 80, alignment: .leading)
+                            
+                            TextField("이름", text: $name)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .padding()
-                            
-                            List(filteredSchools, id: \.schoolName){
-                                school in
-                                Button(action: {
-                                    selectedSchool = school.schoolName
-                                    selectedSchoolDomain = school.schoolDomain
-                                    selectedSchoolID = school.schoolID
-                                    showSchoolPicker = false
-                                    // 이메일, 인증 코드, 타이머 초기화
-                                    email = ""
-                                    fullEmail = ""
-                                    emailCode = ""
-                                    sentCode = ""
-                                    isEmailVerified = false
-                                    showEmailCodeFields = false
-                                    codeExpired = false
-                                    isButtonActive = true
-                                    timer?.invalidate()
-                                    remainingTime = 0
-                                }){
-                                    Text(school.schoolName)
-                                        .foregroundColor(.black)
-                                        .fontWeight(.medium)
-                                }
-                                .listRowBackground(Color.white)
-                            }
-                            .background(Color.white)
-                            .foregroundColor(.black)
+                                .disabled(true)
                         }
-                        .padding()
-                    }
-                }
-                .padding()
-                
-                VStack(spacing: 15){
-                    // 이름 입력
-                    HStack {
-                        Text("   이름")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .frame(width: 80, alignment: .leading)
+                        .frame(height: 45)
                         
-                        TextField("이름", text: $name)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .padding()
-                            .disabled(true)
+                        // 전화번호 입력
+                        HStack {
+                            Text("  전화번호")
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .frame(width: 80, alignment: .leading)
+                            
+                            TextField(" 전화번호", text: $phoneNumber)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .padding()
+                                .disabled(true)
+                        }
+                        .frame(height: 45)
                     }
-
-                    // 전화번호 입력
-                    HStack {
-                        Text("  전화번호")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .frame(width: 80, alignment: .leading)
-                        
-                        TextField(" 전화번호", text: $phoneNumber)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .padding()
-                            .disabled(true)
+                    .onAppear{
+                        fetchUserData() //Firestore에서 데이터 가져오기
+                        fetchSchools()
                     }
-                }
-                .onAppear{
-                    fetchUserData() //Firestore에서 데이터 가져오기
-                    fetchSchools()
-                }
-                .padding()
-                
-                
-                // 학교 이메일
-                HStack {
-                    Text("*")
-                        .font(.title3)
-                        .foregroundColor(.red)
+                    .padding()
                     
-                    Text("학교 이메일")
-                        .font(.title3)
-                        .fontWeight(.bold)
-                    Spacer()
-                }
-                
-                // 이메일 입력 필드 및 인증 버튼
-                VStack {
-                    HStack(spacing: 0) {
+                    
+                    // 학교 이메일
+                    HStack {
+                        Text(" *")
+                            .font(.title3)
+                            .foregroundColor(.red)
+                        
+                        Text(" 학교 이메일")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                        Spacer()
+                    }
+                    
+                    // 이메일 입력 필드 및 인증 버튼
+                    
+                    HStack(spacing: 5) {
+                        HStack(spacing: 0) {
                             // 사용자가 입력하는 이메일 아이디 부분
                             TextField("이메일 아이디", text: $email)
                                 .padding()
                                 .frame(maxWidth: .infinity)
-
+                            
                             // 고정된 이메일 도메인
                             Text("\(selectedSchoolDomain.isEmpty ? "" : selectedSchoolDomain)")
                                 .foregroundColor(.gray)
@@ -208,85 +220,92 @@ struct SelectSchoolView: View {
                         }
                         .background(RoundedRectangle(cornerRadius: 5).stroke(Color.blue, lineWidth: 2))
                         .disabled(selectedSchoolDomain.isEmpty) // 학교를 선택하지 않았다면 입력 불가능
-                        .frame(width: 300)
-                    
-                    Button(action: sendVerificationCode) {
-                        Text(codeExpired ? "재전송하기" : "인증하기")
-                            .font(.headline)
-                            .fontWeight(.bold)
-                            .padding()
-                            .frame(width: codeExpired ? 120 : 100)
-                            .background(isButtonActive ? Color.black : Color.gray)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                    .padding()
-                    .disabled(email.isEmpty || selectedSchoolDomain.isEmpty || !isButtonActive)
-                   
-                }
-                .padding(.bottom, 10)
-                
-                // 이메일 인증 코드 입력
-                if showEmailCodeFields {
-                    HStack {
-                        TextField("코드 입력", text: $emailCode)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .frame(width: 150)
-                            .padding()
-                        Button(action: verifyEmailCode){
-                            Text("확인")
-                                .font(.headline)
-                                .foregroundColor(.white)
+                        .frame(width: 255)
+                        
+                        Button(action: sendVerificationCode) {
+                            Text(codeExpired ? "재전송" : "인증")
+                                .font(.caption)
+                                .fontWeight(.bold)
                                 .padding()
-                                .frame(width: 70)
-                                .background(Color.black)
+                                .frame(width: codeExpired ? 65 : 65)
+                                .frame(height: 45)
+                                .background(isButtonActive ? Color.black : Color.gray)
+                                .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
+                        .padding()
+                        .disabled(email.isEmpty || selectedSchoolDomain.isEmpty || !isButtonActive)
+                    }
+                    .padding(.leading, 15)
+                
+                    // 이메일 인증 코드 입력
+                    if showEmailCodeFields {
+                        VStack(alignment: .leading, spacing: 5) {
+                               HStack(spacing: 10) {
+                                   TextField("코드 입력", text: $emailCode)
+                                       .padding()
+                                       .frame(width: 150, height: 45)
+                                       .cornerRadius(8)
+                                       .background(RoundedRectangle(cornerRadius: 5).stroke(Color.blue, lineWidth: 2))
+
+                                   Button(action: verifyEmailCode) {
+                                       Text("확인")
+                                           .font(.caption)
+                                           .foregroundColor(.white)
+                                           .frame(width: 60, height: 45)
+                                           .background(Color.black)
+                                           .cornerRadius(8)
+                                   }
+
+                                   if remainingTime > 0 {
+                                       Text("\(remainingTime / 60)분 \(remainingTime % 60)초")
+                                           .foregroundColor(.red)
+                                           .font(.footnote)
+                                           .bold()
+                                   }
+                               }
+                               .padding(.trailing, 60)
+
+                           }
+                           .padding(.top, 5)
                     }
                     
-                    if remainingTime > 0{
-                        Text("남은 시간: \(remainingTime/60)분 \(remainingTime%60)초")
-                            .foregroundColor(.red)
-                            .font(.subheadline)
-                    }else if sentCode != ""{
-                        Text("인증 시간이 만료되었습니다. 재전송후 다시 시도해주세요.")
-                            .foregroundColor(.red)
-                            .font(.subheadline)
-                    }
-                }
-                Spacer()
-                
-                NavigationLink(destination: ContentView()
-                    .navigationBarBackButtonHidden(true),
-                               isActive: $isContentViewActive){
-                    Button(action: saveUserDataAndContinue) {
-                        Text("다음")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .padding()
-                            .frame(width: 350)
-                            .background(isFormValid ? Color.black: Color.gray)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                    .disabled(!isFormValid)
-                }
-                .padding(.top, 20)
-                NavigationLink(destination: LoginView()
+                    Spacer()
+                    
+                    
+                    NavigationLink(destination: ContentView()
                         .navigationBarBackButtonHidden(true),
-                               isActive: $isLoggedOut) {
+                                   isActive: $isContentViewActive){
+                        Button(action: saveUserDataAndContinue) {
+                            Text("다음")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .padding()
+                                .frame(width: 350)
+                                .frame(height: 70)
+                                .background(isFormValid ? Color.blue: Color.gray)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                        }
+                        .disabled(!isFormValid)
+                    }
+                                   .padding(.top, 20)
+                    NavigationLink(destination: LoginView()
+                        .navigationBarBackButtonHidden(true),
+                                   isActive: $isLoggedOut) {
                         EmptyView()
+                    }
+                }
+                .padding()
+                .onAppear {
+                    checkLoginStatus()
+                    if !isLoggedOut {
+                        fetchUserData()
+                        fetchSchools()
+                    }
                 }
             }
-            .padding()
-            .onAppear {
-                checkLoginStatus()
-                if !isLoggedOut {
-                    fetchUserData()
-                    fetchSchools()
-                }
-            }
-        }
+            .navigationBarHidden(true)
     }
     
     private func checkLoginStatus() {
@@ -303,26 +322,30 @@ struct SelectSchoolView: View {
         sentCode = String(Int.random(in: 100000...999999)) // 인증 코드 생성
         print("인증 코드 전송: \(sentCode) (이메일: \(fullEmail))")
         
-//         Gmail SMTP로 이메일 전송
-//        sendEmailCodeUsingSMTP(email: fullEmail, code: sentCode)
+        // Info.plist에서 불러온 값 사용
+        let smtpHostname: String = Bundle.main.infoDictionary?["SMTP_HOSTNAME"] as? String ?? ""
+        let smtpEmail: String = Bundle.main.infoDictionary?["SMTP_EMAIL"] as? String ?? ""
+        let smtpPassword: String = Bundle.main.infoDictionary?["SMTP_PASSWORD"] as? String ?? ""
+
+        
         showEmailCodeFields = true
         codeExpired = false
         isButtonActive = false
 
         let smtp = SMTP(
-            hostname: "smtp.gmail.com",
-            email: "hyvoft@gmail.com",
-            password: "hwlzmzphopjngsow",
+            hostname: smtpHostname,
+            email: smtpEmail,
+            password: smtpPassword,
             port: 465,
             tlsMode: .requireTLS
         )
-        let sender = Mail.User(name: "학교 인증", email: "hyvoft@gmail.com")
+        let sender = Mail.User(name: "[같이N가치] 학교 인증코드", email: smtpEmail)
         let recipient = Mail.User(name: name , email: fullEmail)
         let mail = Mail(
             from: sender,
             to: [recipient],
-            subject: "같이의 가치 학교 이메일 인증 코드",
-            text: "인증코드: \(sentCode)\n\n앱에서 인증 코드를 입력하세요."
+            subject: "학교 이메일 인증코드",
+            text: "인증코드: \(sentCode)\n\n5분 이내에 입력해주세요."
         )
         
         DispatchQueue.global(qos: .background).async {
@@ -339,10 +362,7 @@ struct SelectSchoolView: View {
                 }
             }
         }
-//        showEmailCodeFields = true
-//        codeExpired = false
-//        isButtonActive = false
-        
+
         timer?.invalidate()
         remainingTime = 300
         timer = Timer.scheduledTimer(withTimeInterval :1.0, repeats: true){ _ in

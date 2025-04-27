@@ -142,9 +142,13 @@ struct RegisterView: View{
                         }
                         
                         if !errorMessage2.isEmpty {
-                            Text(errorMessage2)
-                                .foregroundColor(.red)
-                                .font(.footnote)
+                            HStack {
+                                Text(errorMessage2)
+                                    .foregroundColor(.red)
+                                    .font(.footnote)
+                                
+                                Spacer()
+                            }
                         }
                         
                     }
@@ -231,13 +235,13 @@ struct RegisterView: View{
             port: 465,
             tlsMode: .requireTLS
         )
-        let sender = Mail.User(name: "[같이N가치] 인증번호", email: smtpEmail)
+        let sender = Mail.User(name: "[같이N가치] 회원가입 인증코드", email: smtpEmail)
         let recipient = Mail.User(name: userName, email: emailId)
         let mail = Mail(
             from: sender,
             to: [recipient],
-            subject: "회원가입 인증번호",
-            text: "인증번호: \(sentCode)\n\n5분 이내에 입력해주세요."
+            subject: "회원가입 인증코드",
+            text: "인증코드: \(sentCode)\n\n5분 이내에 입력해주세요."
         )
         
         showEmailCodeField = true
