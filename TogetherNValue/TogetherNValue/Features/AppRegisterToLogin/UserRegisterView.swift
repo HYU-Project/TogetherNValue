@@ -109,7 +109,7 @@ struct RegisterView: View{
                         .padding(.horizontal)
 
                         // 인증 코드 입력 + 확인 + 남은 시간
-                        if showEmailCodeField {
+                        if showEmailCodeField && !isEmailVerified {
                             HStack(spacing: 5) {
                                 TextField("코드 입력", text: $emailCode)
                                     .padding(.vertical, 8)
@@ -141,14 +141,25 @@ struct RegisterView: View{
                             .padding(.horizontal)
                         }
                         
-                        if !errorMessage2.isEmpty {
+                        // 에러 메시지
+                        if !errorMessage2.isEmpty && !isEmailVerified {
                             HStack {
                                 Text(errorMessage2)
                                     .foregroundColor(.red)
-                                    .font(.footnote)
-                                
-                                Spacer()
+                                    .font(.subheadline)
                             }
+                            .padding(.trailing, 180)
+                        }
+
+                        // 인증 성공 메시지
+                        if isEmailVerified {
+                            HStack {
+                                Text("이메일 인증 성공!")
+                                    .foregroundColor(.green)
+                                    .font(.subheadline)
+                                    .bold()
+                            }
+                            .padding(.trailing, 180)
                         }
                         
                     }
@@ -186,6 +197,7 @@ struct RegisterView: View{
                                 .foregroundColor(isAgreeToTerms ? .blue : .gray)
                         }
                     }
+                    .padding(.leading, 10)
                     
                 }
                 
@@ -195,6 +207,7 @@ struct RegisterView: View{
                     Button(action: register) {
                             Text("가입하기")
                                 .font(.title2)
+                                .bold()
                                 .foregroundColor(.white)
                                 .padding()
                                 .frame(maxWidth: .infinity)
@@ -285,12 +298,15 @@ struct RegisterView: View{
         }
         if emailCode == sentCode {
             isEmailVerified = true
-            errorMessage2 = "이메일 인증 성공!"
+            errorMessage2 = "" // 성공했을 때는 에러메시지 클리어
+            timer?.invalidate() // 타이머 멈추기
+            remainingTime = 0   // 남은 시간 0으로 설정 (화면에서 안 보이게)
         } else {
             isEmailVerified = false
             errorMessage2 = "인증번호가 일치하지 않습니다."
         }
     }
+
 
     
     func register() {

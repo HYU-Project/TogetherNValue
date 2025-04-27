@@ -19,6 +19,7 @@ struct SelectSchoolView: View {
     @State private var emailCode = ""
     @State private var sentCode = ""
     @State private var isCodeValid = false
+    @State private var errorMessage2: String = ""
     
     // 학교 검색
     @State private var showSchoolPicker: Bool = false
@@ -259,14 +260,29 @@ struct SelectSchoolView: View {
                                            .cornerRadius(8)
                                    }
 
-                                   if remainingTime > 0 {
+                                   if remainingTime > 0 && !isEmailVerified {
                                        Text("\(remainingTime / 60)분 \(remainingTime % 60)초")
                                            .foregroundColor(.red)
                                            .font(.footnote)
                                            .bold()
                                    }
+                                   else{
+                                       Text("0분 00초")
+                                          .foregroundColor(.clear)
+                                          .font(.footnote)
+                                          .bold()
+                                   }
+                                   
                                }
                                .padding(.trailing, 60)
+                            
+                            if !errorMessage2.isEmpty {
+                                Text(errorMessage2)
+                                    .foregroundColor(isEmailVerified ? .green : .red)
+                                    .font(.footnote)
+                                    .bold()
+                                    .padding(.leading, 5)
+                            }
 
                            }
                            .padding(.top, 5)
@@ -388,12 +404,20 @@ struct SelectSchoolView: View {
             print("코드 인증 실패. 유효시간 지남")
             return
         }
+        
         if emailCode == sentCode {
             isEmailVerified = true
             print("이메일 인증 성공")
-        } else {
+            
+            timer?.invalidate()
+            remainingTime = 0
+            errorMessage2 = "학교 인증 성공!"
+            
+        }
+        else {
             isEmailVerified = false
             print("인증 코드가 일치하지 않습니다.")
+            errorMessage2 = "인증 코드가 일치하지 않습니다."
         }
     }
     
