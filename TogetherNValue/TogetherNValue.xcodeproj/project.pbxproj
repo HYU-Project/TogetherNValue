@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D1B8E622DBDB84B0052E52C /* SwiftSMTP in Frameworks */ = {isa = PBXBuildFile; productRef = 6D1B8E612DBDB84B0052E52C /* SwiftSMTP */; };
 		783ADB9B2D547A57004E22EE /* GTMAppAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 783ADB9A2D547A57004E22EE /* GTMAppAuth */; };
 		783ADB9E2D547A63004E22EE /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 783ADB9D2D547A63004E22EE /* GoogleSignIn */; };
 		783ADBA12D547A6F004E22EE /* AppAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 783ADBA02D547A6F004E22EE /* AppAuth */; };
@@ -66,6 +67,7 @@
 			files = (
 				783ADBA12D547A6F004E22EE /* AppAuth in Frameworks */,
 				783ADBAA2D547AA3004E22EE /* FirebaseFunctions in Frameworks */,
+				6D1B8E622DBDB84B0052E52C /* SwiftSMTP in Frameworks */,
 				783ADBA62D547AA3004E22EE /* FirebaseCore in Frameworks */,
 				783ADB9B2D547A57004E22EE /* GTMAppAuth in Frameworks */,
 				783ADB9E2D547A63004E22EE /* GoogleSignIn in Frameworks */,
@@ -142,6 +144,7 @@
 				783ADBA92D547AA3004E22EE /* FirebaseFunctions */,
 				783ADBAB2D547AA3004E22EE /* FirebaseStorage */,
 				7844A8762DBD43FF00AF5031 /* YPImagePicker */,
+				6D1B8E612DBDB84B0052E52C /* SwiftSMTP */,
 			);
 			productName = TogetherNValue;
 			productReference = 783ADB6C2D547A19004E22EE /* TogetherNValue.app */;
@@ -231,6 +234,7 @@
 				783ADB9F2D547A6F004E22EE /* XCRemoteSwiftPackageReference "AppAuth-iOS" */,
 				783ADBA22D547AA3004E22EE /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				7844A8752DBD43FF00AF5031 /* XCRemoteSwiftPackageReference "YPImagePicker" */,
+				6D1B8E602DBDB84B0052E52C /* XCRemoteSwiftPackageReference "Swift-SMTP" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 783ADB6D2D547A19004E22EE /* Products */;
@@ -605,6 +609,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		6D1B8E602DBDB84B0052E52C /* XCRemoteSwiftPackageReference "Swift-SMTP" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Kitura/Swift-SMTP.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
+			};
+		};
 		783ADB992D547A57004E22EE /* XCRemoteSwiftPackageReference "GTMAppAuth" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/GTMAppAuth";
@@ -648,6 +660,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		6D1B8E612DBDB84B0052E52C /* SwiftSMTP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6D1B8E602DBDB84B0052E52C /* XCRemoteSwiftPackageReference "Swift-SMTP" */;
+			productName = SwiftSMTP;
+		};
 		783ADB9A2D547A57004E22EE /* GTMAppAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 783ADB992D547A57004E22EE /* XCRemoteSwiftPackageReference "GTMAppAuth" */;

@@ -3,6 +3,7 @@ import SwiftUI
 import FirebaseFirestore
 import FirebaseAuth
 import FirebaseFunctions
+import SwiftSMTP
 
 struct SelectSchoolView: View {
     @EnvironmentObject var userManager: UserManager
@@ -25,6 +26,12 @@ struct SelectSchoolView: View {
     @State private var selectedSchool: String = ""
     @State private var selectedSchoolDomain: String = "" // 이메일 도메인
     @State private var selectedSchoolID: String = ""
+    
+    //타이머 변수
+    @State private var remainingTime: Int = 0
+    @State private var timer: Timer?
+    @State private var codeExpired: Bool = false
+    @State private var isButtonActive: Bool = true
     
     @Environment(\.dismiss) var dismiss
     @State private var isContentViewActive = false // 다음화면으로 이동 여부
@@ -112,6 +119,17 @@ struct SelectSchoolView: View {
                                     selectedSchoolDomain = school.schoolDomain
                                     selectedSchoolID = school.schoolID
                                     showSchoolPicker = false
+                                    // 이메일, 인증 코드, 타이머 초기화
+                                    email = ""
+                                    fullEmail = ""
+                                    emailCode = ""
+                                    sentCode = ""
+                                    isEmailVerified = false
+                                    showEmailCodeFields = false
+                                    codeExpired = false
+                                    isButtonActive = true
+                                    timer?.invalidate()
+                                    remainingTime = 0
                                 }){
                                     Text(school.schoolName)
                                         .foregroundColor(.black)
@@ -191,17 +209,17 @@ struct SelectSchoolView: View {
                         .frame(width: 300)
                     
                     Button(action: sendVerificationCode) {
-                        Text("인증하기")
+                        Text(codeExpired ? "재전송하기" : "인증하기")
                             .font(.headline)
                             .fontWeight(.bold)
                             .padding()
-                            .frame(width: 100)
-                            .background(Color.black)
+                            .frame(width: codeExpired ? 120 : 100)
+                            .background(isButtonActive ? Color.black : Color.gray)
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
                     .padding()
-                    .disabled(email.isEmpty || selectedSchoolDomain.isEmpty)
+                    .disabled(email.isEmpty || selectedSchoolDomain.isEmpty || !isButtonActive)
                    
                 }
                 .padding(.bottom, 10)
@@ -222,6 +240,16 @@ struct SelectSchoolView: View {
                                 .background(Color.black)
                                 .cornerRadius(10)
                         }
+                    }
+                    
+                    if remainingTime > 0{
+                        Text("남은 시간: \(remainingTime/60)분 \(remainingTime%60)초")
+                            .foregroundColor(.red)
+                            .font(.subheadline)
+                    }else if sentCode != ""{
+                        Text("인증 시간이 만료되었습니다. 재전송후 다시 시도해주세요.")
+                            .foregroundColor(.red)
+                            .font(.subheadline)
                     }
                 }
                 Spacer()
@@ -248,32 +276,81 @@ struct SelectSchoolView: View {
     }
     
     private func sendVerificationCode(){
-        //guard !email.isEmpty, !selectedSchoolEmail.isEmpty else { return }
         fullEmail = "\(email)\(selectedSchoolDomain)"
         sentCode = String(Int.random(in: 100000...999999)) // 인증 코드 생성
         print("인증 코드 전송: \(sentCode) (이메일: \(fullEmail))")
-
         
-        // Firebase Functions 호출
-        ///unctions.httpsCallable("sendVerificationEmail").call(["email": fullEmail, "code": sentCode]) { result, error in
-            //if let error = error {
-                //print("이메일 전송 실패: \(error.localizedDescription)")
-                //return
-            //}
-            //print("이메일 전송 성공: \(result?.data ?? "No data")")
-            showEmailCodeFields = true
-        //}
-    }
-    
-    private func verifyEmailCode() {
-            if emailCode == sentCode {
-                isEmailVerified = true
-                print("이메일 인증 성공")
-            } else {
-                isEmailVerified = false
-                print("인증 코드가 일치하지 않습니다.")
+//         Gmail SMTP로 이메일 전송
+//        sendEmailCodeUsingSMTP(email: fullEmail, code: sentCode)
+        showEmailCodeFields = true
+        codeExpired = false
+        isButtonActive = false
+
+        let smtp = SMTP(
+            hostname: "smtp.gmail.com",
+            email: "hyvoft@gmail.com",
+            password: "hwlzmzphopjngsow",
+            port: 465,
+            tlsMode: .requireTLS
+        )
+        let sender = Mail.User(name: "학교 인증", email: "hyvoft@gmail.com")
+        let recipient = Mail.User(name: name , email: fullEmail)
+        let mail = Mail(
+            from: sender,
+            to: [recipient],
+            subject: "같이의 가치 학교 이메일 인증 코드",
+            text: "인증코드: \(sentCode)\n\n앱에서 인증 코드를 입력하세요."
+        )
+        
+        DispatchQueue.global(qos: .background).async {
+            smtp.send(mail) { error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        print("❌ 이메일 인증번호 전송 실패: \(error)")
+                        showEmailCodeFields = false
+                        codeExpired = true
+                        isButtonActive = true
+                    } else {
+                        print("✅ 이메일 인증번호 전송 성공")
+                    }
+                }
             }
         }
+//        showEmailCodeFields = true
+//        codeExpired = false
+//        isButtonActive = false
+        
+        timer?.invalidate()
+        remainingTime = 300
+        timer = Timer.scheduledTimer(withTimeInterval :1.0, repeats: true){ _ in
+            if remainingTime > 0{
+                remainingTime -= 1
+            }else{
+                timer?.invalidate()
+                print("인증시간 만료")
+                sentCode = ""
+                showEmailCodeFields = false
+                isEmailVerified = false
+                codeExpired = true
+                isButtonActive = true
+            }
+        }
+    }
+    
+    
+    private func verifyEmailCode() {
+        if codeExpired{
+            print("코드 인증 실패. 유효시간 지남")
+            return
+        }
+        if emailCode == sentCode {
+            isEmailVerified = true
+            print("이메일 인증 성공")
+        } else {
+            isEmailVerified = false
+            print("인증 코드가 일치하지 않습니다.")
+        }
+    }
     
     private func saveUserDataAndContinue() {
             guard let currentUser = Auth.auth().currentUser else {
@@ -313,5 +390,5 @@ struct School{
 
 #Preview {
     SelectSchoolView()
+        .environmentObject(UserManager())
 }
-
