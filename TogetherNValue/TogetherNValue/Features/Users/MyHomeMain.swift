@@ -155,7 +155,7 @@ struct MyHomeMain: View {
                     
                     VStack(alignment: .leading, spacing: 20) {
                         Text("나의 거래")
-                            .font(.title)
+                            .font(.title2)
                             .bold()
                             .padding(.trailing, 200)
                         
@@ -203,7 +203,7 @@ struct MyHomeMain: View {
                     
                     VStack(alignment: .leading, spacing: 15) {
                         Text("기타")
-                            .font(.title)
+                            .font(.title2)
                             .bold()
                             .padding(.trailing, 200)
                         
