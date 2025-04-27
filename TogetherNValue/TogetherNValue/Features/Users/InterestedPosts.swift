@@ -85,7 +85,7 @@ struct InterestedPosts: View {
                     .font(.title)
                     .bold()
                     .padding()
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 10)
                 
                 Divider()
                     .padding(.bottom, 10)
@@ -100,6 +100,7 @@ struct InterestedPosts: View {
                     Spacer()
                 }
                 else if posts.isEmpty {
+                    Spacer()
                     Text("찜한 게시물이 없습니다.")
                         .font(.headline)
                         .foregroundColor(.gray)

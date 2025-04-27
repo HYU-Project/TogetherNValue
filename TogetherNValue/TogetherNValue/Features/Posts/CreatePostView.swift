@@ -358,7 +358,7 @@ struct CreatePostView: View {
                     }
                     .padding()
                     .frame(width: 350, height: 70)
-                    .background(isValidPost ? Color.black : Color.gray.opacity(0.5))
+                    .background(isValidPost ? Color.blue : Color.gray.opacity(0.5))
                     .cornerRadius(10)
                     .onAppear {
                         validatePost() // 화면이 나타날 때 유효성 검사

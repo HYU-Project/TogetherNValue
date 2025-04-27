@@ -21,6 +21,7 @@ struct CommentInput: View {
                 HStack {
                     TextField("답글 입력...", text: $replyText)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+                    
                     Button("작성") {
                         onSubmitReply()
                     }
@@ -29,6 +30,7 @@ struct CommentInput: View {
                     .foregroundStyle(Color.white)
                     .background(Color.blue)
                     .cornerRadius(10)
+                    
                     Button("취소") {
                         onCancelReply()
                     }

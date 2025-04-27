@@ -481,118 +481,118 @@ struct DetailPost: View {
                             .padding(.leading, 20)
                             
                             Divider()
-                                .padding()
-                            
-                            if let postDetails = postDetails {
-                                if postDetails.user_idx == userManager.userId {
-                                    Menu {
-                                        ForEach(statusOptions, id: \.self) { status in
-                                            Button(action: {
-                                                selectedStatus = status
-                                                if selectedStatus != postDetails.post_status {
-                                                    updatePostStatus(to: selectedStatus)
-                                                }
-                                            }) {
-                                                Text(status)
-                                                    .font(.title3)
-                                                    .foregroundColor(.black)
-                                            }
-                                        }
-                                    } label: {
-                                        HStack {
-                                            Text(selectedStatus.isEmpty ? "상태 선택" : selectedStatus)
-                                                .font(.title3)
-                                                .foregroundColor(.black)
-                                            Spacer()
-                                            Image(systemName: "chevron.down")
-                                                .foregroundColor(.gray)
-                                        }
-                                        .padding()
-                                        .background(Color.white)
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .stroke(Color.gray, lineWidth: 2)
-                                        )
-                                        .cornerRadius(8)
-                                        .frame(width: 200)
-                                    }
-                                    .padding(.leading)
-                                }
-                            }
-
+                                .padding(.bottom, 10)
                             
                             // 게시물 제목 및 설명
                             VStack(alignment: .leading, spacing: 10) {
+                                
+                                if let postDetails = postDetails {
+                                    if postDetails.user_idx == userManager.userId {
+                                        VStack(alignment: .leading) {
+                                            Menu {
+                                                ForEach(statusOptions, id: \.self) { status in
+                                                    Button(action: {
+                                                        selectedStatus = status
+                                                        if selectedStatus != postDetails.post_status {
+                                                            updatePostStatus(to: selectedStatus)
+                                                        }
+                                                    }) {
+                                                        Text(status)
+                                                            .font(.title3)
+                                                            .foregroundColor(.black)
+                                                    }
+                                                }
+                                            } label: {
+                                                HStack(spacing: 6) {
+                                                    Text(selectedStatus.isEmpty ? "상태" : selectedStatus)
+                                                        .font(.body)
+                                                        .foregroundColor(.black)
+                                                    Image(systemName: "chevron.down")
+                                                        .font(.subheadline)
+                                                        .foregroundColor(.gray)
+                                                }
+                                                .padding(7)
+                                                .padding(.horizontal, 12)
+                                                .padding(.vertical, 8)
+                                                .background(Color.white)
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 8)
+                                                        .stroke(Color.gray, lineWidth: 1)
+                                                )
+                                                .cornerRadius(8)
+                                            }
+                                        }
+                                    }
+                                }
+
                                     
                                 Text(postDetails?.title ?? "제목 없음")
-                                    .font(.title)
+                                    .font(.title2)
                                     .bold()
                                 
                                 HStack {
                                     Text("#\(postDetails?.post_category ?? "카테고리 없음")")
-                                        .font(.title3)
+                                        .font(.headline)
                                         .foregroundColor(.gray)
     
                                     
                                     Text("#\(postDetails?.post_categoryType ?? "카테고리 타입 없음")")
-                                        .font(.title3)
+                                        .font(.headline)
                                         .foregroundColor(.gray)
                                         
                                     
                                     if let createdAt = postDetails?.created_at {
                                         Text(timeAgo(from: createdAt))
-                                            .font(.title3)
+                                            .font(.headline)
                                             .foregroundColor(.gray)
                                     } else {
                                         Text("")
-                                            .font(.title3)
+                                            .font(.headline)
                                             .foregroundColor(.gray)
                                     }
                                 }
-                                .padding(.bottom, 30)
+                                .padding(.bottom, 20)
                                 
                                 Text(postDetails?.post_content ?? "내용 없음")
-                                    .font(.title3)
-                                    .padding(.leading, 20)
-                                    .padding(.bottom, 40)
-                                
-                                // 거래 정보 (장소 및 인원수)
-                                VStack(alignment: .leading, spacing: 12) {
-                                    Text("거래 정보")
-                                        .font(.headline)
-                                        .padding(.bottom, 5)
+                                    .font(.body)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.bottom, 10)
+                            
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 20)
+                            
+                            // 거래 정보 (장소 및 인원수)
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("거래 정보")
+                                    .font(.headline)
+                                    .padding(.bottom, 5)
 
-                                    HStack(alignment: .center, spacing: 8) {
-                                        Image(systemName: "mappin.and.ellipse")
-                                            .foregroundColor(.blue)
-                                        Text("  희망 장소:")
-                                            .bold()
-                                        Spacer()
-                                        Text(postDetails?.location ?? "미정")
-                                            .foregroundColor(.gray)
-                                    }
-
-                                    HStack(alignment: .center, spacing: 8) {
-                                        Image(systemName: "person.2.fill")
-                                            .foregroundColor(.blue)
-                                        Text("희망 인원수:")
-                                            .bold()
-                                        Spacer()
-                                        Text("\(postDetails?.want_num ?? 0) 명")
-                                            .foregroundColor(.gray)
-                                    }
+                                HStack(alignment: .center, spacing: 8) {
+                                    Image(systemName: "mappin.and.ellipse")
+                                        .foregroundColor(.blue)
+                                    Text("  희망 장소:")
+                                        .bold()
+                                    Spacer()
+                                    Text(postDetails?.location ?? "미정")
+                                        .foregroundColor(.gray)
                                 }
-                                .padding()
-                                .background(Color.white)
-                                .cornerRadius(12)
-                                .shadow(color: Color.gray.opacity(0.2), radius: 5, x: 0, y: 2)
-                                .padding(.horizontal)
 
-
+                                HStack(alignment: .center, spacing: 8) {
+                                    Image(systemName: "person.2.fill")
+                                        .foregroundColor(.blue)
+                                    Text("희망 인원수:")
+                                        .bold()
+                                    Spacer()
+                                    Text("\(postDetails?.want_num ?? 0) 명")
+                                        .foregroundColor(.gray)
+                                }
                             }
                             .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal)
+                            .background(Color.white)
+                            .cornerRadius(12)
+                            .shadow(color: Color.gray.opacity(0.2), radius: 5, x: 0, y: 2)
+                            .padding(.horizontal, 20)
                             
                             Divider()
                             

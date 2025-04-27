@@ -38,7 +38,7 @@ struct MyPosts: View {
                     .font(.title)
                     .bold()
                     .padding()
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 10)
                 
                 Divider()
                     .padding(.bottom, 10)
