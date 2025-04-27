@@ -5,16 +5,19 @@ import SwiftUI
 struct TermsOfServiceView: View {
     
     var body: some View {
+        VStack(alignment: .center) {
+            Text("이용약관")
+                .font(.title2)
+                .bold()
+                .padding()
+            
+            Divider()
+                .padding(.bottom, 10)
+        }
+        .frame(maxWidth: .infinity)
+        
         ScrollView{
             VStack(alignment: .leading) {
-                
-                Text("이용약관")
-                    .font(.title2)
-                    .bold()
-                    .padding(.leading, 160)
-                
-                Divider()
-                    .padding(.bottom, 10)
                 
                 Group {
                     Text("제 1조. 목적")

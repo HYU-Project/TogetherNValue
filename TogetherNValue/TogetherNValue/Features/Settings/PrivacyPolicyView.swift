@@ -5,16 +5,21 @@ import SwiftUI
 struct PrivacyPolicyView: View {
     
     var body: some View {
+        VStack(alignment: .center) {
+            Text("개인정보 처리방침")
+                .font(.title2)
+                .bold()
+                .padding()
+            
+            Divider()
+                .padding(.bottom, 10)
+        }
+        .frame(maxWidth: .infinity)
+        
         ScrollView{
+            
             VStack(alignment: .leading) {
                 
-                Text("개인정보 처리방침")
-                    .font(.title2)
-                    .bold()
-                    .padding(.leading, 120)
-                
-                Divider()
-                    .padding(.bottom, 10)
                 
                 Group {
                    Text("제 1조. 수집하는 개인정보 항목")
