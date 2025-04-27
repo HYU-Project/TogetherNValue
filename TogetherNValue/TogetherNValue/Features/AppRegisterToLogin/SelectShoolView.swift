@@ -291,6 +291,8 @@ struct SelectSchoolView: View {
                     
                     Spacer()
                     
+                    Text(" 먼저 학교 선택 후, 이메일을 입력해주세요 ")
+                        .foregroundColor(.gray)
                     
                     NavigationLink(destination: ContentView()
                         .navigationBarBackButtonHidden(true),
