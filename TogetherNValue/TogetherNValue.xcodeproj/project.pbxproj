@@ -42,9 +42,22 @@
 		783ADB862D547A1B004E22EE /* TogetherNValueUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TogetherNValueUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		788FA8072DBDF5CE008F14F2 /* Exceptions for "TogetherNValue" folder in "TogetherNValue" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 783ADB6B2D547A19004E22EE /* TogetherNValue */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		783ADB6E2D547A19004E22EE /* TogetherNValue */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				788FA8072DBDF5CE008F14F2 /* Exceptions for "TogetherNValue" folder in "TogetherNValue" target */,
+			);
 			path = TogetherNValue;
 			sourceTree = "<group>";
 		};
@@ -435,11 +448,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"TogetherNValue/Preview Content\"";
 				DEVELOPMENT_TEAM = U2H7XBD3BD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TogetherNValue/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "같이N가치";
 				INFOPLIST_KEY_NSCameraUsageDescription = "이 앱은 사진을 찍기 위해 카메라 접근이 필요합니다.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "이 앱은 외부 라이브러리에서 마이크 접근을 요청할 수 있습니다.";
@@ -468,11 +482,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"TogetherNValue/Preview Content\"";
 				DEVELOPMENT_TEAM = U2H7XBD3BD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TogetherNValue/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "같이N가치";
 				INFOPLIST_KEY_NSCameraUsageDescription = "이 앱은 사진을 찍기 위해 카메라 접근이 필요합니다.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "이 앱은 외부 라이브러리에서 마이크 접근을 요청할 수 있습니다.";

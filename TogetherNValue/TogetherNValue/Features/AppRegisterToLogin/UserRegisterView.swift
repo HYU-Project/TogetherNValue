@@ -1,4 +1,4 @@
-//회원가입 화면
+// 회원가입 화면
 import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
@@ -14,7 +14,7 @@ struct RegisterView: View{
     @State private var isLoading = false
     @State private var isAgreeToTerms = false
     @Environment(\.dismiss) var dismiss // 회원가입 후 로그인 화면으로 돌아가기
-    //이메일&인증코드관련 state
+    // 이메일&인증코드관련 state
     // 이메일 & 코드 인증 관련 State 추가
     @State private var emailId: String = ""
     //@State private var emailDomain: String = "@gmail.com"
@@ -83,16 +83,6 @@ struct RegisterView: View{
                         .cornerRadius(8)
                         .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
                         .padding(.horizontal)
-                    
-                    // 이메일 입력
-//                    TextField("이메일", text: $userEmail)
-//                        .keyboardType(.emailAddress)
-//                        .padding()
-//                        .frame(height: 55) // 높이 조정
-//                        .background(Color.white)
-//                        .cornerRadius(8)
-//                        .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
-//                        .padding(.horizontal)
                     
                     // 이메일 아이디 + 도메인 선택
                     VStack(spacing: 10) {
@@ -199,15 +189,6 @@ struct RegisterView: View{
                 VStack(spacing: 10){
                     // 가입하기 버튼
                     Button(action: register) {
-                        if isLoading {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 70)
-                                .padding()
-                                .background(Color.green)
-                                .cornerRadius(8)
-                        } else {
                             Text("가입하기")
                                 .font(.title2)
                                 .foregroundColor(.white)
@@ -216,7 +197,6 @@ struct RegisterView: View{
                                 .frame(height: 70)
                                 .background(isFormValid ? Color.black : Color.gray)
                                 .cornerRadius(10)
-                        }
                     }
                     .padding(.horizontal)
                     .disabled(!isFormValid || !isAgreeToTerms)
@@ -230,8 +210,6 @@ struct RegisterView: View{
             }
             .padding()
             .padding(.horizontal,15)
-            .navigationTitle("회원가입")
-            .navigationBarTitleDisplayMode(.inline)
         }
     }
     
@@ -239,15 +217,21 @@ struct RegisterView: View{
         sentCode = String(Int.random(in: 100000...999999))
         print("인증코드: \(sentCode), 이메일: \(emailId)")
         
+        // Info.plist에서 불러온 값 사용
+        let smtpHostname: String = Bundle.main.infoDictionary?["SMTP_HOSTNAME"] as? String ?? ""
+        let smtpEmail: String = Bundle.main.infoDictionary?["SMTP_EMAIL"] as? String ?? ""
+        let smtpPassword: String = Bundle.main.infoDictionary?["SMTP_PASSWORD"] as? String ?? ""
+
+        
         // SMTP로 이메일 전송
         let smtp = SMTP(
-            hostname: "smtp.gmail.com",
-            email: "hyvoft@gmail.com",
-            password: "hwlzmzphopjngsow",
+            hostname: smtpHostname,
+            email: smtpEmail,
+            password: smtpPassword,
             port: 465,
             tlsMode: .requireTLS
         )
-        let sender = Mail.User(name: "[같이N가치] 회원가입 인증코드", email: "hyvoft@gmail.com")
+        let sender = Mail.User(name: "[같이N가치] 인증번호", email: smtpEmail)
         let recipient = Mail.User(name: userName, email: emailId)
         let mail = Mail(
             from: sender,

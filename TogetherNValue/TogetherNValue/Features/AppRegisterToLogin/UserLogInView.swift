@@ -83,15 +83,15 @@ struct LoginView: View {
                            
                     VStack(spacing: 10) {
                         Button(action: login) {
-                            if isLoading {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle())
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 70)
-                                    .padding()
-                                    .background(Color.gray)
-                                    .cornerRadius(10)
-                            } else {
+                            //if isLoading {
+                             //   ProgressView()
+                             //       .progressViewStyle(CircularProgressViewStyle())
+                              //      .frame(maxWidth: .infinity)
+                              //      .frame(height: 70)
+                               //     .padding()
+                               //     .background(Color.gray)
+                              //      .cornerRadius(10)
+                           // } else {
                                 Text("로그인")
                                     .font(.title2)
                                     .foregroundColor(.white)
@@ -101,14 +101,14 @@ struct LoginView: View {
                                     .background(Color.black)
                                     .cornerRadius(10)
                                     .padding(.horizontal)
-                            }
+                           // }
                             
                         }
                         .disabled(isLoading)
                                
                         NavigationLink(destination: RegisterView()) {
                             Text("계정이 없으신가요? 회원가입")
-                                .font(.footnote)
+                                .font(.subheadline)
                                 .foregroundColor(.red)
                         }
                     }
