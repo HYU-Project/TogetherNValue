@@ -115,6 +115,8 @@ struct SelectSchoolView: View {
                             .frame(maxWidth: .infinity, minHeight: 50)
                             .padding()
                             .background(RoundedRectangle(cornerRadius: 10).stroke(Color.blue, lineWidth: 3))
+                            .shadow(color: .gray.opacity(0.2), radius: 2, x: 0, y: 2)
+
                             
                         }
                         .sheet(isPresented: $showSchoolPicker){
