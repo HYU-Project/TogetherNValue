@@ -34,7 +34,6 @@ struct SharingPostRow: View {
         HStack {
             SharingPostImageView(postImageUrl: post.postImage_url)
             SharingPostInfoView(post: post)
-            SharingPostStatsView(post: post)
         }
         .padding()
         .frame(width: 330, height: 100)
@@ -155,24 +154,19 @@ struct SharingPostInfoView: View {
                 Image(systemName: "person.fill")
                 Text("\(post.active_chatRoomCnt) / \(post.want_num)") 
                     .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                HStack {
+                    Image(systemName: "heart")
+                    Text("\(post.post_likeCnt)")
+                    
+                    Image(systemName: "message")
+                    Text("\(post.post_commentCnt)")
+                }
             }
         }
     }
 }
 
-struct SharingPostStatsView: View {
-    var post: SharingPost
-    
-    var body: some View {
-        VStack {
-            Spacer()
-            HStack {
-                Image(systemName: "heart")
-                Text("\(post.post_likeCnt)")
-                Image(systemName: "message")
-                Text("\(post.post_commentCnt)")
-            }
-        }
-    }
-}
 

@@ -35,7 +35,6 @@ struct PurchasePostRow: View {
         HStack {
             PurchasePostImageView(postImageUrl: post.postImage_url)
             PurchasePostInfoView(post: post)
-            PurchasePostStatsView(post: post)
         }
         .padding()
         .frame(width: 330, height: 100)
@@ -125,24 +124,19 @@ struct PurchasePostInfoView: View {
                 Image(systemName: "person.fill")
                 Text("\(post.active_chatRoomCnt) / \(post.want_num)") // 인원 수는 채팅방에서 1:1 거래완료 카운트
                     .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                HStack {
+                    Image(systemName: "heart")
+                    Text("\(post.post_likeCnt)")
+                    
+                    Image(systemName: "message")
+                    Text("\(post.post_commentCnt)")
+                }
+                
             }
         }
     }
 }
 
-struct PurchasePostStatsView: View {
-    var post: PurchasePost
-    
-    var body: some View {
-        VStack {
-            Spacer()
-
-            HStack {
-                Image(systemName: "heart")
-                Text("\(post.post_likeCnt)")
-                Image(systemName: "message")
-                Text("\(post.post_commentCnt)")
-            }
-        }
-    }
-}

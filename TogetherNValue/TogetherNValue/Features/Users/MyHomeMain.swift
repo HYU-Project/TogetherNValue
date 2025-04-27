@@ -164,7 +164,7 @@ struct MyHomeMain: View {
                             HStack(){
                                 Image(systemName:"heart.fill")
                                 Text(" 관심 목록")
-                                    .font(.title2)
+                                    .font(.title3)
                                     .bold()
                                 Spacer()
                             }
@@ -176,7 +176,7 @@ struct MyHomeMain: View {
                             HStack(){
                                 Image(systemName:"square.and.pencil")
                                 Text(" 내가 작성한 게시물")
-                                    .font(.title2)
+                                    .font(.title3)
                                     .bold()
                                 Spacer()
                             }
@@ -188,7 +188,7 @@ struct MyHomeMain: View {
                             HStack(){
                                 Image(systemName:"figure.2")
                                 Text("내가 참여한 거래")
-                                    .font(.title2)
+                                    .font(.title3)
                                     .bold()
                                 Spacer()
                             }
@@ -210,7 +210,7 @@ struct MyHomeMain: View {
                         NavigationLink(destination: FAQListView()){
                             HStack {
                                 Text("자주하는 질문 FAQ")
-                                    .font(.title2)
+                                    .font(.title3)
                                     .bold()
                                     .foregroundColor(Color.black)
                                 
@@ -222,7 +222,7 @@ struct MyHomeMain: View {
                         NavigationLink(destination: TermsOfServiceView()) {
                             HStack {
                                 Text("이용약관")
-                                    .font(.title2)
+                                    .font(.title3)
                                     .bold()
                                     .foregroundColor(Color.black)
                                 
@@ -234,7 +234,7 @@ struct MyHomeMain: View {
                         NavigationLink(destination: PrivacyPolicyView()) {
                             HStack {
                                 Text("개인정보 처리방침")
-                                    .font(.title2)
+                                    .font(.title3)
                                     .bold()
                                     .foregroundColor(Color.black)
                                 
@@ -246,7 +246,7 @@ struct MyHomeMain: View {
                         NavigationLink(destination: AccountInfoView()) {
                             HStack {
                                 Text("계정 정보")
-                                    .font(.title2)
+                                    .font(.title3)
                                     .bold()
                                     .foregroundColor(Color.black)
                                 
