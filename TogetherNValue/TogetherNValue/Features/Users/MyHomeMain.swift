@@ -255,6 +255,7 @@ struct MyHomeMain: View {
                                 Text("(가입일: \(formattedCreatedAt))")
                                     .font(.headline)
                                     .foregroundColor(.gray)
+                                    .padding(.leading, 50)
                             }
                             .padding(.trailing, 50)
                         }

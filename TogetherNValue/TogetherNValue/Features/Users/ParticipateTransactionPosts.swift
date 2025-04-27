@@ -16,8 +16,6 @@ struct ParticipateTransactionPosts: View {
                 Text("내가 참여한 거래")
                     .font(.title)
                     .bold()
-                    .padding()
-                    .padding(.bottom, 10)
                 
                 Divider()
                     .padding(.bottom, 10)

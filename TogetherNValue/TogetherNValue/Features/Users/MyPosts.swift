@@ -37,8 +37,6 @@ struct MyPosts: View {
                 Text("내가 작성한 게시물")
                     .font(.title)
                     .bold()
-                    .padding()
-                    .padding(.bottom, 10)
                 
                 Divider()
                     .padding(.bottom, 10)

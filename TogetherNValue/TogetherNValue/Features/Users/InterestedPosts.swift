@@ -84,8 +84,6 @@ struct InterestedPosts: View {
                 Text("관심 목록")
                     .font(.title)
                     .bold()
-                    .padding()
-                    .padding(.bottom, 10)
                 
                 Divider()
                     .padding(.bottom, 10)
