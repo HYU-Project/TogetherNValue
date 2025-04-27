@@ -11,7 +11,7 @@ struct TermsOfServiceView: View {
                 Text("이용약관")
                     .font(.title2)
                     .bold()
-                    .padding(.leading, 140)
+                    .padding(.leading, 160)
                 
                 Divider()
                     .padding(.bottom, 10)

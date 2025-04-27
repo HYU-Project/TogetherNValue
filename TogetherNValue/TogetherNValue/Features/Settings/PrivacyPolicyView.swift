@@ -11,7 +11,7 @@ struct PrivacyPolicyView: View {
                 Text("개인정보 처리방침")
                     .font(.title2)
                     .bold()
-                    .padding(.leading, 100)
+                    .padding(.leading, 120)
                 
                 Divider()
                     .padding(.bottom, 10)
