@@ -275,6 +275,7 @@ struct SelectSchoolView: View {
                                    
                                }
                                .padding(.trailing, 60)
+                               .padding(.bottom, 5)
                             
                             if !errorMessage2.isEmpty {
                                 Text(errorMessage2)
