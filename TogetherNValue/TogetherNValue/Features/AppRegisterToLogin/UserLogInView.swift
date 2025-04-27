@@ -30,7 +30,7 @@ struct LoginView: View {
                             .padding()
                         
                         Text("서비스 이용을 위해 로그인 해주세요")
-                            .font(.system(size: 15, weight: .regular, design: .rounded))
+                            .font(.system(size: 18, weight: .regular, design: .rounded))
                             .padding(.top, 5)
                     }
                         
@@ -87,16 +87,19 @@ struct LoginView: View {
                                 ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle())
                                     .frame(maxWidth: .infinity)
+                                    .frame(height: 70)
                                     .padding()
-                                    .background(Color.gray.opacity(1))
-                                    .cornerRadius(8)
+                                    .background(Color.gray)
+                                    .cornerRadius(10)
                             } else {
                                 Text("로그인")
+                                    .font(.title2)
                                     .foregroundColor(.white)
                                     .padding()
                                     .frame(maxWidth: .infinity)
-                                    .background(Color.black.opacity(1))
-                                    .cornerRadius(8)
+                                    .frame(height: 70)
+                                    .background(Color.black)
+                                    .cornerRadius(10)
                                     .padding(.horizontal)
                             }
                             
@@ -153,7 +156,7 @@ struct LoginView: View {
                     case .invalidEmail:
                         errorMessage = "이메일 형식이 올바르지 않습니다."
                     default:
-                        errorMessage = "로그인 실패: \(error.localizedDescription)"
+                        errorMessage = "잘못된 로그인 정보입니다."
                     }
                 } else if let user = result?.user  {
                     self.userManager.refreshUserId() // 로그인 성공 시 userId 갱신

@@ -17,8 +17,8 @@ struct RegisterView: View{
     //이메일&인증코드관련 state
     // 이메일 & 코드 인증 관련 State 추가
     @State private var emailId: String = ""
-    @State private var emailDomain: String = "@gmail.com"
-    @State private var availableDomains = ["@gmail.com", "@naver.com"]
+    //@State private var emailDomain: String = "@gmail.com"
+    //@State private var availableDomains = ["@gmail.com", "@naver.com"]
 
     @State private var showEmailCodeField = false
     @State private var sentCode = ""
@@ -59,7 +59,7 @@ struct RegisterView: View{
                         .padding(.top, 5)
                     
                     Text("회원가입을 완료해주세요")
-                        .font(.system(size: 15, weight: .regular, design: .rounded))
+                        .font(.system(size: 18, weight: .regular, design: .rounded))
                         .padding()
                 }
                 
@@ -95,36 +95,32 @@ struct RegisterView: View{
 //                        .padding(.horizontal)
                     
                     // 이메일 아이디 + 도메인 선택
-                    VStack(){
-                        
-                        HStack(spacing: 3) {
-                            TextField("이메일 아이디", text: $emailId)
+                    VStack(spacing: 10) {
+                        // 이메일 입력 + 인증하기 버튼 (1줄 구성)
+                        HStack(spacing: 5) {
+                            TextField("이메일", text: $emailId)
                                 .keyboardType(.emailAddress)
                                 .padding()
                                 .background(Color.white)
                                 .cornerRadius(8)
                                 .shadow(color: Color.gray.opacity(0.3), radius: 2, x: 0, y: 1)
 
-                            Picker(selection: $emailDomain, label: Text(emailDomain).foregroundColor(.black)) {
-                                ForEach(availableDomains, id: \.self) { domain in
-                                    Text(domain).tag(domain)
-                                }
+                            Button(action: sendVerificationCode) {
+                                Text(codeExpired ? "재전송" : "인증하기")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .padding(.vertical, 15)
+                                    .padding(.horizontal, 16)
+                                    .background(emailId.isEmpty ? Color.gray.opacity(0.5) : Color.black)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(8)
                             }
-                            .pickerStyle(MenuPickerStyle())
-                            .frame(width: 160, height: 53)
-                            .clipped()
-                            .background(Color.white)
-                            .cornerRadius(8)
-                            .shadow(color: Color.gray.opacity(0.3), radius: 2, x: 0, y: 1)
+                            .disabled(emailId.isEmpty)
                         }
-                        .frame(height: 50)
                         .padding(.horizontal)
-                        
-                        // 인증 버튼 - 밑칸으로 이동 & 오른쪽 정렬
-                        HStack(spacing:5) {
-                            if showEmailCodeField {
-                                Spacer()
-                                Spacer()
+
+                        // 인증 코드 입력 + 확인 + 남은 시간
+                        if showEmailCodeField {
+                            HStack(spacing: 5) {
                                 TextField("코드 입력", text: $emailCode)
                                     .padding(.vertical, 8)
                                     .padding(.horizontal, 12)
@@ -141,43 +137,28 @@ struct RegisterView: View{
                                         .background(Color.black)
                                         .cornerRadius(8)
                                 }
-                            }
-                            Spacer()
-                            Button(action: sendVerificationCode) {
-                                Text(codeExpired ? "재전송" : "인증하기")
-                                    .font(.system(size: 14, weight: .bold))
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal, 16)
-                                    .background(emailId.isEmpty ? Color.gray.opacity(0.5) : Color.black.opacity(0.5))
-                                    .foregroundColor(.white)
-                                    .cornerRadius(8)
-                            }
-                            //.padding(.trailing)
-                            .disabled(emailId.isEmpty)
-                        }
-                        .padding(.horizontal)
-                        
-                        VStack{
-                            if showEmailCodeField {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    if remainingTime > 0 {
-                                        Text("남은 시간: \(remainingTime / 60)분 \(remainingTime % 60)초")
-                                            .foregroundColor(.red)
-                                            .font(.footnote)
-                                    }
-                                }
-                                .padding(.horizontal)
-                            }
 
-                            if !errorMessage2.isEmpty {
-                                Text(errorMessage2)
-                                    .foregroundColor(.red)
-                                    .font(.footnote)
+                                if remainingTime > 0 {
+                                    Text("\(remainingTime / 60)분 \(remainingTime % 60)초")
+                                        .foregroundColor(.red)
+                                        .font(.subheadline)
+                                        .bold()
+                                        .padding(.leading, 5)
+                                }
+
+                                Spacer()
                             }
+                            .padding(.horizontal)
+                        }
+                        
+                        if !errorMessage2.isEmpty {
+                            Text(errorMessage2)
+                                .foregroundColor(.red)
+                                .font(.footnote)
                         }
                         
                     }
-                    
+
                     
                     // 비밀번호 입력
                     SecureField("비밀번호", text: $userPwd)
@@ -197,26 +178,23 @@ struct RegisterView: View{
                         .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
                         .padding(.horizontal)
                     
-                    //이용약관
+                    // 이용약관
                     HStack{
-                        NavigationLink(destination: ConsentView()) {
+                        NavigationLink(destination: TermsOfServiceView()) {
                             Text("이용약관동의")
-                                //.font(.footnote)
-                                .foregroundColor(.red)
+                                .bold()
+                                .foregroundColor(.blue)
+                                .underline()
                         }
+                        
                         Button(action: { isAgreeToTerms.toggle() }) {
                             Image(systemName: isAgreeToTerms ? "checkmark.rectangle.fill" : "rectangle")
                                 .foregroundColor(isAgreeToTerms ? .blue : .gray)
                         }
                     }
                     
-                    // 오류 메시지
-                    if !errorMessage.isEmpty {
-                        Text(errorMessage)
-                            .foregroundColor(.red)
-                            .font(.footnote)
-                    }
                 }
+                
                 
                 VStack(spacing: 10){
                     // 가입하기 버튼
@@ -225,16 +203,19 @@ struct RegisterView: View{
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle())
                                 .frame(maxWidth: .infinity)
+                                .frame(height: 70)
                                 .padding()
                                 .background(Color.green)
                                 .cornerRadius(8)
                         } else {
                             Text("가입하기")
+                                .font(.title2)
                                 .foregroundColor(.white)
                                 .padding()
                                 .frame(maxWidth: .infinity)
+                                .frame(height: 70)
                                 .background(isFormValid ? Color.black : Color.gray)
-                                .cornerRadius(8)
+                                .cornerRadius(10)
                         }
                     }
                     .padding(.horizontal)
@@ -242,6 +223,8 @@ struct RegisterView: View{
                     
                     Spacer()
                 }
+                .padding(.top, 10)
+                
                 Spacer()
                 Spacer()
             }
@@ -253,9 +236,8 @@ struct RegisterView: View{
     }
     
     func sendVerificationCode() {
-        let fullEmail = "\(emailId)\(emailDomain)"
         sentCode = String(Int.random(in: 100000...999999))
-        print("인증코드: \(sentCode), 이메일: \(fullEmail)")
+        print("인증코드: \(sentCode), 이메일: \(emailId)")
         
         // SMTP로 이메일 전송
         let smtp = SMTP(
@@ -265,8 +247,8 @@ struct RegisterView: View{
             port: 465,
             tlsMode: .requireTLS
         )
-        let sender = Mail.User(name: "이메일 인증", email: "hyvoft@gmail.com")
-        let recipient = Mail.User(name: userName, email: fullEmail)
+        let sender = Mail.User(name: "[같이N가치] 회원가입 인증코드", email: "hyvoft@gmail.com")
+        let recipient = Mail.User(name: userName, email: emailId)
         let mail = Mail(
             from: sender,
             to: [recipient],
@@ -333,8 +315,7 @@ struct RegisterView: View{
             guard validateInputs() else { return }
             
             isLoading = true
-            let fullEmail = "\(emailId)\(emailDomain)"
-            userEmail = fullEmail
+            userEmail = emailId
         
             Auth.auth().createUser(withEmail: userEmail, password: userPwd) { result, error in
                 isLoading = false
@@ -351,8 +332,6 @@ struct RegisterView: View{
         func validateInputs() -> Bool {
             errorMessage = ""
             
-            let fullEmail = "\(emailId)\(emailDomain)"
-            
             guard !userName.isEmpty, userName.range(of: "^[가-힣a-zA-Z ]{2,}$", options: .regularExpression) != nil else {
                 errorMessage = "이름은 2자 이상의 한글 또는 영어만 가능합니다."
                 return false
@@ -363,7 +342,7 @@ struct RegisterView: View{
                 return false
             }
             
-            guard !fullEmail.isEmpty, fullEmail.range(of: "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", options: .regularExpression) != nil else {
+            guard !emailId.isEmpty, emailId.range(of: "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", options: .regularExpression) != nil else {
                 errorMessage = "이메일 형식이 올바르지 않습니다."
                 return false
             }
