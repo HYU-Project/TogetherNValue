@@ -20,11 +20,11 @@ TogetherNValue/
 ├── TogetherNValue/
 │   ├── TogetherNValueApp.swift             # SwiftUI 진입점
 │   ├── ContentView.swift                   # 메인 콘텐츠 뷰
-│
+│   │   
 │   ├── Components/                         # 재사용 가능한 UI 컴포넌트
 │   │   ├── ImagePicker.swift               # 단일 이미지 선택기
 │   │   └── MultiImagePicker.swift          # 다중 이미지 선택기
-│
+│   │   
 │   ├── Features/                           # 주요 기능 모듈 통합
 │   │   ├── AppRegisterToLogin/             # 로그인/회원가입 관련 뷰
 │   │   │   ├── FirstAppLoadingView.swift   # 앱 첫 로딩 화면
@@ -32,16 +32,25 @@ TogetherNValue/
 │   │   │   ├── UserLoginView.swift         # 사용자 로그인 뷰
 │   │   │   ├── UserRegisterView.swift      # 사용자 회원가입 뷰
 │   │   │   └── SelectedSchoolView.swift    # 학교 선택 뷰
+│   │   │   
 │   │   ├── Posts/                          # 게시글 관리
 │   │   │   ├── PostModel/                  # 게시글 데이터 모델
 │   │   │   ├── PostView/                   # 게시글 관련 뷰
-│   │   │   └── PostService/                # 게시글 서비스 로직
+│   │   │   └── PostService/                # 게시글 서비스 로직 
+│   │   │   
 │   │   ├── Users/                          # 사용자 관리
 │   │   │   ├── UserModel/                  # 사용자 데이터 모델
 │   │   │   ├── UserView/                   # 사용자 관련 뷰
-│   │   │   └── UserService/                # 사용자 서비스 로직
+│   │   │   └── UserService/                # 사용자 서비스 로직  
+│   │   │   
 │   │   ├── UserManager/                    # 사용자 관리 로직
 │   │   │   └── UserManager.swift
+│   │   │
+│   │   ├── Chatting/                       # 사용자 채팅방 관리
+│   │   │   ├── ChatModel/                  # 사용자 데이터 모델
+│   │   │   ├── ChatView/                   # 사용자 관련 뷰
+│   │   │   └── ChatService/                # 사용자 서비스 로직  
+│   │   │   
 │   │   └── Settings/                       # 앱 설정
 │   │       ├── FAQListView.swift           # FAQ 리스트 뷰
 │   │       ├── PrivacyPolicyView.swift     # 개인정보 처리방침 관련 뷰
