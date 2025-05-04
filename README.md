@@ -35,12 +35,14 @@ TogetherNValue/
 │   │   │   
 │   │   ├── Posts/                          # 게시글 관리
 │   │   │   ├── PostModel/                  # 게시글 데이터 모델
-│   │   │   ├── PostView/                   # 게시글 관련 뷰
+│   │   │   ├── PostView/                   # 게시글 관련 메인뷰
+│   │   │   ├── PostSubView/                # 게시글 관련 서브뷰(컴포넌트)
 │   │   │   └── PostService/                # 게시글 서비스 로직 
 │   │   │   
 │   │   ├── Users/                          # 사용자 관리
 │   │   │   ├── UserModel/                  # 사용자 데이터 모델
-│   │   │   ├── UserView/                   # 사용자 관련 뷰
+│   │   │   ├── UserView/                   # 사용자 관련 메인뷰
+│   │   │   ├── UserSubView/                # 사용자 관련 서브뷰(컴포넌트)  
 │   │   │   └── UserService/                # 사용자 서비스 로직  
 │   │   │   
 │   │   ├── UserManager/                    # 사용자 관리 로직
@@ -48,17 +50,16 @@ TogetherNValue/
 │   │   │
 │   │   ├── Chatting/                       # 사용자 채팅방 관리
 │   │   │   ├── ChatModel/                  # 사용자 데이터 모델
-│   │   │   ├── ChatView/                   # 사용자 관련 뷰
-│   │   │   └── ChatService/                # 사용자 서비스 로직  
+│   │   │   └── ChatView/                   # 사용자 관련 뷰 
 │   │   │   
 │   │   └── Settings/                       # 앱 설정
 │   │       ├── FAQListView.swift           # FAQ 리스트 뷰
 │   │       ├── PrivacyPolicyView.swift     # 개인정보 처리방침 관련 뷰
 │   │       └── TermsOfServiceView.swift    # 이용약관 관련 뷰
-│   
+│   │
 │   ├── Resources/                          # 앱 리소스 관리
 │   │   └── Assets.xcassets                 # 앱 아이콘 및 이미지 에셋
-│   
+│   │
 │   └── Firebase/                           # Firebase 설정 파일
 │       └── GoogleService-Info.plist
 └── README.md                               # 프로젝트 설명서
