@@ -70,7 +70,7 @@ TogetherNValue/
 ## Setting
 **환경 요구사항**
 Xcode (16.x 최신 버전 추천)
-Swift
+Swift (6.x 이상)
 Firebase SDK (Firebase Auth, Firebase Firestore, Firebase Storage)
 
 **Firebase 설정**
