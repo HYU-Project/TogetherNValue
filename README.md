@@ -59,9 +59,45 @@ TogetherNValue/
 > 절대 GitHub 또는 공개된 리포지토리에 업로드하지 마세요. `.gitignore`에 추가하여 관리합니다.
 
 ## 프로젝트 화면 구현
+![프로젝트 화면](https://github.com/user-attachments/assets/9866eef3-7c12-4ee5-adf0-0917c60114a4)
+
+
 ## 팀원
 
 - 김소민 [![GitHub](https://img.shields.io/badge/GitHub-black?style=flat-square&logo=github)](https://github.com/thals304)
 - 김현경 [![GitHub](https://img.shields.io/badge/GitHub-black?style=flat-square&logo=github)](https://github.com/hkkim2021)
 
 ## Setting
+**환경 요구사항**
+Xcode (16.x 최신 버전 추천)
+Swift
+Firebase SDK (Firebase Auth, Firebase Firestore, Firebase Storage)
+
+**Firebase 설정**
+1. Firebase 프로젝트 생성
+   - Firebase 콘솔에서 새로운 프로젝트를 생성
+     
+2. iOS 앱 등록
+   - Firebase 콘솔에서 iOS 앱 추가 클릭
+   - 프로젝트에 맞는 Bundle ID 입력
+   - GoogleService-Info.plist 파일을 다운로드하여 Xcode 프로젝트에 추가
+     - 애플리케이션 설정에서 GoogleService-Info.plist 추가
+        ```swift
+        import Firebase
+        @main
+        struct YourApp: App {
+            init() {
+                FirebaseApp.configure()
+            }
+          var body: some Scene {
+                WindowGroup {
+                    ContentView()
+                }
+            }
+        }
+
+
+3. Swift Package Manager 사용 시:
+  - Xcode에서 File → Swift Packages → Add Package Dependency 클릭
+  - Firebase GitHub 레포지토리 URL: https://github.com/firebase/firebase-ios-sdk
+  - 원하는 Firebase 모듈 선택 (예: Firebase/Auth, Firebase/Firestore 등)
